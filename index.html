@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interactive Wiggers Diagram & Cardiac Cycle</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+:root,[data-theme=light]{
+  --bg:#f0f4f8;--surf:#ffffff;--surf2:#f5f7fa;--brd:#dde3ec;
+  --tx:#0d1b2a;--txm:#4a5568;--txf:#a0aec0;--pri:#0369a1;
+  --ok:#15803d;--okl:#dcfce7;--er:#b91c1c;--erl:#fee2e2;
+  --shadow:0 8px 32px rgba(13,27,42,.12),0 2px 8px rgba(13,27,42,.06);
+  --font:"DM Sans",system-ui,sans-serif;
+  --disp:"DM Serif Display",Georgia,serif;
+}
+[data-theme=dark]{
+  --bg:#0b1220;--surf:#131c2e;--surf2:#1a2540;--brd:#243050;
+  --tx:#e2e8f0;--txm:#94a3b8;--txf:#4b6080;--pri:#38bdf8;
+  --ok:#4ade80;--okl:#14401f;--er:#f87171;--erl:#4c1414;
+  --shadow:0 8px 32px rgba(0,0,0,.4),0 2px 8px rgba(0,0,0,.3);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased;scroll-behavior:smooth}
+body{font-family:var(--font);font-size:1rem;color:var(--tx);background:var(--bg);min-height:100dvh;line-height:1.6}
+button{cursor:pointer;background:none;border:none;font:inherit;color:inherit}
+.page{max-width:1100px;margin:auto;padding:2rem 1.5rem 4rem}
+.hdr{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;margin-bottom:2rem;padding-bottom:1.25rem;border-bottom:1px solid var(--brd)}
+.hleft .lbl{font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--pri);margin-bottom:.3rem}
+.hleft h1{font-family:var(--disp);font-size:clamp(1.4rem,2.5vw,2rem);line-height:1.2}
+.hleft p{font-size:.85rem;color:var(--txm);margin-top:.25rem}
+.tog{width:38px;height:38px;border-radius:50%;background:var(--surf);border:1px solid var(--brd);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--txm);transition:box-shadow .18s}
+.tog:hover{box-shadow:var(--shadow)}
+.wiggers-panel{background:var(--surf);border-radius:18px;box-shadow:var(--shadow);border:1px solid var(--brd);padding:1.5rem 1.5rem 1rem;margin-bottom:1.75rem;overflow:hidden}
+.wiggers-panel h2{font-size:.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--txm);margin-bottom:1rem}
+.canvas-wrap{position:relative;width:100%;overflow-x:auto}
+canvas#wiggers{display:block;width:100%;cursor:crosshair}
+#phase-tooltip{position:absolute;pointer-events:none;background:var(--surf);border:1px solid var(--brd);border-radius:10px;padding:.5rem .8rem;font-size:.78rem;color:var(--tx);box-shadow:var(--shadow);opacity:0;transition:opacity .15s;white-space:nowrap;z-index:10}
+#phase-tooltip strong{display:block;font-size:.85rem;margin-bottom:2px;color:var(--pri)}
+.phase-banner{display:flex;align-items:center;gap:.75rem;padding:.6rem 1rem;border-radius:10px;background:var(--surf2);border:1px solid var(--brd);margin-bottom:1.5rem;min-height:52px;transition:background .25s}
+.phase-banner .pb-num{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;color:#fff;flex-shrink:0;transition:background .25s}
+.phase-banner .pb-name{font-weight:600;font-size:.9rem}
+.phase-banner .pb-desc{font-size:.78rem;color:var(--txm);margin-top:1px}
+.phase-banner .pb-rub{margin-left:auto;font-size:.73rem;font-weight:600;padding:3px 11px;border-radius:9999px;flex-shrink:0}
+.pb-rub.yes{background:var(--okl);color:var(--ok)}
+.pb-rub.no{background:var(--erl);color:var(--er)}
+.tc{background:var(--surf);border-radius:18px;box-shadow:var(--shadow);overflow:hidden;border:1px solid var(--brd)}
+table{width:100%;border-collapse:collapse;font-size:.85rem}
+thead tr{background:var(--surf2);border-bottom:2px solid var(--brd)}
+thead th{padding:.75rem 1rem;text-align:left;font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--txm);white-space:nowrap}
+tbody tr{border-bottom:1px solid var(--brd);transition:background .2s}
+tbody tr:last-child{border-bottom:none}
+td{padding:.9rem 1rem;vertical-align:top}
+.sdiv td{padding:.25rem 1rem;background:var(--surf2);font-size:.63rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--txf);border-top:1px solid var(--brd)}
+.pn{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;font-size:.72rem;font-weight:700;color:#fff}
+.pname{font-weight:600;font-size:.84rem;margin-bottom:1px}
+.pcomp{font-size:.73rem;font-style:italic;color:var(--txf)}
+.cb{display:inline-block;font-size:.68rem;font-weight:600;padding:2px 8px;border-radius:9999px;white-space:nowrap}
+.cs{background:#dbeafe;color:#1e3a8a}
+.cd{background:#d1fae5;color:#065f46}
+[data-theme=dark] .cs{background:#1e3a5f;color:#93c5fd}
+[data-theme=dark] .cd{background:#14401f;color:#6ee7b7}
+.rb{display:inline-flex;align-items:center;gap:4px;font-size:.73rem;font-weight:600;padding:2px 9px;border-radius:9999px}
+.ry{background:var(--okl);color:var(--ok)}
+.rn{background:var(--erl);color:var(--er)}
+.rd{width:6px;height:6px;border-radius:50%;background:currentColor}
+.rt{font-size:.79rem;color:var(--txm)}
+.rb2{font-weight:600;color:var(--tx)}
+.foot{padding:.9rem 1rem;background:var(--surf2);border-top:2px solid var(--brd)}
+.foot p{font-size:.75rem;color:var(--txm);max-width:none;line-height:1.65}
+.foot strong{color:var(--tx)}
+tbody tr.row-highlight{background:color-mix(in oklch,var(--pri) 10%,var(--surf))!important}
+@media(max-width:640px){
+  thead th:last-child,td:last-child{display:none}
+  thead th,td{padding:.65rem .65rem}
+  table{font-size:.79rem}
+}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="hdr">
+    <div class="hleft">
+      <p class="lbl">KFMD's</p>
+      <h1>Kardiologi App Home</h1>
+      <p>Select the app you want to access below</p>
+    </div>
+    <button class="tog" data-tt aria-label="Toggle dark mode">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
+  </div>
+
+  <div class="phase-banner" id="phaseBanner">
+    <span class="pb-num" id="bannerNum" style="background:#475569">—</span>
+    <div>
+      <a href="cardiac-cycle-pc-rub.html">
+      <div class="pb-name" id="bannerName">Interactive Wigger's Diagram</div>
+      </a> 
+      <div class="pb-desc" id="bannerDesc">A diagram to help us understand cardiac cycle with some example of abnormalies</div>
+    </div>
+    <span class="pb-rub no" id="bannerRub" style="display:none"></span>
+
+  <div class="phase-banner" id="phaseBanner">
+    <span class="pb-num" id="bannerNum" style="background:#475569">—</span>
+    <div>
+      <a href="/ecgaxistrainer">
+      <div class="pb-name" id="bannerName">ECG Axis Trainer</div>
+      </a> 
+      <div class="pb-desc" id="bannerDesc">pA small web-app for training of ecg axis deviation</div>
+    </div>
+    <span class="pb-rub no" id="bannerRub" style="display:none"></span>
+  </div>
+</body>
+</html>
