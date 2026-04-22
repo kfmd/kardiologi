@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interactive Wiggers Diagram — Enhanced</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+:root,[data-theme=light]{
+  --bg:#eef2f7;--surf:#fff;--surf2:#f4f7fb;--brd:#dde4ee;
+  --tx:#0d1b2a;--txm:#4a5568;--txf:#94a3b8;
+  --pri:#0369a1;--pri-hl:#e0f2fe;
+  --ok:#15803d;--okl:#dcfce7;--er:#b91c1c;--erl:#fee2e2;
+  --warn:#92400e;--warnl:#fef3c7;
+  --shadow:0 8px 32px rgba(13,27,42,.11),0 2px 6px rgba(13,27,42,.05);
+  --font:"DM Sans",system-ui,sans-serif;--disp:"DM Serif Display",Georgia,serif;
+  --r-sm:6px;--r-md:10px;--r-lg:16px;--r-xl:20px;
+}
+[data-theme=dark]{
+  --bg:#0b1220;--surf:#131c2e;--surf2:#1a2540;--brd:#243050;
+  --tx:#e2e8f0;--txm:#94a3b8;--txf:#4b6080;
+  --pri:#38bdf8;--pri-hl:#0c2a3d;
+  --ok:#4ade80;--okl:#14401f;--er:#f87171;--erl:#4c1414;
+  --warn:#fbbf24;--warnl:#422006;
+  --shadow:0 8px 32px rgba(0,0,0,.4),0 2px 8px rgba(0,0,0,.3);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased;scroll-behavior:smooth}
+body{font-family:var(--font);font-size:1rem;color:var(--tx);background:var(--bg);min-height:100dvh;line-height:1.6}
+button{cursor:pointer;background:none;border:none;font:inherit;color:inherit}
+.page{max-width:1200px;margin:auto;padding:1.75rem 1.5rem 4rem}
+
+/* HEADER */
+.hdr{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;margin-bottom:1.5rem;padding-bottom:1.25rem;border-bottom:1px solid var(--brd)}
+.hl .lbl{font-size:.67rem;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--pri);margin-bottom:.25rem}
+.hl h1{font-family:var(--disp);font-size:clamp(1.3rem,2.4vw,1.9rem);line-height:1.2}
+.hl p{font-size:.83rem;color:var(--txm);margin-top:.2rem}
+.hbtn{width:36px;height:36px;border-radius:50%;background:var(--surf);border:1px solid var(--brd);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--txm);transition:box-shadow .18s}
+.hbtn:hover{box-shadow:var(--shadow)}
+
+/* WIGGERS PANEL */
+.wiggers-panel{background:var(--surf);border-radius:var(--r-xl);box-shadow:var(--shadow);border:1px solid var(--brd);padding:1.25rem 1.25rem .75rem;margin-bottom:1rem;overflow:hidden}
+.panel-top{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem;margin-bottom:.9rem}
+.panel-top h2{font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--txm)}
+.controls{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap}
+.ctrl-grp{display:flex;align-items:center;gap:.3rem;background:var(--surf2);border:1px solid var(--brd);border-radius:var(--r-md);padding:3px}
+.ctrl-btn{height:28px;padding:0 .6rem;border-radius:calc(var(--r-md) - 3px);font-size:.75rem;font-weight:600;color:var(--txm);transition:background .15s,color .15s;display:flex;align-items:center;gap:.25rem;white-space:nowrap}
+.ctrl-btn:hover{background:var(--brd);color:var(--tx)}
+.ctrl-btn.active{background:var(--pri);color:#fff}
+.ctrl-label{font-size:.7rem;color:var(--txf);padding:0 .3rem;white-space:nowrap}
+.sep{width:1px;height:18px;background:var(--brd)}
+.canvas-wrap{position:relative;width:100%;overflow:hidden;border-radius:var(--r-md)}
+canvas#wiggers{display:block;width:100%;cursor:crosshair;transition:height .3s}
+#ptip{position:absolute;pointer-events:none;background:var(--surf);border:1px solid var(--brd);border-radius:var(--r-md);padding:.45rem .75rem;font-size:.76rem;color:var(--tx);box-shadow:var(--shadow);opacity:0;transition:opacity .13s;white-space:nowrap;z-index:10;max-width:260px;white-space:normal}
+#ptip strong{display:block;font-size:.82rem;margin-bottom:2px;color:var(--pri)}
+
+/* PHASE BANNER */
+.phase-banner{display:flex;align-items:center;gap:.7rem;padding:.55rem .9rem;border-radius:var(--r-lg);background:var(--surf2);border:1px solid var(--brd);margin-bottom:1.25rem;min-height:48px;transition:background .2s}
+.pb-num{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.71rem;font-weight:700;color:#fff;flex-shrink:0}
+.pb-name{font-weight:600;font-size:.88rem}
+.pb-desc{font-size:.75rem;color:var(--txm);margin-top:1px}
+.pb-badges{margin-left:auto;display:flex;gap:.4rem;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end}
+.pb-badge{font-size:.71rem;font-weight:600;padding:2px 10px;border-radius:9999px;display:inline-flex;align-items:center;gap:3px}
+.pb-badge.rub-yes{background:var(--okl);color:var(--ok)}
+.pb-badge.rub-no{background:var(--erl);color:var(--er)}
+.pb-badge.murmur{background:var(--warnl);color:var(--warn)}
+
+/* TABLE */
+.tc{background:var(--surf);border-radius:var(--r-xl);box-shadow:var(--shadow);overflow:hidden;border:1px solid var(--brd)}
+.table-scroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:.82rem;min-width:900px}
+thead tr{background:var(--surf2);border-bottom:2px solid var(--brd)}
+thead th{padding:.7rem .9rem;text-align:left;font-size:.63rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--txm);white-space:nowrap}
+tbody tr{border-bottom:1px solid var(--brd);transition:background .18s}
+tbody tr:last-child{border-bottom:none}
+td{padding:.85rem .9rem;vertical-align:top}
+.sdiv td{padding:.22rem .9rem;background:var(--surf2);font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--txf);border-top:1px solid var(--brd)}
+.pn{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;font-size:.7rem;font-weight:700;color:#fff}
+.pname{font-weight:600;font-size:.82rem;margin-bottom:1px}
+.pcomp{font-size:.71rem;font-style:italic;color:var(--txf)}
+.cb{display:inline-block;font-size:.66rem;font-weight:600;padding:2px 7px;border-radius:9999px}
+.cs{background:#dbeafe;color:#1e3a8a}
+.cd{background:#d1fae5;color:#065f46}
+[data-theme=dark] .cs{background:#1e3a5f;color:#93c5fd}
+[data-theme=dark] .cd{background:#14401f;color:#6ee7b7}
+.rb{display:inline-flex;align-items:center;gap:4px;font-size:.7rem;font-weight:600;padding:2px 8px;border-radius:9999px}
+.ry{background:var(--okl);color:var(--ok)}
+.rn{background:var(--erl);color:var(--er)}
+.rd{width:5px;height:5px;border-radius:50%;background:currentColor}
+.rt{font-size:.77rem;color:var(--txm)}
+.rb2{font-weight:600;color:var(--tx)}
+.murmur-cell{font-size:.76rem;color:var(--txm)}
+.m-tag{display:inline-flex;align-items:center;gap:3px;font-size:.67rem;font-weight:600;padding:2px 7px;border-radius:9999px;background:var(--warnl);color:var(--warn);margin-bottom:3px;margin-right:2px}
+.m-tag-none{font-size:.72rem;color:var(--txf);font-style:italic}
+.m-entry{margin-bottom:5px;padding-bottom:5px;border-bottom:1px solid var(--brd)}
+.m-entry:last-child{margin-bottom:0;padding-bottom:0;border-bottom:none}
+.m-name{font-weight:600;color:var(--tx);font-size:.76rem}
+
+.m-toggle{display:flex;align-items:center;justify-content:space-between;width:100%;background:none;border:none;padding:0;cursor:pointer;text-align:left;gap:.5rem;border-radius:4px;}
+.m-toggle:hover .m-name{color:var(--pri);}
+.m-toggle .m-name{font-weight:600;color:var(--tx);font-size:.76rem;flex:1;}
+.m-arrow{font-size:.65rem;color:var(--txf);transition:transform .2s;flex-shrink:0;}
+.m-toggle[aria-expanded=true] .m-arrow{transform:rotate(90deg);color:var(--pri);}
+.m-detail[hidden]{display:none;}
+.m-detail{font-size:.72rem;color:var(--txm);line-height:1.5;padding-top:.35rem;}
+
+.foot{padding:.85rem .9rem;background:var(--surf2);border-top:2px solid var(--brd)}
+.foot p{font-size:.74rem;color:var(--txm);max-width:none;line-height:1.65}
+.foot strong{color:var(--tx)}
+tbody tr.row-hl{background:color-mix(in oklch,var(--pri) 9%,var(--surf))!important}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="hdr">
+    <div class="hl">
+      <p class="lbl">Interactive Cardiology Reference</p>
+      <h1>Wiggers Diagram, Cardiac Phases &amp; Auscultatory Findings</h1>
+      <p>Hover to highlight phases · Click a phase to jump to its table row · Adjust zoom &amp; amplitude with controls</p>
+    </div>
+    <button class="hbtn" data-tt aria-label="Toggle dark mode">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
+  </div>
+
+  <!-- WIGGERS -->
+  <div class="wiggers-panel">
+    <div class="panel-top">
+      <h2>Complete Wiggers Diagram — hover to explore phases</h2>
+      <div class="controls">
+        <span class="ctrl-label">Zoom</span>
+        <div class="ctrl-grp">
+          <button class="ctrl-btn" id="zOut" aria-label="Zoom out">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="8" y1="11" x2="14" y2="11"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            Out
+          </button>
+          <button class="ctrl-btn" id="zReset">1×</button>
+          <button class="ctrl-btn" id="zIn" aria-label="Zoom in">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            In
+          </button>
+        </div>
+        <div class="sep"></div>
+        <span class="ctrl-label">Amplitude</span>
+        <div class="ctrl-grp">
+          <button class="ctrl-btn" id="aLow">Low</button>
+          <button class="ctrl-btn active" id="aNorm">Normal</button>
+          <button class="ctrl-btn" id="aHigh">High</button>
+        </div>
+        <div class="sep"></div>
+        <span class="ctrl-label">Height</span>
+        <div class="ctrl-grp">
+          <button class="ctrl-btn active" id="hCompact">Compact</button>
+          <button class="ctrl-btn" id="hTall">Tall</button>
+        </div>
+      </div>
+    </div>
+    <div class="canvas-wrap" id="canvasWrap">
+      <canvas id="wiggers" height="440"></canvas>
+      <div id="ptip"></div>
+    </div>
+    <!-- Horizontal scroll track for zoom -->
+    <div id="scrollBar" style="display:none;margin-top:.5rem;height:6px;background:var(--brd);border-radius:9999px;cursor:pointer;position:relative">
+      <div id="scrollThumb" style="position:absolute;height:6px;background:var(--pri);border-radius:9999px;left:0;width:50%;transition:width .2s"></div>
+    </div>
+  </div>
+
+  <!-- PHASE BANNER -->
+  <div class="phase-banner" id="phaseBanner">
+    <span class="pb-num" id="bNum" style="background:#475569">—</span>
+    <div>
+      <div class="pb-name" id="bName">Hover the diagram above</div>
+      <div class="pb-desc" id="bDesc">Hover to highlight · click the diagram to scroll to that phase in the table</div>
+    </div>
+    <div class="pb-badges" id="bBadges"></div>
+  </div>
+
+  <!-- TABLE -->
+  <div class="tc">
+    <div class="table-scroll">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Phase</th>
+          <th>Part of Cycle</th>
+          <th>Pericardial Rub?</th>
+          <th>Rub Mechanism</th>
+          <th>Heart Murmurs &amp; Auscultatory Findings</th>
+        </tr>
+      </thead>
+      <tbody id="ptb">
+
+        <tr class="sdiv"><td colspan="6">Late Diastole</td></tr>
+
+        <tr data-phase="1">
+          <td><span class="pn" style="background:#1e3a8a">1</span></td>
+          <td><div class="pname">Atrial Systole <br><small style="font-weight:400;color:var(--txf)">(Atrial Kick)</small></div><div class="pcomp">→ Presystolic rub component · S4 territory</div></td>
+          <td><span class="cb cd">Late Diastole</span></td>
+          <td><span class="rb ry"><span class="rd"></span>Yes</span></td>
+          <td class="rt"><span class="rb2">Atrial contraction</span> moves blood forcefully into ventricle → cardiac displacement within pericardial sac. <em>Softest component; absent in AF.</em></td>
+          <td class="murmur-cell">
+            <div class="m-entry">
+              <div class="m-tag">Presystolic Murmur</div>
+              <button class="m-toggle" aria-expanded="false"><span class="m-name">Mitral Stenosis (MS)</span><span class="m-arrow" aria-hidden="true">▸</span></button>
+              <div class="m-detail" hidden>Low-pitched rumble crescendos just before S1. Caused by atrial systole forcing blood through a narrowed mitral valve. <strong>Best heard:</strong> apex, patient in left lateral decubitus.</div>
+            </div>
+            <div class="m-entry">
+              <div class="m-tag">Presystolic Murmur</div>
+              <button class="m-toggle" aria-expanded="false"><span class="m-name">Tricuspid Stenosis (TS)</span><span class="m-arrow" aria-hidden="true">▸</span></button>
+              <div class="m-detail" hidden>Similar presystolic rumble at left lower sternal border. Increases with inspiration (Carvallo's sign).</div>
+            </div>
+            <div class="m-entry">
+              <div class="m-tag">S4 Gallop</div>
+              <button class="m-toggle" aria-expanded="false"><span class="m-name">LV Hypertrophy / HCM / Hypertension</span><span class="m-arrow" aria-hidden="true">▸</span></button>
+              <div class="m-detail" hidden>S4 occurs as atrial kick strikes a stiff, non-compliant ventricle. Indicates diastolic dysfunction. Loud S4 is classic in HCM.</div>
+            </div>
+          </td>
+        </tr>
+
+        <tr class="sdiv"><td colspan="6">Systole</td></tr>
+
+        <tr data-phase="2">
+          <td><span class="pn" style="background:#6b21a8">2</span></td>
+          <td><div class="pname">Isovolumetric Contraction</div><div class="pcomp">→ S1 closes · No volume change</div></td>
+          <td><span class="cb cs">Early Systole</span></td>
+          <td><span class="rb rn"><span class="rd"></span>No</span></td>
+          <td class="rt"><span class="rb2">All valves closed.</span> Pressure builds internally — no net cardiac displacement to generate friction.</td>
+          <td class="murmur-cell">
+            <div class="m-entry">
+              <div class="m-tag">Ejection Click</div>
+              <button class="m-toggle" aria-expanded="false"><span class="m-name">Bicuspid Aortic Valve / Pulmonary Stenosis</span><span class="m-arrow" aria-hidden="true">▸</span></button>
+              <div class="m-detail" hidden>Early systolic click occurs as the domed/bicuspid valve leaflets abruptly halt at maximum opening displacement. Heard at onset of ejection just after S1.</div>
+            </div>
+            <div class="m-entry">
+              <div class="m-tag">Mitral Click</div>
+              <button class="m-toggle" aria-expanded="false"><span class="m-name">Mitral Valve Prolapse (MVP)</span><span class="m-arrow" aria-hidden="true">▸</span></button>
+              <div class="m-detail" hidden>Mid-systolic click (can begin here) as the mitral leaflets prolapse into the LA. Position changes timing: standing moves click earlier; squatting moves it later.</div>
+            </div>
+            <div class="m-entry">
+              <div class="m-tag">Loud S1</div>
+              <button class="m-toggle" aria-expanded="false"><span class="m-name">Mitral Stenosis</span><span class="m-arrow" aria-hidden="true">▸</span></button>
+              <div class="m-detail" hidden>Thickened but mobile mitral leaflets snap shut with increased force, producing a loud (sometimes palpable) S1.</div>
+            </div>
+          </td>
+        </tr>
+
+        <tr data-phase="3">
+          <td><span class="pn" style="background:#0369a1">3</span></td>
+          <td><div class="pname">Rapid Ventricular Ejection</div><div class="pcomp">→ <strong>Systolic rub (loudest)</strong> · Peak aortic pressure</div></td>
+          <td><span class="cb cs">Mid Systole</span></td>
+          <td><span class="rb ry"><span class="rd"></span>Yes</span></td>
+          <td class="rt"><span class="rb2">Greatest cardiac motion</span> of the entire cycle. Forceful ejection maximally shifts the heart in the pericardial sac. <em>Always loudest, most consistent rub component.</em></td>
+          <td class="murmur-cell">
+            <div class="m-entry">
+              <div class="m-tag">Systolic Ejection Murmur</div>
+              <button class="m-toggle" aria-expanded="false"><span class="m-name">Aortic Stenosis (AS)</span><span class="m-arrow" aria-hidden="true">▸</span></button>
+              <div class="m-detail" hidden>Harsh, crescendo-decrescendo (diamond-shaped) murmur at right upper sternal border (RUSB). Radiates to carotids. Later peak = more severe. Associated with slow-rising carotid pulse (pulsus parvus et tardus) and absent A2.</div>
+            </div>
+            <div class="m-entry">
+              <div class="m-tag">Systolic Ejection Murmur</div>
+              <button class="m-toggle" aria-expanded="false"><span class="m-name">Hypertrophic Cardiomyopathy (HCM)</span><span class="m-arrow" aria-hidden="true">▸</span></button>
+              <div class="m-detail" hidden>Dynamic LVOT obstruction → harsh crescendo-decrescendo murmur at LLSB/apex. <strong>Unique feature:</strong> murmur increases with Valsalva, standing, amyl nitrite (decreased preload) and decreases with squatting, leg raise (increased preload). No radiation to carotids.</div>
+            </div>
+            <div class="m-entry">
+              <div class="m-tag">Systolic Ejection Murmur</div>
+              <button class="m-toggle" aria-expanded="false"><span class="m-name">Pulmonary Stenosis (PS)</span><span class="m-arrow" aria-hidden="true">▸</span></button>
+              <div class="m-detail" hidden>Crescendo-decrescendo murmur at left upper sternal border (LUSB). Increases with inspiration. Associated with wide split S2 and RV heave.</div>
+            </div>
+            <div class="m-entry">
+              <div class="m-tag">Pansystolic Murmur</div>
+              <button class="m-toggle" aria-expanded="false"><span class="m-name">Mitral Regurgitation (MR)</span><span class="m-arrow" aria-hidden="true">▸</span></button>
+              <div class="m-detail" hidden>Blowing, high-pitched holosystolic murmur at apex, radiating to axilla. Constant throughout systole (same LV-LA pressure gradient). Acute MR (papillary muscle rupture): decrescendo, ends before S2 as pressures equalize quickly.</div>
+            </div>
+            <div class="m-entry">
+              <div class="m-tag">Pansystolic Murmur</div>
+              <button class="m-toggle" aria-expanded="false"><span class="m-name">Tricuspid Regurgitation (TR)</span><span class="m-arrow" aria-hidden="true">▸</span></button>
+              <div class="m-detail" hidden>Blowing holosystolic murmur at LLSB. Increases dramatically with inspiration (Carvallo's sign distinguishes from MR). Associated with pulsatile liver, prominent V wave in JVP.</div>
+            </div>
+            <div class="m-entry">
+              <div class="m-tag">Pansystolic Murmur</div>
+              <button class="m-toggle" aria-expanded="false"><span class="m-name">Ventricular Septal Defect (VSD)</span><span class="m-arrow" aria-hidden="true">▸</span></button>
+              <div class="m-detail" hidden>Harsh holosystolic murmur at 3rd–4th LLSB with thrill. Loudness inversely relates to defect size (small = louder).</div>
+            </div>
+            <div class="m-entry">
+              <div class="m-tag">Late Systolic Murmur</div>
+              <button class="m-toggle" aria-expanded="false"><span class="m-name">Mitral Valve Prolapse (MVP)</span><span class="m-arrow" aria-hidden="true">▸</span></button>
+              <div class="m-detail" hidden>Late systolic murmur follows the mid-systolic click as prolapsed leaflets permit regurgitation. May become holosystolic with severe MR. Maneuvers that decrease LV volume move click and murmur earlier.</div>
+            </div>
+            <div class="m-entry">
+              <div class="m-tag">Innocent / Flow Murmur</div>
+              <button class="m-toggle" aria-expanded="false"><span class="m-name">Still's Murmur / Hyperdynamic States</span><span class="m-arrow" aria-hidden="true">▸</span></button>
+              <div class="m-detail" hidden>Grade I–II vibratory or musical ejection murmur, heard in children or high-output states (anemia, fever, pregnancy, hyperthyroidism). Disappears with Valsalva.</div>
+            </div>
+          </td>
+        </tr>
+
+        <tr data-phase="4">
+          <td><span class="pn" style="background:#374151">4</span></td>
+          <td><div class="pname">Reduced Ventricular Ejection</div><div class="pcomp">→ Declining aortic pressure phase</div></td>
+          <td><span class="cb cs">Late Systole</span></td>
+          <td><span class="rb rn"><span class="rd"></span>No</span></td>
+          <td class="rt"><span class="rb2">Low-force, decelerating ejection.</span> Insufficient cardiac motion to generate audible friction.</td>
+          <td class="murmur-cell">
+            <div class="m-entry">
+              <div class="m-tag">Decrescendo Murmur</div>
+              <button class="m-toggle" aria-expanded="false"><span class="m-name">Hypertrophic Cardiomyopathy (HCM)</span><span class="m-arrow" aria-hidden="true">▸</span></button>
+              <div class="m-detail" hidden>The decrescendo limb of the HCM systolic murmur falls through this phase as LVOT gradient decreases with late systolic narrowing of the ventricle.</div>
+            </div>
+            <div class="m-entry">
+              <div class="m-tag">Dicrotic Notch</div>
+              <button class="m-toggle" aria-expanded="false"><span class="m-name">Aortic Pulse Waveform Anomalies</span><span class="m-arrow" aria-hidden="true">▸</span></button>
+              <div class="m-detail" hidden>The dicrotic notch (incisura) represents aortic valve closure. Absent/blunted in severe AR (wide pulse pressure). Prominent in vasodilated states. Bisferiens pulse (double-peaked) in combined AS+AR or HCM.</div>
+            </div>
+          </td>
+        </tr>
+
+        <tr class="sdiv"><td colspan="6">Diastole</td></tr>
+
+        <tr data-phase="5">
+          <td><span class="pn" style="background:#7c3aed">5</span></td>
+          <td><div class="pname">Isovolumetric Relaxation</div><div class="pcomp">→ S2 closes · All valves closed</div></td>
+          <td><span class="cb cd">Early Diastole</span></td>
+          <td><span class="rb rn"><span class="rd"></span>No</span></td>
+          <td class="rt"><span class="rb2">All valves closed.</span> Pressure releases internally — mirrors Phase 2. No net cardiac displacement.</td>
+          <td class="murmur-cell">
+            <div class="m-entry">
+              <div class="m-tag">S2 Splitting</div>
+              <button class="m-toggle" aria-expanded="false"><span class="m-name">Normal vs. Pathological A2–P2 Split</span><span class="m-arrow" aria-hidden="true">▸</span></button>
+              <div class="m-detail" hidden><strong>Normal:</strong> physiological split widens on inspiration. <strong>Wide fixed split:</strong> ASD (equalized pressures) or RBBB (delayed P2). <strong>Paradoxical split:</strong> LBBB or severe AS (delayed A2, split narrows on inspiration). <strong>Loud A2:</strong> systemic HTN. <strong>Soft A2:</strong> severe AS. <strong>Loud P2:</strong> pulmonary hypertension.</div>
+            </div>
+            <div class="m-entry">
+              <div class="m-tag">Pericardial Knock</div>
+              <button class="m-toggle" aria-expanded="false"><span class="m-name">Constrictive Pericarditis</span><span class="m-arrow" aria-hidden="true">▸</span></button>
+              <div class="m-detail" hidden>High-pitched early diastolic sound (louder than S3) at apex/LLSB due to abrupt cessation of ventricular filling by a rigid pericardium. Occurs right after S2, earlier than S3.</div>
+            </div>
+          </td>
+        </tr>
+
+        <tr data-phase="6">
+          <td><span class="pn" style="background:#0e7490">6</span></td>
+          <td><div class="pname">Rapid Ventricular Filling</div><div class="pcomp">→ Protodiastolic rub component · S3 territory</div></td>
+          <td><span class="cb cd">Early Diastole</span></td>
+          <td><span class="rb ry"><span class="rd"></span>Yes</span></td>
+          <td class="rt"><span class="rb2">Rapid passive filling</span> shifts cardiac position — second largest cardiac motion of the cycle.</td>
+          <td class="murmur-cell">
+            <div class="m-entry">
+              <div class="m-tag">Early Diastolic Murmur</div>
+              <button class="m-toggle" aria-expanded="false"><span class="m-name">Aortic Regurgitation (AR)</span><span class="m-arrow" aria-hidden="true">▸</span></button>
+              <div class="m-detail" hidden>High-pitched, blowing, decrescendo murmur starting immediately after A2. <strong>Best heard:</strong> left sternal border (3rd ICS), patient leaning forward, breath held in expiration. Austin Flint murmur: mid-diastolic rumble at apex (AR jet strikes MV). Associated signs: wide pulse pressure, Corrigan's pulse, Quincke's sign, Duroziez's sign, de Musset's sign.</div>
+            </div>
+            <div class="m-entry">
+              <div class="m-tag">Early Diastolic Murmur</div>
+              <button class="m-toggle" aria-expanded="false"><span class="m-name">Pulmonary Regurgitation (PR)</span><span class="m-arrow" aria-hidden="true">▸</span></button>
+              <div class="m-detail" hidden>Graham Steell murmur: high-pitched decrescendo at LUSB, increases with inspiration. Usually in pulmonary hypertension. Rare in isolated PR.</div>
+            </div>
+            <div class="m-entry">
+              <div class="m-tag">Opening Snap</div>
+              <button class="m-toggle" aria-expanded="false"><span class="m-name">Mitral Stenosis</span><span class="m-arrow" aria-hidden="true">▸</span></button>
+              <div class="m-detail" hidden>High-pitched sound as the thickened-but-pliable mitral valve is snapped open by elevated LA pressure. Earlier after S2 = more severe MS (higher LA-LV gradient). Absent when valve is heavily calcified.</div>
+            </div>
+            <div class="m-entry">
+              <div class="m-tag">Mid-Diastolic Rumble</div>
+              <button class="m-toggle" aria-expanded="false"><span class="m-name">Mitral Stenosis</span><span class="m-arrow" aria-hidden="true">▸</span></button>
+              <div class="m-detail" hidden>Low-pitched rumble following the opening snap. Heard at apex with bell of stethoscope, patient in left lateral decubitus. Grade correlates with severity in sinus rhythm.</div>
+            </div>
+            <div class="m-entry">
+              <div class="m-tag">S3 Gallop</div>
+              <button class="m-toggle" aria-expanded="false"><span class="m-name">LV Failure / MR / AR / VSD</span><span class="m-arrow" aria-hidden="true">▸</span></button>
+              <div class="m-detail" hidden>S3 occurs as rapid filling abruptly decelerates against a dilated, volume-overloaded or non-compliant ventricle. Pathological in adults >40 years. Normal in children and young athletes.</div>
+            </div>
+          </td>
+        </tr>
+
+        <tr data-phase="7">
+          <td><span class="pn" style="background:#374151">7</span></td>
+          <td><div class="pname">Reduced Filling <br><small style="font-weight:400;color:var(--txf)">(Diastasis)</small></div><div class="pcomp">→ Slow equilibration phase</div></td>
+          <td><span class="cb cd">Mid Diastole</span></td>
+          <td><span class="rb rn"><span class="rd"></span>No</span></td>
+          <td class="rt"><span class="rb2">Slow, low-pressure filling.</span> Minimal cardiac motion; insufficient to overcome friction threshold.</td>
+          <td class="murmur-cell">
+            <div class="m-entry">
+              <div class="m-tag">Mid-Diastolic Rumble</div>
+              <button class="m-toggle" aria-expanded="false"><span class="m-name">Mitral Stenosis (continued)</span><span class="m-arrow" aria-hidden="true">▸</span></button>
+              <div class="m-detail" hidden>The rumble of MS can extend into mid-diastole, becoming quieter during diastasis (reduced flow), then intensifying again in Phase 1 as atrial systole creates a presystolic accentuation.</div>
+            </div>
+            <div class="m-entry">
+              <div class="m-tag">Austin Flint Murmur</div>
+              <button class="m-toggle" aria-expanded="false"><span class="m-name">Severe Aortic Regurgitation</span><span class="m-arrow" aria-hidden="true">▸</span></button>
+              <div class="m-detail" hidden>Mid-diastolic rumble at apex mimicking MS. AR jet causes functional stenosis of the mitral valve by displacing the anterior MV leaflet. No opening snap. Differentiated with echocardiography.</div>
+            </div>
+            <div class="m-entry">
+              <div class="m-tag">Continuous Murmur</div>
+              <button class="m-toggle" aria-expanded="false"><span class="m-name">Patent Ductus Arteriosus (PDA)</span><span class="m-arrow" aria-hidden="true">▸</span></button>
+              <div class="m-detail" hidden>Machinery murmur (continuous systolic-diastolic) heard at LUSB/left infraclavicular area. Peaks at S2 because the Ao-PA gradient is highest when the aortic valve closes. Extends throughout diastasis.</div>
+            </div>
+            <div class="m-entry">
+              <div class="m-name m-tag-none" style="font-style:normal">Carey Coombs Murmur</div>
+              <div class="m-detail">Mid-diastolic murmur of rheumatic mitral valvulitis — due to MV leaflet edema in acute rheumatic fever, not true stenosis.</div>
+            </div>
+          </td>
+        </tr>
+
+      </tbody>
+    </table>
+    </div>
+    <div class="foot">
+      <p><strong>Rub summary:</strong> Triphasic rub = Phases 1+3+6 · Biphasic = 3+6 (absent in AF) · Monophasic = Phase 3 only. &nbsp;|&nbsp; <strong>Murmur timing rule:</strong> Systolic murmurs occur between S1–S2; diastolic murmurs between S2–S1. Continuous murmurs span both. Grading: I–VI (Levine scale). &nbsp;|&nbsp; <strong>Key maneuvers:</strong> Valsalva/standing ↓ preload → ↑ HCM/MVP murmurs; squatting/leg raise ↑ preload → ↓ HCM murmur; inspiration ↑ right-sided murmurs.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── THEME TOGGLE ──────────────────────────────────────────
+(function(){
+  const t=document.querySelector('[data-tt]'),r=document.documentElement;
+  let d=window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
+  r.setAttribute('data-theme',d);upd();
+  t.addEventListener('click',()=>{d=d==='dark'?'light':'dark';r.setAttribute('data-theme',d);upd();draw();});
+  function upd(){t.innerHTML=d==='dark'?'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>':'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';}
+})();
+
+// ── CANVAS SETUP ──────────────────────────────────────────
+const canvas=document.getElementById('wiggers');
+const ctx=canvas.getContext('2d');
+const tip=document.getElementById('ptip');
+const wrap=document.getElementById('canvasWrap');
+
+// State
+let W,H;
+let zoomLevel=1;        // 1 = full cycle visible; 2 = 2x zoom (50% visible); 4 = 4x
+let panOffset=0;        // fraction 0..1-(1/zoom)
+let amplitude=1.0;      // wave amplitude multiplier
+let canvasHeight=440;   // px
+
+const PAD_L=78,PAD_R=20,PAD_T=28,PAD_B=32;
+const isDark=()=>document.documentElement.getAttribute('data-theme')==='dark';
+let activePhase=null;
+
+// ── PHASE DEFINITIONS ─────────────────────────────────────
+const PHASES=[
+  {id:1,name:'Atrial Systole',short:'Atrial Kick',xS:0.00,xE:0.10,col:'#1e3a8a',rub:true,murmur:true,desc:'P wave → atrial contraction tops off ventricles (S4 territory)'},
+  {id:2,name:'Isovolumetric Contraction',short:'IVC',xS:0.10,xE:0.175,col:'#6b21a8',rub:false,murmur:true,desc:'S1 closes — all valves closed, pressure rises isovolumetrically'},
+  {id:3,name:'Rapid Ventricular Ejection',short:'Rapid Ejection',xS:0.175,xE:0.46,col:'#0369a1',rub:true,murmur:true,desc:'Peak systole — max aortic pressure, max cardiac displacement'},
+  {id:4,name:'Reduced Ventricular Ejection',short:'Slow Ejection',xS:0.46,xE:0.585,col:'#374151',rub:false,murmur:true,desc:'Falling aortic pressure — dicrotic notch appears near end'},
+  {id:5,name:'Isovolumetric Relaxation',short:'IVR',xS:0.585,xE:0.655,col:'#7c3aed',rub:false,murmur:true,desc:'S2 closes — all valves closed, ventricular pressure falls rapidly'},
+  {id:6,name:'Rapid Ventricular Filling',short:'Rapid Filling',xS:0.655,xE:0.825,col:'#0e7490',rub:true,murmur:true,desc:'Mitral opens — rapid passive filling (S3 / opening snap territory)'},
+  {id:7,name:'Diastasis (Reduced Filling)',short:'Diastasis',xS:0.825,xE:1.00,col:'#374151',rub:false,murmur:true,desc:'Slow equilibration — PA-CT murmurs, Austin Flint, continued MS rumble'},
+];
+
+// ── WAVEFORM GENERATORS ───────────────────────────────────
+const N=600;
+function clamp01(v){return Math.max(0,Math.min(1,v));}
+
+function makeECG(amp){
+  const p=new Float32Array(N);
+  for(let i=0;i<N;i++){
+    const t=i/(N-1);let v=0;
+    if(t>=0.03&&t<0.10){v=0.20*Math.sin(Math.PI*(t-0.03)/0.07);}
+    if(t>=0.10&&t<0.125){v=-0.15*Math.sin(Math.PI*(t-0.10)/0.025);}
+    if(t>=0.125&&t<0.175){v=1.0*Math.sin(Math.PI*(t-0.125)/0.050);}
+    if(t>=0.175&&t<0.21){v=-0.14*Math.sin(Math.PI*(t-0.175)/0.035);}
+    if(t>=0.21&&t<0.32){v=0.04;}
+    if(t>=0.32&&t<0.55){v=0.33*Math.sin(Math.PI*(t-0.32)/0.23);}
+    if(t>=0.55&&t<0.64){v=0.07*Math.sin(Math.PI*(t-0.55)/0.09);}
+    if(t>=0.88&&t<0.97){v=0.20*Math.sin(Math.PI*(t-0.88)/0.09);}
+    p[i]=clamp01(0.5+v*amp*0.45);
+  }return p;
+}
+function makeAo(amp){
+  const p=new Float32Array(N);
+  for(let i=0;i<N;i++){
+    const t=i/(N-1);let v=0.18;
+    if(t>=0.175&&t<0.60){
+      const s=(t-0.175)/0.425;
+      if(s<0.30) v=0.18+(0.72*amp)*(s/0.30);
+      else v=0.18+(0.72*amp)*Math.pow((1-s)/0.70,0.58);
+    }
+    if(t>=0.57&&t<0.63){v-=0.07*amp*Math.sin(Math.PI*(t-0.57)/0.06);}// dicrotic notch
+    if(t<0.175) v=0.18;
+    if(t>=0.60) v=0.18+(0.72*amp)*Math.pow((1-(t-0.175)/0.425)/0.70,0.58)*Math.max(0,(0.90-t)/0.30);
+    p[i]=clamp01(v);
+  }return p;
+}
+function makeLV(amp){
+  const p=new Float32Array(N);
+  for(let i=0;i<N;i++){
+    const t=i/(N-1);let v=0.02;
+    if(t>=0.10&&t<0.655){
+      const s=(t-0.10)/0.555;
+      v=s<0.50?0.02+(0.86*amp)*(s/0.50):0.02+(0.86*amp)*(1-(s-0.50)/0.50);
+    }
+    p[i]=clamp01(v);
+  }return p;
+}
+function makeLA(amp){
+  const p=new Float32Array(N);
+  for(let i=0;i<N;i++){
+    const t=i/(N-1);let v=0.09;
+    if(t>=0.01&&t<0.09){v=0.09+0.16*amp*Math.sin(Math.PI*(t-0.01)/0.08);} // a wave
+    if(t>=0.13&&t<0.19){v=0.09+0.08*amp*Math.sin(Math.PI*(t-0.13)/0.06);} // c wave
+    if(t>=0.19&&t<0.31){const s=(t-0.19)/0.12;v=0.09+0.08*amp*(1-s)-0.04*amp*s;} // x descent
+    if(t>=0.38&&t<0.61){v=0.09+0.22*amp*Math.sin(Math.PI*(t-0.38)/0.23);} // v wave
+    if(t>=0.61&&t<0.73){const s=(t-0.61)/0.12;v=0.09+0.22*amp*(1-s);} // y descent
+    p[i]=clamp01(v);
+  }return p;
+}
+function makeVol(amp){
+  const p=new Float32Array(N);
+  for(let i=0;i<N;i++){
+    const t=i/(N-1);let v;
+    if(t<0.10) v=0.60+0.14*(t/0.10)*amp;
+    else if(t<0.175) v=0.74;
+    else if(t<0.585){const s=(t-0.175)/0.41; v=0.74-(0.55*amp)*s;}
+    else if(t<0.655) v=0.74-(0.55*amp);
+    else if(t<0.825){const s=(t-0.655)/0.17; v=(0.74-0.55*amp)+(0.32*amp)*s;}
+    else {const s=(t-0.825)/0.175; v=(0.74-0.55*amp+0.32*amp)+(0.09*amp)*s;}
+    p[i]=clamp01(v);
+  }return p;
+}
+function makeJVP(amp){
+  const p=new Float32Array(N);
+  for(let i=0;i<N;i++){
+    const t=i/(N-1);let v=0.08;
+    if(t>=0.00&&t<0.08){v=0.08+0.38*amp*Math.sin(Math.PI*t/0.08);}
+    if(t>=0.12&&t<0.18){v=0.08+0.18*amp*Math.sin(Math.PI*(t-0.12)/0.06);}
+    if(t>=0.18&&t<0.33){const s=(t-0.18)/0.15;v=0.08+0.18*amp*(1-s);}
+    if(t>=0.38&&t<0.62){v=0.08+0.45*amp*Math.sin(Math.PI*(t-0.38)/0.24);}
+    if(t>=0.62&&t<0.80){const s=(t-0.62)/0.18;v=0.08+0.45*amp*(1-s);}
+    p[i]=clamp01(v);
+  }return p;
+}
+
+// Cached waveforms
+let ecgW,aoW,lvW,laW,volW,jvpW;
+function buildWaveforms(){
+  ecgW=makeECG(amplitude);
+  aoW=makeAo(amplitude);
+  lvW=makeLV(amplitude);
+  laW=makeLA(amplitude);
+  volW=makeVol(amplitude);
+  jvpW=makeJVP(amplitude);
+}
+buildWaveforms();
+
+// ── TRACKS LAYOUT ─────────────────────────────────────────
+const TRACKS=[
+  {key:'ecg',  label:'ECG',     yC:0.11,yH:0.09},
+  {key:'pres', label:'Pressure',yC:0.275,yH:0.155,sub:'mmHg'},
+  {key:'la',   label:'LA/CVP', yC:0.485,yH:0.095},
+  {key:'jvp',  label:'JVP',    yC:0.605,yH:0.095},
+  {key:'vol',  label:'LV Vol.',yC:0.775,yH:0.125},
+];
+
+// ── RESIZE ────────────────────────────────────────────────
+function resize(){
+  const dpr=window.devicePixelRatio||1;
+  const cw=wrap.clientWidth;
+  canvas.width=cw*dpr;canvas.height=canvasHeight*dpr;
+  canvas.style.width=cw+'px';canvas.style.height=canvasHeight+'px';
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  W=cw;H=canvasHeight;
+}
+
+// ── DRAW ──────────────────────────────────────────────────
+function draw(){
+  if(!W)return;
+  const dark=isDark();
+  const gw=W-PAD_L-PAD_R;
+  const gh=H-PAD_T-PAD_B;
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle=dark?'#131c2e':'#ffffff';ctx.fillRect(0,0,W,H);
+
+  // Visible range in normalized [0,1]
+  const visStart=panOffset;
+  const visEnd=panOffset+1/zoomLevel;
+
+  // Phase shading + labels
+  PHASES.forEach(ph=>{
+    const px0=PAD_L+normToX(ph.xS,gw,visStart,visEnd);
+    const px1=PAD_L+normToX(ph.xE,gw,visStart,visEnd);
+    if(px1<PAD_L||px0>PAD_L+gw) return;
+    const cx0=Math.max(px0,PAD_L),cx1=Math.min(px1,PAD_L+gw);
+    const active=activePhase&&activePhase.id===ph.id;
+    ctx.fillStyle=active?(dark?ph.col+'55':ph.col+'33'):(dark?ph.col+'1a':ph.col+'0d');
+    ctx.fillRect(cx0,PAD_T,cx1-cx0,gh);
+    // divider
+    ctx.strokeStyle=dark?'rgba(255,255,255,0.07)':'rgba(0,0,0,0.07)';
+    ctx.lineWidth=1;ctx.setLineDash([3,5]);
+    ctx.beginPath();ctx.moveTo(px1,PAD_T+26);ctx.lineTo(px1,H-PAD_B);ctx.stroke();
+    ctx.setLineDash([]);
+    // phase label
+    const lx=(cx0+cx1)/2;
+    if(cx1-cx0>22){
+      ctx.fillStyle=active?(dark?'#e2e8f0':'#0d1b2a'):(dark?'#4b6080':'#94a3b8');
+      ctx.font=(active?'600 ':'')+'9px DM Sans,sans-serif';ctx.textAlign='center';
+      ctx.fillText(ph.short.substring(0,Math.floor((cx1-cx0)/6)),lx,PAD_T+13);
+      ctx.fillStyle=ph.col;ctx.font='bold 9px DM Sans,sans-serif';
+      ctx.fillText(ph.id,lx,PAD_T+23);
+    }
+  });
+
+  // Track bg stripes + Y labels
+  TRACKS.forEach(tr=>{
+    const yt2=PAD_T+(tr.yC-tr.yH/2)*gh-2;
+    const yb2=PAD_T+(tr.yC+tr.yH/2)*gh+2;
+    ctx.fillStyle=dark?'rgba(255,255,255,0.018)':'rgba(0,0,0,0.014)';
+    ctx.fillRect(PAD_L,yt2,gw,yb2-yt2);
+    const ym=PAD_T+tr.yC*gh;
+    ctx.fillStyle=dark?'#4b6080':'#94a3b8';
+    ctx.font='9.5px DM Sans,sans-serif';ctx.textAlign='right';
+    ctx.fillText(tr.label,PAD_L-6,ym+(tr.sub?-3:4));
+    if(tr.sub){ctx.font='8.5px DM Sans,sans-serif';ctx.fillText(tr.sub,PAD_L-6,ym+8);}
+  });
+
+  // Waveforms
+  function plotSeg(pts,yC,yH,col,lw){
+    const yt=PAD_T+(yC-yH/2)*gh;
+    const yb=PAD_T+(yC+yH/2)*gh;
+    const yr=yb-yt;
+    ctx.strokeStyle=col;ctx.lineWidth=lw;ctx.lineJoin='round';ctx.lineCap='round';
+    ctx.beginPath();let started=false;
+    for(let i=0;i<pts.length;i++){
+      const tn=i/(pts.length-1);
+      if(tn<visStart||tn>visEnd) continue;
+      const x=PAD_L+((tn-visStart)/(visEnd-visStart))*gw;
+      const y=yb-pts[i]*yr;
+      if(!started){ctx.moveTo(x,y);started=true;}else ctx.lineTo(x,y);
+    }
+    ctx.stroke();
+  }
+
+  plotSeg(ecgW,0.11,0.09,'#22c55e',1.9);
+  plotSeg(aoW,0.275,0.155,'#ef4444',2.2);
+  plotSeg(lvW,0.275,0.155,'#fb923c',1.7);
+
+  // Ao/LV legend
+  const pressYtop=PAD_T+(0.275-0.155/2)*gh+10;
+  ctx.font='9px DM Sans,sans-serif';ctx.textAlign='left';
+  ctx.fillStyle='#ef4444';ctx.fillText('Ao',PAD_L+4,pressYtop);
+  ctx.fillStyle='#fb923c';ctx.fillText('LV',PAD_L+22,pressYtop);
+
+  plotSeg(laW,0.485,0.095,'#f59e0b',1.7);
+  // a,c,x,v,y labels
+  const laYtop=PAD_T+(0.485-0.095/2)*gh;
+  [{t:0.04,l:'a'},{t:0.15,l:'c'},{t:0.24,l:'x'},{t:0.49,l:'v'},{t:0.69,l:'y'}].forEach(w=>{
+    if(w.t<visStart||w.t>visEnd) return;
+    const wx=PAD_L+((w.t-visStart)/(visEnd-visStart))*gw;
+    ctx.fillStyle='#f59e0b';ctx.font='bold 8px DM Sans,sans-serif';ctx.textAlign='center';
+    ctx.fillText(w.l,wx,laYtop-2);
+  });
+
+  plotSeg(jvpW,0.605,0.095,'#a855f7',1.7);
+  plotSeg(volW,0.775,0.125,'#06b6d4',2.1);
+
+  // Heart sounds
+  const sndY1=PAD_T+0.875*gh,sndY2=PAD_T+0.955*gh;
+  [{t:0.10,l:'S1',bold:true},{t:0.585,l:'S2',bold:true},{t:0.72,l:'S3',bold:false},{t:0.02,l:'S4',bold:false}].forEach(s=>{
+    if(s.t<visStart||s.t>visEnd) return;
+    const sx=PAD_L+((s.t-visStart)/(visEnd-visStart))*gw;
+    ctx.strokeStyle=s.bold?(dark?'#93c5fd':'#1d4ed8'):(dark?'rgba(99,179,237,0.45)':'rgba(29,78,216,0.32)');
+    ctx.lineWidth=s.bold?2.5:1.5;
+    ctx.beginPath();ctx.moveTo(sx,sndY1);ctx.lineTo(sx,sndY2);ctx.stroke();
+    ctx.fillStyle=s.bold?(dark?'#93c5fd':'#1d4ed8'):(dark?'rgba(147,197,253,0.6)':'rgba(29,78,216,0.45)');
+    ctx.font=(s.bold?'bold ':'')+`8.5px DM Sans,sans-serif`;ctx.textAlign='center';
+    ctx.fillText(s.l,sx,sndY2+9);
+  });
+  ctx.fillStyle=dark?'#4b6080':'#94a3b8';ctx.font='9px DM Sans,sans-serif';ctx.textAlign='right';
+  ctx.fillText('Heart',PAD_L-6,sndY1+8);ctx.fillText('Sounds',PAD_L-6,sndY2+8);
+
+  // Time axis
+  ctx.strokeStyle=dark?'rgba(255,255,255,0.13)':'rgba(0,0,0,0.14)';
+  ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(PAD_L,H-PAD_B);ctx.lineTo(PAD_L+gw,H-PAD_B);ctx.stroke();
+  const ms=Math.round(visStart*800),me=Math.round(visEnd*800);
+  ctx.fillStyle=dark?'#4b6080':'#94a3b8';ctx.font='9px DM Sans,sans-serif';ctx.textAlign='center';
+  ctx.fillText(`${ms}ms – ${me}ms  (≈ 800ms at 75 bpm, zoom ${zoomLevel}×)`,PAD_L+gw/2,H-PAD_B+14);
+
+  // Active marker
+  if(activePhase){
+    const cx=(activePhase.xS+activePhase.xE)/2;
+    if(cx>=visStart&&cx<=visEnd){
+      const mx=PAD_L+((cx-visStart)/(visEnd-visStart))*gw;
+      ctx.strokeStyle=dark?'rgba(255,255,255,0.16)':'rgba(0,0,0,0.14)';
+      ctx.lineWidth=1;ctx.setLineDash([4,4]);
+      ctx.beginPath();ctx.moveTo(mx,PAD_T+26);ctx.lineTo(mx,H-PAD_B);ctx.stroke();
+      ctx.setLineDash([]);
+    }
+  }
+
+  // Zoom range indicator
+  if(zoomLevel>1){
+    const sbW=gw*visStart,seW=gw*visEnd;
+    ctx.strokeStyle=dark?'rgba(56,189,248,0.4)':'rgba(3,105,161,0.3)';
+    ctx.lineWidth=2;
+    ctx.strokeRect(PAD_L+sbW,PAD_T,gw/zoomLevel,gh);
+  }
+
+  // Update scrollbar
+  const sb=document.getElementById('scrollBar');
+  const th=document.getElementById('scrollThumb');
+  if(zoomLevel>1){
+    sb.style.display='block';
+    const tw=100/zoomLevel;
+    const tl=panOffset*zoomLevel*100;
+    th.style.width=tw+'%';th.style.left=tl+'%';
+  } else sb.style.display='none';
+}
+
+function normToX(n,gw,vs,ve){return ((n-vs)/(ve-vs))*gw;}
+
+// ── INTERACTION ───────────────────────────────────────────
+function getPhaseAtNorm(xn){return PHASES.find(p=>xn>=p.xS&&xn<p.xE)||null;}
+
+function highlightPhase(ph){
+  document.querySelectorAll('#ptb tr[data-phase]').forEach(r=>{
+    r.classList.toggle('row-hl',!!(ph&&r.dataset.phase==ph.id));
+  });
+  if(ph){
+    document.getElementById('bNum').style.background=ph.col;
+    document.getElementById('bNum').textContent=ph.id;
+    document.getElementById('bName').textContent=ph.name;
+    document.getElementById('bDesc').textContent=ph.desc;
+    const badges=document.getElementById('bBadges');
+    badges.innerHTML='';
+    const rb=document.createElement('span');
+    rb.className='pb-badge '+(ph.rub?'rub-yes':'rub-no');
+    rb.textContent=ph.rub?'✓ Rub':'✗ No Rub';
+    badges.appendChild(rb);
+    if(ph.murmur){
+      const mb=document.createElement('span');
+      mb.className='pb-badge murmur';mb.textContent='♪ Murmurs present';
+      badges.appendChild(mb);
+    }
+    // scroll-on-click handled separately
+  } else {
+    document.getElementById('bNum').style.background='#475569';
+    document.getElementById('bNum').textContent='—';
+    document.getElementById('bName').textContent='Hover the diagram above';
+    document.getElementById('bDesc').textContent='Hover to highlight · click the diagram to scroll to that phase in the table';
+    document.getElementById('bBadges').innerHTML='';
+  }
+}
+
+function mousePosToNorm(ex){
+  const r=canvas.getBoundingClientRect();
+  const mx=ex-r.left;
+  const gw=W-PAD_L-PAD_R;
+  const frac=(mx-PAD_L)/gw;
+  return panOffset+frac*(1/zoomLevel);
+}
+
+canvas.addEventListener('mousemove',function(e){
+  const xn=mousePosToNorm(e.clientX);
+  if(xn<0||xn>1){activePhase=null;tip.style.opacity='0';highlightPhase(null);draw();return;}
+  const ph=getPhaseAtNorm(xn);
+  if(ph&&(!activePhase||activePhase.id!==ph.id)){activePhase=ph;highlightPhase(ph);draw();}
+  if(ph){
+    tip.style.opacity='1';
+    tip.innerHTML=`<strong>Phase ${ph.id}: ${ph.name}</strong>${ph.desc}`;
+    const r=canvas.getBoundingClientRect();
+    let tx=e.clientX-r.left+16;
+    if(tx+260>W) tx=e.clientX-r.left-270;
+    tip.style.left=Math.max(4,tx)+'px';
+    tip.style.top=Math.max(4,e.clientY-r.top-50)+'px';
+  } else tip.style.opacity='0';
+});
+canvas.addEventListener('mouseleave',()=>{activePhase=null;tip.style.opacity='0';highlightPhase(null);draw();});
+
+// Click on canvas → scroll table row into view
+canvas.addEventListener('click',function(e){
+  const xn=mousePosToNorm(e.clientX);
+  if(xn<0||xn>1) return;
+  const ph=getPhaseAtNorm(xn);
+  if(ph){
+    const row=document.querySelector('#ptb tr[data-phase="'+ph.id+'"]');
+    if(row) row.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+});
+
+
+// Touch
+let lastTouchX=null;
+canvas.addEventListener('touchstart',e=>{lastTouchX=e.touches[0].clientX;},{passive:true});
+canvas.addEventListener('touchmove',function(e){
+  e.preventDefault();
+  const tx=e.touches[0].clientX;
+  const xn=mousePosToNorm(tx);
+  if(xn>=0&&xn<=1){const ph=getPhaseAtNorm(xn);if(ph&&(!activePhase||activePhase.id!==ph.id)){activePhase=ph;highlightPhase(ph);draw();}}
+  lastTouchX=tx;
+},{passive:false});
+canvas.addEventListener('touchend',()=>{activePhase=null;highlightPhase(null);draw();});
+
+// Wheel zoom
+canvas.addEventListener('wheel',function(e){
+  e.preventDefault();
+  const delta=e.deltaY>0?-1:1;
+  const xn=mousePosToNorm(e.clientX);
+  changeZoom(zoomLevel*(delta>0?2:0.5),xn);
+},{passive:false});
+
+// ── ZOOM & PAN ────────────────────────────────────────────
+function changeZoom(newZ,focusNorm){
+  const prevZ=zoomLevel;
+  zoomLevel=Math.max(1,Math.min(8,newZ));
+  if(zoomLevel===1){panOffset=0;}
+  else if(focusNorm!==undefined){
+    panOffset=focusNorm-(focusNorm-panOffset)*(prevZ/zoomLevel);
+    clampPan();
+  }
+  updateZoomBtns();
+  draw();
+}
+function clampPan(){panOffset=Math.max(0,Math.min(1-1/zoomLevel,panOffset));}
+
+function updateZoomBtns(){
+  const z=zoomLevel;
+  document.getElementById('zReset').textContent=z+'×';
+  document.getElementById('zReset').classList.toggle('active',z===1);
+  document.getElementById('zIn').disabled=z>=8;
+  document.getElementById('zOut').disabled=z<=1;
+}
+
+document.getElementById('zIn').addEventListener('click',()=>changeZoom(zoomLevel*2,0.5));
+document.getElementById('zOut').addEventListener('click',()=>changeZoom(zoomLevel/2,0.5));
+document.getElementById('zReset').addEventListener('click',()=>changeZoom(1,0.5));
+
+// Scrollbar pan
+document.getElementById('scrollBar').addEventListener('click',function(e){
+  const r=this.getBoundingClientRect();
+  const frac=(e.clientX-r.left)/r.width;
+  panOffset=frac*(1-1/zoomLevel);
+  clampPan();draw();
+});
+
+// Keyboard
+document.addEventListener('keydown',function(e){
+  if(e.key==='ArrowRight'){panOffset=Math.min(1-1/zoomLevel,panOffset+0.08/zoomLevel);clampPan();draw();}
+  if(e.key==='ArrowLeft'){panOffset=Math.max(0,panOffset-0.08/zoomLevel);clampPan();draw();}
+  if(e.key==='+') changeZoom(zoomLevel*2);
+  if(e.key==='-') changeZoom(zoomLevel/2);
+});
+
+// ── AMPLITUDE CONTROLS ────────────────────────────────────
+function setAmplitude(a,btnId){
+  amplitude=a;buildWaveforms();draw();
+  ['aLow','aNorm','aHigh'].forEach(id=>document.getElementById(id).classList.remove('active'));
+  document.getElementById(btnId).classList.add('active');
+}
+document.getElementById('aLow').addEventListener('click',()=>setAmplitude(0.55,'aLow'));
+document.getElementById('aNorm').addEventListener('click',()=>setAmplitude(1.0,'aNorm'));
+document.getElementById('aHigh').addEventListener('click',()=>setAmplitude(1.55,'aHigh'));
+
+// ── HEIGHT CONTROLS ───────────────────────────────────────
+function setHeight(h,btnId){
+  canvasHeight=h;resize();draw();
+  ['hCompact','hTall'].forEach(id=>document.getElementById(id).classList.remove('active'));
+  document.getElementById(btnId).classList.add('active');
+}
+document.getElementById('hCompact').addEventListener('click',()=>setHeight(440,'hCompact'));
+document.getElementById('hTall').addEventListener('click',()=>setHeight(620,'hTall'));
+
+
+// Collapsible murmur entries
+document.querySelectorAll('.m-toggle').forEach(btn=>{
+  btn.addEventListener('click',function(){
+    const detail=this.nextElementSibling;
+    const open=this.getAttribute('aria-expanded')==='true';
+    this.setAttribute('aria-expanded',open?'false':'true');
+    if(open) detail.setAttribute('hidden',''); else detail.removeAttribute('hidden');
+  });
+});
+
+// ── INIT ──────────────────────────────────────────────────
+window.addEventListener('resize',()=>{resize();draw();});
+resize();draw();
+</script>
+</body>
+</html>
