@@ -1,116 +1,965 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Interactive Wiggers Diagram & Cardiac Cycle</title>
+<title>KFMD — Cardiology Web Apps</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root,[data-theme=light]{
-  --bg:#f0f4f8;--surf:#ffffff;--surf2:#f5f7fa;--brd:#dde3ec;
-  --tx:#0d1b2a;--txm:#4a5568;--txf:#a0aec0;--pri:#0369a1;
-  --ok:#15803d;--okl:#dcfce7;--er:#b91c1c;--erl:#fee2e2;
-  --shadow:0 8px 32px rgba(13,27,42,.12),0 2px 8px rgba(13,27,42,.06);
-  --font:"DM Sans",system-ui,sans-serif;
-  --disp:"DM Serif Display",Georgia,serif;
+/* ─── Reset ─────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { -webkit-font-smoothing: antialiased; scroll-behavior: smooth; }
+body {
+  font-family: "Inter", Circular, -apple-system, system-ui, Roboto, "Helvetica Neue", sans-serif;
+  background: #ffffff;
+  color: #222222;
+  min-height: 100dvh;
+  line-height: 1.25;
+  font-size: 16px;
+  font-weight: 500;
 }
-[data-theme=dark]{
-  --bg:#0b1220;--surf:#131c2e;--surf2:#1a2540;--brd:#243050;
-  --tx:#e2e8f0;--txm:#94a3b8;--txf:#4b6080;--pri:#38bdf8;
-  --ok:#4ade80;--okl:#14401f;--er:#f87171;--erl:#4c1414;
-  --shadow:0 8px 32px rgba(0,0,0,.4),0 2px 8px rgba(0,0,0,.3);
+a { text-decoration: none; color: inherit; }
+button { cursor: pointer; background: none; border: none; font: inherit; color: inherit; }
+img { display: block; max-width: 100%; }
+
+/* ─── CSS Variables ──────────────────────── */
+:root {
+  --rausch:     #ff385c;
+  --rausch-deep:#e00b41;
+  --ink:        #222222;
+  --ash:        #6a6a6a;
+  --mute:       #929292;
+  --stone:      #c1c1c1;
+  --hairline:   #dddddd;
+  --cloud:      #f7f7f7;
+  --white:      #ffffff;
+  --error:      #c13515;
+  --shadow-panel: rgba(0,0,0,0.02) 0 0 0 1px,
+                  rgba(0,0,0,0.04) 0 2px 6px 0,
+                  rgba(0,0,0,0.10) 0 4px 8px 0;
 }
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{-webkit-font-smoothing:antialiased;scroll-behavior:smooth}
-body{font-family:var(--font);font-size:1rem;color:var(--tx);background:var(--bg);min-height:100dvh;line-height:1.6}
-button{cursor:pointer;background:none;border:none;font:inherit;color:inherit}
-.page{max-width:1100px;margin:auto;padding:2rem 1.5rem 4rem}
-.hdr{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;margin-bottom:2rem;padding-bottom:1.25rem;border-bottom:1px solid var(--brd)}
-.hleft .lbl{font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--pri);margin-bottom:.3rem}
-.hleft h1{font-family:var(--disp);font-size:clamp(1.4rem,2.5vw,2rem);line-height:1.2}
-.hleft p{font-size:.85rem;color:var(--txm);margin-top:.25rem}
-.tog{width:38px;height:38px;border-radius:50%;background:var(--surf);border:1px solid var(--brd);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--txm);transition:box-shadow .18s}
-.tog:hover{box-shadow:var(--shadow)}
-.wiggers-panel{background:var(--surf);border-radius:18px;box-shadow:var(--shadow);border:1px solid var(--brd);padding:1.5rem 1.5rem 1rem;margin-bottom:1.75rem;overflow:hidden}
-.wiggers-panel h2{font-size:.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--txm);margin-bottom:1rem}
-.canvas-wrap{position:relative;width:100%;overflow-x:auto}
-canvas#wiggers{display:block;width:100%;cursor:crosshair}
-#phase-tooltip{position:absolute;pointer-events:none;background:var(--surf);border:1px solid var(--brd);border-radius:10px;padding:.5rem .8rem;font-size:.78rem;color:var(--tx);box-shadow:var(--shadow);opacity:0;transition:opacity .15s;white-space:nowrap;z-index:10}
-#phase-tooltip strong{display:block;font-size:.85rem;margin-bottom:2px;color:var(--pri)}
-.phase-banner{display:flex;align-items:center;gap:.75rem;padding:.6rem 1rem;border-radius:10px;background:var(--surf2);border:1px solid var(--brd);margin-bottom:1.5rem;min-height:52px;transition:background .25s}
-.phase-banner .pb-num{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;color:#fff;flex-shrink:0;transition:background .25s}
-.phase-banner .pb-name{font-weight:600;font-size:.9rem}
-.phase-banner .pb-desc{font-size:.78rem;color:var(--txm);margin-top:1px}
-.phase-banner .pb-rub{margin-left:auto;font-size:.73rem;font-weight:600;padding:3px 11px;border-radius:9999px;flex-shrink:0}
-.pb-rub.yes{background:var(--okl);color:var(--ok)}
-.pb-rub.no{background:var(--erl);color:var(--er)}
-.tc{background:var(--surf);border-radius:18px;box-shadow:var(--shadow);overflow:hidden;border:1px solid var(--brd)}
-table{width:100%;border-collapse:collapse;font-size:.85rem}
-thead tr{background:var(--surf2);border-bottom:2px solid var(--brd)}
-thead th{padding:.75rem 1rem;text-align:left;font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--txm);white-space:nowrap}
-tbody tr{border-bottom:1px solid var(--brd);transition:background .2s}
-tbody tr:last-child{border-bottom:none}
-td{padding:.9rem 1rem;vertical-align:top}
-.sdiv td{padding:.25rem 1rem;background:var(--surf2);font-size:.63rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--txf);border-top:1px solid var(--brd)}
-.pn{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;font-size:.72rem;font-weight:700;color:#fff}
-.pname{font-weight:600;font-size:.84rem;margin-bottom:1px}
-.pcomp{font-size:.73rem;font-style:italic;color:var(--txf)}
-.cb{display:inline-block;font-size:.68rem;font-weight:600;padding:2px 8px;border-radius:9999px;white-space:nowrap}
-.cs{background:#dbeafe;color:#1e3a8a}
-.cd{background:#d1fae5;color:#065f46}
-[data-theme=dark] .cs{background:#1e3a5f;color:#93c5fd}
-[data-theme=dark] .cd{background:#14401f;color:#6ee7b7}
-.rb{display:inline-flex;align-items:center;gap:4px;font-size:.73rem;font-weight:600;padding:2px 9px;border-radius:9999px}
-.ry{background:var(--okl);color:var(--ok)}
-.rn{background:var(--erl);color:var(--er)}
-.rd{width:6px;height:6px;border-radius:50%;background:currentColor}
-.rt{font-size:.79rem;color:var(--txm)}
-.rb2{font-weight:600;color:var(--tx)}
-.foot{padding:.9rem 1rem;background:var(--surf2);border-top:2px solid var(--brd)}
-.foot p{font-size:.75rem;color:var(--txm);max-width:none;line-height:1.65}
-.foot strong{color:var(--tx)}
-tbody tr.row-highlight{background:color-mix(in oklch,var(--pri) 10%,var(--surf))!important}
-@media(max-width:640px){
-  thead th:last-child,td:last-child{display:none}
-  thead th,td{padding:.65rem .65rem}
-  table{font-size:.79rem}
+
+/* ─── Top Nav ────────────────────────────── */
+.top-nav {
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  background: var(--white);
+  border-bottom: 1px solid var(--hairline);
+  height: 80px;
+  display: flex;
+  align-items: center;
+}
+.nav-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 24px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+/* Logo */
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  text-decoration: none;
+}
+.nav-logo-icon {
+  width: 32px; height: 32px;
+  background: var(--rausch);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.nav-logo-icon svg { width: 18px; height: 18px; }
+.nav-logo-text {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--rausch);
+  letter-spacing: -0.3px;
+}
+
+/* Nav center tabs */
+.nav-tabs {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  list-style: none;
+}
+.nav-tab a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ash);
+  border-bottom: 2px solid transparent;
+  transition: color 0.15s, border-color 0.15s;
+  gap: 2px;
+  text-decoration: none;
+}
+.nav-tab a:hover { color: var(--ink); }
+.nav-tab a.active {
+  color: var(--ink);
+  border-bottom-color: var(--ink);
+  font-weight: 600;
+}
+
+/* Nav right */
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.btn-host {
+  padding: 10px 16px;
+  border-radius: 20px;
+  border: 1px solid var(--hairline);
+  background: var(--white);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink);
+  transition: box-shadow 0.15s;
+  white-space: nowrap;
+}
+.btn-host:hover { box-shadow: rgba(0,0,0,0.08) 0 4px 12px; }
+
+/* Language switcher */
+.lang-switcher {
+  display: flex;
+  border: 1px solid var(--hairline);
+  border-radius: 20px;
+  overflow: hidden;
+  background: var(--white);
+}
+.lang-btn {
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 14px;
+  color: var(--ash);
+  transition: background 0.15s, color 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+.lang-btn:hover { color: var(--ink); background: var(--cloud); }
+.lang-btn--active { background: var(--ink); color: var(--white) !important; }
+
+/* Icon circle buttons */
+.icon-btn {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: var(--cloud);
+  border: none;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  cursor: pointer;
+  transition: box-shadow 0.15s, transform 0.1s;
+}
+.icon-btn:hover { box-shadow: rgba(0,0,0,0.08) 0 4px 12px; }
+.icon-btn:active { transform: scale(0.92); }
+
+/* ─── Hero Banner ────────────────────────── */
+.hero {
+  background: var(--cloud);
+  border-bottom: 1px solid var(--hairline);
+  padding: 64px 24px;
+}
+.hero-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+  align-items: center;
+}
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--white);
+  border: 1px solid var(--hairline);
+  border-radius: 4px;
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--rausch);
+  letter-spacing: 0.02em;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+}
+.hero-badge::before {
+  content: "";
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--rausch);
+  display: inline-block;
+  flex-shrink: 0;
+}
+.hero-title {
+  font-size: clamp(32px, 4vw, 52px);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  margin-bottom: 16px;
+}
+.hero-title em { font-style: normal; color: var(--rausch); }
+.hero-desc {
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.55;
+  color: var(--ash);
+  margin-bottom: 32px;
+  max-width: 440px;
+}
+.hero-actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.btn-primary {
+  background: var(--rausch);
+  color: var(--white);
+  border: none;
+  border-radius: 8px;
+  padding: 14px 24px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+  display: inline-flex; align-items: center; gap: 8px;
+  text-decoration: none;
+}
+.btn-primary:hover { background: var(--rausch-deep); }
+.btn-primary:active { transform: scale(0.92); box-shadow: 0 0 0 2px var(--ink); }
+.btn-secondary {
+  background: var(--white);
+  color: var(--ink);
+  border: 1px solid var(--hairline);
+  border-radius: 20px;
+  padding: 14px 24px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: box-shadow 0.15s;
+  text-decoration: none;
+}
+.btn-secondary:hover { box-shadow: rgba(0,0,0,0.08) 0 4px 12px; }
+
+/* Hero stats */
+.hero-stats {
+  display: flex;
+  gap: 32px;
+  margin-top: 40px;
+  padding-top: 32px;
+  border-top: 1px solid var(--hairline);
+}
+.stat-val {
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+.stat-lbl {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ash);
+  margin-top: 2px;
+}
+
+/* Hero visual */
+.hero-visual {
+  display: flex; justify-content: center; align-items: center;
+}
+.hero-card-preview {
+  background: var(--white);
+  border-radius: 14px;
+  border: 1px solid var(--hairline);
+  box-shadow: var(--shadow-panel);
+  padding: 24px;
+  width: 100%;
+  max-width: 340px;
+}
+.hero-card-preview .hcp-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ash);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 16px;
+}
+.hcp-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--hairline);
+}
+.hcp-row:last-child { border-bottom: none; }
+.hcp-icon {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: var(--cloud);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.hcp-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.hcp-sub {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ash);
+  margin-top: 2px;
+}
+.hcp-badge {
+  margin-left: auto;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+.hcp-badge.live { background: #dcfce7; color: #15803d; }
+.hcp-badge.beta { background: #fff7ed; color: #c2410c; }
+.hcp-badge.soon { background: var(--cloud); color: var(--stone); }
+
+/* ─── Section wrapper ────────────────────── */
+.section {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 64px 24px;
+}
+.section-heading {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 8px;
+  letter-spacing: -0.01em;
+}
+.section-sub {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--ash);
+  margin-bottom: 32px;
+}
+
+/* ─── Apps Grid ──────────────────────────── */
+.apps-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+}
+
+/* ─── App Card ───────────────────────────── */
+.app-card {
+  background: var(--white);
+  border-radius: 14px;
+  border: 1px solid var(--hairline);
+  overflow: hidden;
+  cursor: pointer;
+  transition: box-shadow 0.18s, transform 0.18s;
+  display: flex;
+  flex-direction: column;
+}
+.app-card:hover {
+  box-shadow: rgba(0,0,0,0.08) 0 8px 28px;
+  transform: translateY(-2px);
+}
+/* Featured card spans full width */
+.app-card.featured {
+  grid-column: 1 / -1;
+  flex-direction: row;
+  align-items: stretch;
+}
+/* Card image area */
+.card-img {
+  background: var(--cloud);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  font-size: 52px;
+  position: relative;
+}
+.app-card:not(.featured) .card-img {
+  height: 180px;
+  border-radius: 14px 14px 0 0;
+}
+.app-card.featured .card-img {
+  width: 260px;
+  min-height: 200px;
+  border-radius: 14px 0 0 14px;
+  font-size: 72px;
+  background: linear-gradient(135deg, #fff0f2 0%, #ffe4e8 100%);
+}
+/* NEW pill on featured */
+.card-new-pill {
+  position: absolute;
+  top: 12px; left: 12px;
+  background: var(--ink);
+  color: var(--white);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 4px;
+  letter-spacing: 0.04em;
+}
+/* Card body */
+.card-body {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 4px;
+}
+.card-category {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ash);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.card-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ink);
+  line-height: 1.25;
+  margin-top: 2px;
+}
+.app-card.featured .card-title {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.card-desc {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ash);
+  line-height: 1.43;
+  margin-top: 6px;
+}
+.card-footer-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--hairline);
+}
+.card-tag {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ash);
+  background: var(--cloud);
+  border-radius: 4px;
+  padding: 3px 8px;
+}
+.card-status {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ash);
+}
+.status-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  display: inline-block;
+}
+.status-live { background: #15803d; }
+.status-beta { background: #c2410c; }
+.status-soon { background: var(--stone); }
+.card-arrow-btn {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: var(--cloud);
+  border: none;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px;
+  cursor: pointer;
+  transition: box-shadow 0.15s, transform 0.1s;
+  flex-shrink: 0;
+  color: var(--ink);
+}
+.app-card:hover .card-arrow-btn {
+  background: var(--rausch);
+  color: var(--white);
+  box-shadow: rgba(0,0,0,0.08) 0 4px 12px;
+}
+.card-arrow-btn:active { transform: scale(0.92); }
+
+/* ─── Divider ────────────────────────────── */
+.divider {
+  height: 1px;
+  background: var(--hairline);
+  margin: 0 24px;
+}
+
+/* ─── About Strip ────────────────────────── */
+.about-section {
+  background: var(--cloud);
+  border-top: 1px solid var(--hairline);
+  border-bottom: 1px solid var(--hairline);
+}
+.about-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 64px 24px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+  align-items: center;
+}
+.about-inner h2 {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 12px;
+  letter-spacing: -0.01em;
+}
+.about-inner p {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--ash);
+  line-height: 1.55;
+}
+.feature-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.feature-item {
+  background: var(--white);
+  border: 1px solid var(--hairline);
+  border-radius: 14px;
+  padding: 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+.feature-icon {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: var(--cloud);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+.feature-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-top: 2px;
+}
+
+/* ─── Footer ─────────────────────────────── */
+footer {
+  background: var(--white);
+  border-top: 1px solid var(--hairline);
+}
+.footer-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 48px 24px 32px;
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr;
+  gap: 48px;
+}
+.footer-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.footer-brand-name {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--rausch);
+}
+.footer-brand-desc {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ash);
+  line-height: 1.55;
+  max-width: 280px;
+  margin-bottom: 20px;
+}
+.footer-col-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ink);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 14px;
+}
+.footer-links {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.footer-links a {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ash);
+  transition: color 0.15s;
+  text-decoration: none;
+}
+.footer-links a:hover { color: var(--ink); text-decoration: underline; }
+.footer-bottom {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 20px 24px;
+  border-top: 1px solid var(--hairline);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.footer-copy {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ash);
+}
+.footer-tagline {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--stone);
+  font-style: italic;
+}
+
+/* ─── Responsive ─────────────────────────── */
+@media (max-width: 1024px) {
+  .hero-inner { grid-template-columns: 1fr; gap: 40px; }
+  .hero-visual { display: none; }
+  .about-inner { grid-template-columns: 1fr; gap: 32px; }
+  .footer-inner { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 768px) {
+  .nav-tabs { display: none; }
+  .app-card.featured { flex-direction: column; }
+  .app-card.featured .card-img { width: 100%; min-height: 160px; border-radius: 14px 14px 0 0; font-size: 52px; }
+  .footer-inner { grid-template-columns: 1fr; gap: 32px; }
+  .feature-grid { grid-template-columns: 1fr; }
+  .hero-stats { flex-direction: column; gap: 16px; }
+  .footer-bottom { flex-direction: column; align-items: flex-start; gap: 8px; }
+}
+@media (max-width: 480px) {
+  .nav-inner { padding: 0 16px; }
+  .hero { padding: 40px 16px; }
+  .section { padding: 40px 16px; }
+  .btn-host { display: none; }
 }
 </style>
 </head>
 <body>
-<div class="page">
-  <div class="hdr">
-    <div class="hleft">
-      <p class="lbl">KFMD's</p>
-      <h1>Kardiologi App Home</h1>
-      <p>Select the app you want to access below</p>
-    </div>
-    <button class="tog" data-tt aria-label="Toggle dark mode">
-      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-    </button>
-  </div>
 
-  <div class="phase-banner" id="phaseBanner">
-    <span class="pb-num" id="bannerNum" style="background:#475569">—</span>
-    <div>
-      <a href="/cardiac-cycle">
-      <div class="pb-name" id="bannerName">Interactive Wigger's Diagram</div>
-      </a> 
-      <div class="pb-desc" id="bannerDesc">A diagram to help us understand cardiac cycle with some example of abnormalies</div>
-    </div>
-    <span class="pb-rub no" id="bannerRub" style="display:none"></span>
+<!-- ════════════════════════ TOP NAV ════════════════════════ -->
+<header class="top-nav">
+  <div class="nav-inner">
+    <!-- Logo -->
+    <a href="/" class="nav-logo">
+      <div class="nav-logo-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2">
+          <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+        </svg>
+      </div>
+      <span class="nav-logo-text">KFMD</span>
+    </a>
 
-  <div class="phase-banner" id="phaseBanner">
-    <span class="pb-num" id="bannerNum" style="background:#475569">—</span>
-    <div>
-      <a href="/ecgaxistrainer">
-      <div class="pb-name" id="bannerName">ECG Axis Trainer</div>
-      </a> 
-      <div class="pb-desc" id="bannerDesc">pA small web-app for training of ecg axis deviation</div>
+    <!-- Center Tabs -->
+    <ul class="nav-tabs">
+      <li class="nav-tab"><a href="#apps"    data-i18n="navApps"    class="active">Apps</a></li>
+      <li class="nav-tab"><a href="#about"   data-i18n="navAbout">About</a></li>
+      <li class="nav-tab"><a href="#contact" data-i18n="navContact">Contact</a></li>
+    </ul>
+
+    <!-- Right -->
+    <div class="nav-right">
+      <div class="lang-switcher">
+        <button class="lang-btn lang-btn--active" data-lang="en" onclick="applyTranslations('en')">🇬🇧 EN</button>
+        <button class="lang-btn"                  data-lang="id" onclick="applyTranslations('id')">🇮🇩 ID</button>
+      </div>
+      <button class="btn-host" data-i18n="navAbout">About</button>
     </div>
-    <span class="pb-rub no" id="bannerRub" style="display:none"></span>
   </div>
+</header>
+
+<!-- ════════════════════════ HERO ════════════════════════════ -->
+<section class="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="hero-badge" data-i18n="heroEyebrow">Clinical Web Applications</div>
+      <h1 class="hero-title" data-i18n="heroTitle">
+        Tools built for the<br><em>beating heart</em><br>of cardiology
+      </h1>
+      <p class="hero-desc" data-i18n="heroDesc">
+        A curated suite of interactive web apps for cardiology residents, clinicians, and educators.
+      </p>
+      <div class="hero-actions">
+        <a href="#apps"  class="btn-primary"   data-i18n="heroCta">Explore Apps</a>
+        <a href="#about" class="btn-secondary"  data-i18n="heroCtaSub">About this project</a>
+      </div>
+      <div class="hero-stats">
+        <div>
+          <div class="stat-val" id="appCount">—</div>
+          <div class="stat-lbl" data-i18n="statLive">Live apps</div>
+        </div>
+        <div>
+          <div class="stat-val">Free</div>
+          <div class="stat-lbl" data-i18n="statFree">Always &amp; forever</div>
+        </div>
+        <div>
+          <div class="stat-val">↑</div>
+          <div class="stat-lbl" data-i18n="statUpdate">Continuously updated</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hero visual card -->
+    <div class="hero-visual">
+      <div class="hero-card-preview">
+        <div class="hcp-label" data-i18n="sectionEyebrow">Web Applications</div>
+        <div id="heroPreviewRows">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════ APPS ════════════════════════════ -->
+<section class="section" id="apps">
+  <div style="display:flex; align-items:flex-end; justify-content:space-between; margin-bottom:8px; gap:16px; flex-wrap:wrap;">
+    <h2 class="section-heading" data-i18n="sectionTitle">Everything you need, in your browser</h2>
+    <p id="liveCount" style="font-size:14px; font-weight:500; color:var(--ash);">—</p>
+  </div>
+  <p class="section-sub" data-i18n="soonLabel">More apps coming soon</p>
+  <div class="apps-grid" id="appsGrid"></div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════════════════════════ ABOUT ═══════════════════════════ -->
+<section class="about-section" id="about">
+  <div class="about-inner">
+    <div>
+      <h2 data-i18n="aboutTitle">Built by a resident, for the ward</h2>
+      <p  data-i18n="aboutDesc">These tools are crafted during the grind of cardiology residency to solve real clinical and educational problems.</p>
+    </div>
+    <div class="feature-grid" id="featureGrid">
+      <!-- Populated by JS -->
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════ FOOTER ══════════════════════════ -->
+<footer id="contact">
+  <div class="footer-inner">
+    <div>
+      <div class="footer-brand">
+        <div class="nav-logo-icon" style="width:28px;height:28px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2" width="16" height="16">
+            <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+          </svg>
+        </div>
+        <span class="footer-brand-name">KFMD</span>
+      </div>
+      <p class="footer-brand-desc" data-i18n="footerDesc">Interactive cardiology web applications for education and practice.</p>
+      <a href="#apps" class="btn-primary" style="font-size:14px; padding:10px 20px; border-radius:8px;" data-i18n="footerViewAll">View all apps</a>
+    </div>
+    <div>
+      <p class="footer-col-title" data-i18n="footerCol1">Applications</p>
+      <ul class="footer-links" id="footerAppLinks"></ul>
+    </div>
+    <div>
+      <p class="footer-col-title" data-i18n="footerCol2">Resources</p>
+      <ul class="footer-links" id="footerResourceLinks"></ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p class="footer-copy"    data-i18n="footerCopy">© 2026 KFMD Cardiology Apps.</p>
+    <p class="footer-tagline" data-i18n="footerTagline">Cardiology, one app at a time.</p>
+  </div>
+</footer>
+
+<!-- ════════════════════════ SCRIPT ══════════════════════════ -->
+<script>
+// ─────────────────────────────────────────────────────────────
+//  APPS — Add new apps here. Translations in lang/*.json
+// ─────────────────────────────────────────────────────────────
+const APPS = [
+  {
+    id:       "wiggers",
+    url:      "/cardiac-cycle",
+    status:   "live",   // "live" | "beta" | "soon"
+    icon:     "📈",
+    featured: true
+  },
+  {
+    id:       "ecgaxis",
+    url:      "/ecgaxistrainer",
+    status:   "live",
+    icon:     "⚡",
+    featured: false
+  },
+  // ── Add future apps below ──
+  // { id: "heart-sounds", url: "/heart-sounds", status: "soon", icon: "🫀", featured: false },
+];
+
+const PILL_ICONS = ["📱","🔬","🎓","🔄","🆓","💡"];
+
+// ─────────────────────────────────────────────────────────────
+//  i18n — loads from lang/{en|id}.json
+// ─────────────────────────────────────────────────────────────
+let currentLang = localStorage.getItem("kfmd_lang") || "en";
+let t = {};
+
+async function loadLang(lang) {
+  const res = await fetch(`lang/${lang}.json`);
+  if (!res.ok) throw new Error(`Cannot load lang/${lang}.json`);
+  return res.json();
+}
+
+function statusBadge(status) {
+  return {
+    dot:   `status-${status === "soon" ? "soon" : status}`,
+    label: t[`status${status.charAt(0).toUpperCase()}${status.slice(1)}`] || status,
+    pill:  status === "live" ? "live" : status === "beta" ? "beta" : "soon"
+  };
+}
+
+function renderApps() {
+  const grid       = document.getElementById("appsGrid");
+  const footerApps = document.getElementById("footerAppLinks");
+  const preview    = document.getElementById("heroPreviewRows");
+  grid.innerHTML = footerApps.innerHTML = preview.innerHTML = "";
+
+  let liveCount = 0;
+
+  APPS.forEach(app => {
+    const tr       = (t.apps && t.apps[app.id]) || {};
+    const title    = tr.title    || app.id;
+    const desc     = tr.desc     || "";
+    const category = tr.category || "";
+    const tag      = tr.tag      || "";
+    const st       = statusBadge(app.status);
+    if (app.status === "live") liveCount++;
+
+    // ── App Card ──
+    const card = document.createElement("div");
+    card.className = "app-card" + (app.featured ? " featured" : "");
+    if (app.status !== "soon") card.onclick = () => window.location.href = app.url;
+
+    const imgSection = `
+      <div class="card-img">
+        ${app.featured ? '<span class="card-new-pill">FEATURED</span>' : ""}
+        ${app.icon}
+      </div>`;
+
+    const bodySection = `
+      <div class="card-body">
+        <div class="card-category">${category}</div>
+        <div class="card-title">${title}</div>
+        <div class="card-desc">${desc}</div>
+        <div class="card-footer-row">
+          <div>
+            <span class="card-tag">${tag}</span>
+            <span class="card-status" style="margin-top:6px; display:flex; align-items:center;">
+              <span class="status-dot ${st.dot}"></span>&nbsp;${st.label}
+            </span>
+          </div>
+          <button class="card-arrow-btn" aria-label="Open ${title}">→</button>
+        </div>
+      </div>`;
+
+    card.innerHTML = imgSection + bodySection;
+    grid.appendChild(card);
+
+    // ── Hero Preview Rows ──
+    const row = document.createElement("div");
+    row.className = "hcp-row";
+    row.innerHTML = `
+      <div class="hcp-icon">${app.icon}</div>
+      <div>
+        <div class="hcp-name">${title}</div>
+        <div class="hcp-sub">${category}</div>
+      </div>
+      <span class="hcp-badge ${st.pill}">${st.label}</span>`;
+    preview.appendChild(row);
+
+    // ── Footer App Link ──
+    if (app.status !== "soon") {
+      const li = document.createElement("li");
+      li.innerHTML = `<a href="${app.url}">${title}</a>`;
+      footerApps.appendChild(li);
+    }
+  });
+
+  // Counts
+  document.getElementById("appCount").textContent  = liveCount;
+  document.getElementById("liveCount").textContent =
+    (t.appsCount || "{n} apps available").replace("{n}", APPS.length);
+}
+
+function renderFeatureGrid() {
+  const grid = document.getElementById("featureGrid");
+  grid.innerHTML = "";
+  (t.pills || []).forEach((label, i) => {
+    const div = document.createElement("div");
+    div.className = "feature-item";
+    div.innerHTML = `<div class="feature-icon">${PILL_ICONS[i] || "•"}</div><div class="feature-label">${label}</div>`;
+    grid.appendChild(div);
+  });
+}
+
+function renderFooterResources() {
+  const ul = document.getElementById("footerResourceLinks");
+  ul.innerHTML = "";
+  (t.footerLinks || []).forEach(label => {
+    const li = document.createElement("li");
+    li.innerHTML = `<a href="#">${label}</a>`;
+    ul.appendChild(li);
+  });
+}
+
+function applyStaticStrings() {
+  document.querySelectorAll("[data-i18n]").forEach(el => {
+    const key = el.dataset.i18n;
+    if (t[key] === undefined) return;
+    if (key === "heroTitle" || key === "footerCopy") el.innerHTML = t[key];
+    else el.textContent = t[key];
+  });
+}
+
+async function applyTranslations(lang) {
+  currentLang = lang;
+  localStorage.setItem("kfmd_lang", lang);
+  document.documentElement.lang = lang;
+  t = await loadLang(lang);
+  applyStaticStrings();
+  renderApps();
+  renderFeatureGrid();
+  renderFooterResources();
+  document.querySelectorAll(".lang-btn").forEach(btn => {
+    btn.classList.toggle("lang-btn--active", btn.dataset.lang === lang);
+  });
+}
+
+// Boot
+(async () => { await applyTranslations(currentLang); })();
+</script>
 </body>
 </html>

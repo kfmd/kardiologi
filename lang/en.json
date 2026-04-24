@@ -1,0 +1,57 @@
+{
+  "navApps": "Apps",
+  "navAbout": "About",
+  "navContact": "Contact",
+  "heroEyebrow": "Clinical Web Applications",
+  "heroTitle": "Tools built for the<br><em>beating heart</em><br>of cardiology",
+  "heroDesc": "A curated suite of interactive web apps designed for cardiology residents, clinicians, and educators — from ECG interpretation to hemodynamic simulation.",
+  "heroCta": "Explore Apps",
+  "heroCtaSub": "About this project",
+  "statLive": "Live apps",
+  "statFree": "Always & forever",
+  "statUpdate": "Continuously updated",
+  "sectionEyebrow": "Web Applications",
+  "sectionTitle": "Everything you need, in your browser",
+  "soonLabel": "More coming soon",
+  "aboutEyebrow": "About this project",
+  "aboutTitle": "Built by a resident, for the ward",
+  "aboutDesc": "These tools are crafted during the grind of cardiology residency to solve real clinical and educational problems — interactive, evidence-based, and always improving with feedback from the team.",
+  "pills": [
+    "Mobile-friendly",
+    "Evidence-based",
+    "Education-first",
+    "Continuously updated",
+    "Free to use",
+    "Open to suggestions"
+  ],
+  "footerDesc": "Interactive cardiology web applications built for clinical education and practice. New tools added regularly.",
+  "footerViewAll": "View all apps ↗",
+  "footerCol1": "Applications",
+  "footerCol2": "Resources",
+  "footerLinks": [
+    "About the project",
+    "Suggest a feature",
+    "Report a bug",
+    "Clinical disclaimer"
+  ],
+  "footerCopy": "© 2026 <strong>KFMD Cardiology Apps</strong>. Built for education, not clinical decisions.",
+  "footerTagline": "Cardiology, one app at a time.",
+  "statusLive": "Live",
+  "statusBeta": "Beta",
+  "statusSoon": "Coming soon",
+  "appsCount": "{n} apps available",
+  "apps": {
+    "wiggers": {
+      "title": "Interactive Wiggers Diagram",
+      "desc": "Explore the full cardiac cycle with an animated, interactive Wiggers diagram. Hover over phases to understand valve events, pressure curves, and common abnormalities.",
+      "category": "Physiology",
+      "tag": "Cardiac Cycle"
+    },
+    "ecgaxis": {
+      "title": "ECG Axis Trainer",
+      "desc": "Train your eye on ECG axis deviation. Randomized ECG strips with instant feedback — perfect for residents preparing for board exams or daily ward practice.",
+      "category": "ECG",
+      "tag": "Interpretation"
+    }
+  }
+}

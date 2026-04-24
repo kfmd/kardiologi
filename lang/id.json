@@ -1,0 +1,57 @@
+{
+  "navApps": "Aplikasi",
+  "navAbout": "Tentang",
+  "navContact": "Kontak",
+  "heroEyebrow": "Aplikasi Web Klinis",
+  "heroTitle": "Alat yang dibangun untuk<br><em>jantung yang berdetak</em><br>dalam kardiologi",
+  "heroDesc": "Kumpulan aplikasi web interaktif untuk residen kardiologi, klinisi, dan pendidik — mulai dari interpretasi EKG hingga simulasi hemodinamik.",
+  "heroCta": "Jelajahi Aplikasi",
+  "heroCtaSub": "Tentang proyek ini",
+  "statLive": "Aplikasi aktif",
+  "statFree": "Selalu & selamanya",
+  "statUpdate": "Terus diperbarui",
+  "sectionEyebrow": "Aplikasi Web",
+  "sectionTitle": "Semua yang kamu butuhkan, di browser",
+  "soonLabel": "Lebih banyak segera hadir",
+  "aboutEyebrow": "Tentang proyek ini",
+  "aboutTitle": "Dibuat oleh residen, untuk bangsal",
+  "aboutDesc": "Alat-alat ini dibuat di tengah kesibukan residensi kardiologi untuk memecahkan masalah klinis dan edukasi nyata — interaktif, berbasis bukti, dan terus berkembang dengan masukan dari tim.",
+  "pills": [
+    "Ramah mobile",
+    "Berbasis bukti",
+    "Fokus edukasi",
+    "Terus diperbarui",
+    "Gratis digunakan",
+    "Terbuka untuk saran"
+  ],
+  "footerDesc": "Aplikasi web kardiologi interaktif untuk edukasi dan praktik klinis. Alat baru ditambahkan secara berkala.",
+  "footerViewAll": "Lihat semua aplikasi ↗",
+  "footerCol1": "Aplikasi",
+  "footerCol2": "Sumber Daya",
+  "footerLinks": [
+    "Tentang proyek",
+    "Saran fitur",
+    "Laporkan bug",
+    "Disclaimer klinis"
+  ],
+  "footerCopy": "© 2026 <strong>KFMD Cardiology Apps</strong>. Dibuat untuk edukasi, bukan keputusan klinis.",
+  "footerTagline": "Kardiologi, satu aplikasi dalam satu waktu.",
+  "statusLive": "Aktif",
+  "statusBeta": "Beta",
+  "statusSoon": "Segera hadir",
+  "appsCount": "{n} aplikasi tersedia",
+  "apps": {
+    "wiggers": {
+      "title": "Diagram Wiggers Interaktif",
+      "desc": "Jelajahi siklus jantung lengkap dengan diagram Wiggers animasi interaktif. Arahkan kursor ke fase-fase untuk memahami kejadian katup, kurva tekanan, dan kelainan umum.",
+      "category": "Fisiologi",
+      "tag": "Siklus Jantung"
+    },
+    "ecgaxis": {
+      "title": "Pelatih Aksis EKG",
+      "desc": "Latih kemampuan membaca deviasi aksis EKG. Strip EKG acak dengan umpan balik instan — cocok untuk residen yang mempersiapkan ujian atau praktik harian di bangsal.",
+      "category": "EKG",
+      "tag": "Interpretasi"
+    }
+  }
+}
