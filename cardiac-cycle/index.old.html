@@ -1,140 +1,205 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Wiggers Diagram — Apple Edition</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&family=Inter+Tight:wght@500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./style.css" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interactive Wiggers Diagram — Enhanced</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+:root,[data-theme=light]{
+  --bg:#eef2f7;--surf:#fff;--surf2:#f4f7fb;--brd:#dde4ee;
+  --tx:#0d1b2a;--txm:#4a5568;--txf:#94a3b8;
+  --pri:#0369a1;--pri-hl:#e0f2fe;
+  --ok:#15803d;--okl:#dcfce7;--er:#b91c1c;--erl:#fee2e2;
+  --warn:#92400e;--warnl:#fef3c7;
+  --shadow:0 8px 32px rgba(13,27,42,.11),0 2px 6px rgba(13,27,42,.05);
+  --font:"DM Sans",system-ui,sans-serif;--disp:"DM Serif Display",Georgia,serif;
+  --r-sm:6px;--r-md:10px;--r-lg:16px;--r-xl:20px;
+}
+[data-theme=dark]{
+  --bg:#0b1220;--surf:#131c2e;--surf2:#1a2540;--brd:#243050;
+  --tx:#e2e8f0;--txm:#94a3b8;--txf:#4b6080;
+  --pri:#38bdf8;--pri-hl:#0c2a3d;
+  --ok:#4ade80;--okl:#14401f;--er:#f87171;--erl:#4c1414;
+  --warn:#fbbf24;--warnl:#422006;
+  --shadow:0 8px 32px rgba(0,0,0,.4),0 2px 8px rgba(0,0,0,.3);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased;scroll-behavior:smooth}
+body{font-family:var(--font);font-size:1rem;color:var(--tx);background:var(--bg);min-height:100dvh;line-height:1.6}
+button{cursor:pointer;background:none;border:none;font:inherit;color:inherit}
+.page{max-width:1200px;margin:auto;padding:1.75rem 1.5rem 4rem}
+
+/* HEADER */
+.hdr{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;margin-bottom:1.5rem;padding-bottom:1.25rem;border-bottom:1px solid var(--brd)}
+.hl .lbl{font-size:.67rem;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--pri);margin-bottom:.25rem}
+.hl h1{font-family:var(--disp);font-size:clamp(1.3rem,2.4vw,1.9rem);line-height:1.2}
+.hl p{font-size:.83rem;color:var(--txm);margin-top:.2rem}
+.hbtn{width:36px;height:36px;border-radius:50%;background:var(--surf);border:1px solid var(--brd);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--txm);transition:box-shadow .18s}
+.hbtn:hover{box-shadow:var(--shadow)}
+
+/* WIGGERS PANEL */
+.wiggers-panel{background:var(--surf);border-radius:var(--r-xl);box-shadow:var(--shadow);border:1px solid var(--brd);padding:1.25rem 1.25rem .75rem;margin-bottom:1rem;overflow:hidden}
+.panel-top{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem;margin-bottom:.9rem}
+.panel-top h2{font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--txm)}
+.controls{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap}
+.ctrl-grp{display:flex;align-items:center;gap:.3rem;background:var(--surf2);border:1px solid var(--brd);border-radius:var(--r-md);padding:3px}
+.ctrl-btn{height:28px;padding:0 .6rem;border-radius:calc(var(--r-md) - 3px);font-size:.75rem;font-weight:600;color:var(--txm);transition:background .15s,color .15s;display:flex;align-items:center;gap:.25rem;white-space:nowrap}
+.ctrl-btn:hover{background:var(--brd);color:var(--tx)}
+.ctrl-btn.active{background:var(--pri);color:#fff}
+.ctrl-label{font-size:.7rem;color:var(--txf);padding:0 .3rem;white-space:nowrap}
+.sep{width:1px;height:18px;background:var(--brd)}
+.canvas-wrap{position:relative;width:100%;overflow:hidden;border-radius:var(--r-md)}
+canvas#wiggers{display:block;width:100%;cursor:crosshair;transition:height .3s}
+#ptip{position:absolute;pointer-events:none;background:var(--surf);border:1px solid var(--brd);border-radius:var(--r-md);padding:.45rem .75rem;font-size:.76rem;color:var(--tx);box-shadow:var(--shadow);opacity:0;transition:opacity .13s;white-space:nowrap;z-index:10;max-width:260px;white-space:normal}
+#ptip strong{display:block;font-size:.82rem;margin-bottom:2px;color:var(--pri)}
+
+/* PHASE BANNER */
+.phase-banner{display:flex;align-items:center;gap:.7rem;padding:.55rem .9rem;border-radius:var(--r-lg);background:var(--surf2);border:1px solid var(--brd);margin-bottom:1.25rem;min-height:48px;transition:background .2s}
+.pb-num{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.71rem;font-weight:700;color:#fff;flex-shrink:0}
+.pb-name{font-weight:600;font-size:.88rem}
+.pb-desc{font-size:.75rem;color:var(--txm);margin-top:1px}
+.pb-badges{margin-left:auto;display:flex;gap:.4rem;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end}
+.pb-badge{font-size:.71rem;font-weight:600;padding:2px 10px;border-radius:9999px;display:inline-flex;align-items:center;gap:3px}
+.pb-badge.rub-yes{background:var(--okl);color:var(--ok)}
+.pb-badge.rub-no{background:var(--erl);color:var(--er)}
+.pb-badge.murmur{background:var(--warnl);color:var(--warn)}
+
+/* TABLE */
+.tc{background:var(--surf);border-radius:var(--r-xl);box-shadow:var(--shadow);overflow:hidden;border:1px solid var(--brd)}
+.table-scroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:.82rem;min-width:900px}
+thead tr{background:var(--surf2);border-bottom:2px solid var(--brd)}
+thead th{padding:.7rem .9rem;text-align:left;font-size:.63rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--txm);white-space:nowrap}
+tbody tr{border-bottom:1px solid var(--brd);transition:background .18s}
+tbody tr:last-child{border-bottom:none}
+td{padding:.85rem .9rem;vertical-align:top}
+.sdiv td{padding:.22rem .9rem;background:var(--surf2);font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--txf);border-top:1px solid var(--brd)}
+.pn{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;font-size:.7rem;font-weight:700;color:#fff}
+.pname{font-weight:600;font-size:.82rem;margin-bottom:1px}
+.pcomp{font-size:.71rem;font-style:italic;color:var(--txf)}
+.cb{display:inline-block;font-size:.66rem;font-weight:600;padding:2px 7px;border-radius:9999px}
+.cs{background:#dbeafe;color:#1e3a8a}
+.cd{background:#d1fae5;color:#065f46}
+[data-theme=dark] .cs{background:#1e3a5f;color:#93c5fd}
+[data-theme=dark] .cd{background:#14401f;color:#6ee7b7}
+.rb{display:inline-flex;align-items:center;gap:4px;font-size:.7rem;font-weight:600;padding:2px 8px;border-radius:9999px}
+.ry{background:var(--okl);color:var(--ok)}
+.rn{background:var(--erl);color:var(--er)}
+.rd{width:5px;height:5px;border-radius:50%;background:currentColor}
+.rt{font-size:.77rem;color:var(--txm)}
+.rb2{font-weight:600;color:var(--tx)}
+.murmur-cell{font-size:.76rem;color:var(--txm)}
+.m-tag{display:inline-flex;align-items:center;gap:3px;font-size:.67rem;font-weight:600;padding:2px 7px;border-radius:9999px;background:var(--warnl);color:var(--warn);margin-bottom:3px;margin-right:2px}
+.m-tag-none{font-size:.72rem;color:var(--txf);font-style:italic}
+.m-entry{margin-bottom:5px;padding-bottom:5px;border-bottom:1px solid var(--brd)}
+.m-entry:last-child{margin-bottom:0;padding-bottom:0;border-bottom:none}
+.m-name{font-weight:600;color:var(--tx);font-size:.76rem}
+
+.m-toggle{display:flex;align-items:center;justify-content:space-between;width:100%;background:none;border:none;padding:0;cursor:pointer;text-align:left;gap:.5rem;border-radius:4px;}
+.m-toggle:hover .m-name{color:var(--pri);}
+.m-toggle .m-name{font-weight:600;color:var(--tx);font-size:.76rem;flex:1;}
+.m-arrow{font-size:.65rem;color:var(--txf);transition:transform .2s;flex-shrink:0;}
+.m-toggle[aria-expanded=true] .m-arrow{transform:rotate(90deg);color:var(--pri);}
+.m-detail[hidden]{display:none;}
+.m-detail{font-size:.72rem;color:var(--txm);line-height:1.5;padding-top:.35rem;}
+
+.foot{padding:.85rem .9rem;background:var(--surf2);border-top:2px solid var(--brd)}
+.foot p{font-size:.74rem;color:var(--txm);max-width:none;line-height:1.65}
+.foot strong{color:var(--tx)}
+tbody tr.row-hl{background:color-mix(in oklch,var(--pri) 9%,var(--surf))!important}
+</style>
 </head>
 <body>
+<div class="page">
 
-  <!-- ╔══ NAVIGATION BAR ══╗ -->
-  <nav class="nav" aria-label="Primary navigation">
-    <div class="nav-inner">
-      <div class="nav-logo">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
-          <path d="M12 2C8 2 4.5 5.5 4.5 10c0 5.25 7.5 12 7.5 12s7.5-6.75 7.5-12C19.5 5.5 16 2 12 2z"/>
-          <circle cx="12" cy="10" r="3"/>
-        </svg>
-        <div class="nav-brand">Cardio<span>Ref</span></div>
-      </div>
-      <div class="nav-center">
-        <span class="nav-tag">Wiggers Diagram</span>
-        <span class="nav-dot">·</span>
-        <span class="nav-tag">Pericardial Rub</span>
-        <span class="nav-dot">·</span>
-        <span class="nav-tag">Auscultation</span>
-      </div>
-      <div class="nav-actions">
-        <button class="theme-btn" data-tt aria-label="Toggle dark mode">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-        </button>
-      </div>
+  <!-- HEADER -->
+  <div class="hdr">
+    <div class="hl">
+      <p class="lbl">Interactive Cardiology Reference</p>
+      <h1>Wiggers Diagram, Cardiac Phases &amp; Auscultatory Findings</h1>
+      <p>Hover to highlight phases · Click a phase to jump to its table row · Adjust zoom &amp; amplitude with controls</p>
     </div>
-  </nav>
+    <button class="hbtn" data-tt aria-label="Toggle dark mode">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
+  </div>
 
-  <!-- ╔══ MAIN PAGE ══╗ -->
-  <main class="page">
-
-    <!-- Hero Header -->
-    <header class="hero">
-      <div class="hero-eyebrow">Interactive Cardiology Reference</div>
-      <h1>Wiggers Diagram &amp; Auscultatory Findings</h1>
-      <p class="hero-sub">Seven mechanical phases mapped to pericardial rub timing, waveform physiology, and 26 auscultatory findings — with hover-to-inspect, click-to-jump, collapsible murmur detail, zoom, amplitude and height controls.</p>
-    </header>
-
-    <!-- ╔══ WIGGERS DIAGRAM ══╗ -->
-    <div class="section-label">Waveform Viewer</div>
-    <section class="wiggers-panel" aria-labelledby="diag-title">
-
-      <div class="panel-header">
-        <div class="panel-titleblock">
-          <div class="panel-title" id="diag-title">Complete Wiggers Diagram</div>
-          <div class="panel-subtitle">All 6 waveforms · 7 annotated cardiac phases · scroll wheel to zoom · arrow keys to pan</div>
+  <!-- WIGGERS -->
+  <div class="wiggers-panel">
+    <div class="panel-top">
+      <h2>Complete Wiggers Diagram — hover to explore phases</h2>
+      <div class="controls">
+        <span class="ctrl-label">Zoom</span>
+        <div class="ctrl-grp">
+          <button class="ctrl-btn" id="zOut" aria-label="Zoom out">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="8" y1="11" x2="14" y2="11"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            Out
+          </button>
+          <button class="ctrl-btn" id="zReset">1×</button>
+          <button class="ctrl-btn" id="zIn" aria-label="Zoom in">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            In
+          </button>
         </div>
-        <div class="controls" aria-label="Diagram controls">
-          <span class="ctrl-label">Zoom</span>
-          <div class="ctrl-seg">
-            <button class="ctrl-btn" id="zOut" aria-label="Zoom out">
-              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="8" y1="11" x2="14" y2="11"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>Out
-            </button>
-            <button class="ctrl-btn" id="zReset">1×</button>
-            <button class="ctrl-btn" id="zIn" aria-label="Zoom in">
-              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>In
-            </button>
-          </div>
-          <div class="ctrl-sep"></div>
-          <span class="ctrl-label">Amplitude</span>
-          <div class="ctrl-seg">
-            <button class="ctrl-btn" id="aLow">Low</button>
-            <button class="ctrl-btn active" id="aNorm">Normal</button>
-            <button class="ctrl-btn" id="aHigh">High</button>
-          </div>
-          <div class="ctrl-sep"></div>
-          <span class="ctrl-label">Height</span>
-          <div class="ctrl-seg">
-            <button class="ctrl-btn active" id="hCompact">Compact</button>
-            <button class="ctrl-btn" id="hTall">Tall</button>
-          </div>
+        <div class="sep"></div>
+        <span class="ctrl-label">Amplitude</span>
+        <div class="ctrl-grp">
+          <button class="ctrl-btn" id="aLow">Low</button>
+          <button class="ctrl-btn active" id="aNorm">Normal</button>
+          <button class="ctrl-btn" id="aHigh">High</button>
+        </div>
+        <div class="sep"></div>
+        <span class="ctrl-label">Height</span>
+        <div class="ctrl-grp">
+          <button class="ctrl-btn active" id="hCompact">Compact</button>
+          <button class="ctrl-btn" id="hTall">Tall</button>
         </div>
       </div>
-
-      <!-- Waveform legend -->
-      <div class="wf-legend" aria-label="Waveform color legend">
-        <div class="wf-item"><span class="wf-line" style="background:#22c55e"></span>ECG</div>
-        <div class="wf-item"><span class="wf-line" style="background:#ef4444"></span>Aortic Pressure</div>
-        <div class="wf-item"><span class="wf-line" style="background:#fb923c"></span>LV Pressure</div>
-        <div class="wf-item"><span class="wf-line" style="background:#f59e0b"></span>LA / CVP</div>
-        <div class="wf-item"><span class="wf-line" style="background:#a855f7"></span>JVP</div>
-        <div class="wf-item"><span class="wf-line" style="background:#06b6d4"></span>LV Volume</div>
-      </div>
-
-      <!-- Canvas -->
-      <div class="canvas-wrap" id="canvasWrap">
-        <canvas id="wiggers" height="440"></canvas>
-        <div id="ptip" role="tooltip" aria-hidden="true"></div>
-      </div>
-      <div class="scroll-track" id="scrollBar" aria-hidden="true">
-        <div class="scroll-thumb" id="scrollThumb"></div>
-      </div>
-    </section>
-
-    <!-- Phase Banner -->
-    <div class="phase-banner" aria-live="polite" aria-atomic="true">
-      <div class="pb-num" id="bNum" style="background:#48484a">—</div>
-      <div class="pb-info">
-        <div class="pb-name" id="bName">Hover the diagram above</div>
-        <div class="pb-desc" id="bDesc">Hover to highlight a phase · Click the diagram to jump to that row in the table</div>
-      </div>
-      <div class="pb-badges" id="bBadges"></div>
     </div>
+    <div class="canvas-wrap" id="canvasWrap">
+      <canvas id="wiggers" height="440"></canvas>
+      <div id="ptip"></div>
+    </div>
+    <!-- Horizontal scroll track for zoom -->
+    <div id="scrollBar" style="display:none;margin-top:.5rem;height:6px;background:var(--brd);border-radius:9999px;cursor:pointer;position:relative">
+      <div id="scrollThumb" style="position:absolute;height:6px;background:var(--pri);border-radius:9999px;left:0;width:50%;transition:width .2s"></div>
+    </div>
+  </div>
 
-    <!-- ╔══ TABLE ══╗ -->
-    <div class="section-label">Phase Reference Table</div>
-    <section class="table-card" aria-label="Cardiac phase reference table">
-      <div class="table-scroll">
-        <table>
-          <thead>
-            <tr>
-              <th style="width:42px">#</th>
-              <th>Phase</th>
-              <th style="width:110px">Cycle</th>
-              <th style="width:88px">Rub?</th>
-              <th style="width:220px">Rub Mechanism</th>
-              <th>Heart Murmurs &amp; Auscultatory Findings</th>
-            </tr>
-          </thead>
-          <tbody id="ptb">
+  <!-- PHASE BANNER -->
+  <div class="phase-banner" id="phaseBanner">
+    <span class="pb-num" id="bNum" style="background:#475569">—</span>
+    <div>
+      <div class="pb-name" id="bName">Hover the diagram above</div>
+      <div class="pb-desc" id="bDesc">Hover to highlight · click the diagram to scroll to that phase in the table</div>
+    </div>
+    <div class="pb-badges" id="bBadges"></div>
+  </div>
 
+  <!-- TABLE -->
+  <div class="tc">
+    <div class="table-scroll">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Phase</th>
+          <th>Part of Cycle</th>
+          <th>Pericardial Rub?</th>
+          <th>Rub Mechanism</th>
+          <th>Heart Murmurs &amp; Auscultatory Findings</th>
+        </tr>
+      </thead>
+      <tbody id="ptb">
 
         <tr class="sdiv"><td colspan="6">Late Diastole</td></tr>
 
         <tr data-phase="1">
           <td><span class="pn" style="background:#1e3a8a">1</span></td>
-          <td><div class="pname">Atrial Systole <br><small style="font-weight:400;color:var(--tx-3)">(Atrial Kick)</small></div><div class="pcomp">→ Presystolic rub component · S4 territory</div></td>
+          <td><div class="pname">Atrial Systole <br><small style="font-weight:400;color:var(--txf)">(Atrial Kick)</small></div><div class="pcomp">→ Presystolic rub component · S4 territory</div></td>
           <td><span class="cb cd">Late Diastole</span></td>
           <td><span class="rb ry"><span class="rd"></span>Yes</span></td>
           <td class="rt"><span class="rb2">Atrial contraction</span> moves blood forcefully into ventricle → cardiac displacement within pericardial sac. <em>Softest component; absent in AF.</em></td>
@@ -313,7 +378,7 @@
 
         <tr data-phase="7">
           <td><span class="pn" style="background:#374151">7</span></td>
-          <td><div class="pname">Reduced Filling <br><small style="font-weight:400;color:var(--tx-3)">(Diastasis)</small></div><div class="pcomp">→ Slow equilibration phase</div></td>
+          <td><div class="pname">Reduced Filling <br><small style="font-weight:400;color:var(--txf)">(Diastasis)</small></div><div class="pcomp">→ Slow equilibration phase</div></td>
           <td><span class="cb cd">Mid Diastole</span></td>
           <td><span class="rb rn"><span class="rd"></span>No</span></td>
           <td class="rt"><span class="rb2">Slow, low-pressure filling.</span> Minimal cardiac motion; insufficient to overcome friction threshold.</td>
@@ -340,18 +405,16 @@
           </td>
         </tr>
 
-      
-          </tbody>
-        </table>
-      </div>
-      <div class="table-foot">
-        <p><strong>Rub summary:</strong> Triphasic rub = Phases 1+3+6 · Biphasic = 3+6 (absent in AF) · Monophasic = Phase 3 only. &nbsp;|&nbsp; <strong>Murmur timing rule:</strong> Systolic murmurs occur between S1–S2; diastolic murmurs between S2–S1. Continuous murmurs span both. Grading: I–VI (Levine scale). &nbsp;|&nbsp; <strong>Key maneuvers:</strong> Valsalva/standing ↓ preload → ↑ HCM/MVP murmurs; squatting/leg raise ↑ preload → ↓ HCM murmur; inspiration ↑ right-sided murmurs.</p>
-      </div>
-    </section>
+      </tbody>
+    </table>
+    </div>
+    <div class="foot">
+      <p><strong>Rub summary:</strong> Triphasic rub = Phases 1+3+6 · Biphasic = 3+6 (absent in AF) · Monophasic = Phase 3 only. &nbsp;|&nbsp; <strong>Murmur timing rule:</strong> Systolic murmurs occur between S1–S2; diastolic murmurs between S2–S1. Continuous murmurs span both. Grading: I–VI (Levine scale). &nbsp;|&nbsp; <strong>Key maneuvers:</strong> Valsalva/standing ↓ preload → ↑ HCM/MVP murmurs; squatting/leg raise ↑ preload → ↓ HCM murmur; inspiration ↑ right-sided murmurs.</p>
+    </div>
+  </div>
+</div>
 
-  </main>
-
-  <script>
+<script>
 // ── THEME TOGGLE ──────────────────────────────────────────
 (function(){
   const t=document.querySelector('[data-tt]'),r=document.documentElement;
@@ -510,7 +573,7 @@ function draw(){
   const gw=W-PAD_L-PAD_R;
   const gh=H-PAD_T-PAD_B;
   ctx.clearRect(0,0,W,H);
-  ctx.fillStyle=dark?'#1c1c1e':'#ffffff';ctx.fillRect(0,0,W,H);
+  ctx.fillStyle=dark?'#131c2e':'#ffffff';ctx.fillRect(0,0,W,H);
 
   // Visible range in normalized [0,1]
   const visStart=panOffset;
@@ -534,9 +597,9 @@ function draw(){
     const lx=(cx0+cx1)/2;
     if(cx1-cx0>22){
       ctx.fillStyle=active?(dark?'#e2e8f0':'#0d1b2a'):(dark?'#4b6080':'#94a3b8');
-      ctx.font=(active?'600 ':'')+'9px Inter,sans-serif';ctx.textAlign='center';
+      ctx.font=(active?'600 ':'')+'9px DM Sans,sans-serif';ctx.textAlign='center';
       ctx.fillText(ph.short.substring(0,Math.floor((cx1-cx0)/6)),lx,PAD_T+13);
-      ctx.fillStyle=ph.col;ctx.font='bold 9px Inter,sans-serif';
+      ctx.fillStyle=ph.col;ctx.font='bold 9px DM Sans,sans-serif';
       ctx.fillText(ph.id,lx,PAD_T+23);
     }
   });
@@ -549,9 +612,9 @@ function draw(){
     ctx.fillRect(PAD_L,yt2,gw,yb2-yt2);
     const ym=PAD_T+tr.yC*gh;
     ctx.fillStyle=dark?'#4b6080':'#94a3b8';
-    ctx.font='9.5px Inter,sans-serif';ctx.textAlign='right';
+    ctx.font='9.5px DM Sans,sans-serif';ctx.textAlign='right';
     ctx.fillText(tr.label,PAD_L-6,ym+(tr.sub?-3:4));
-    if(tr.sub){ctx.font='8.5px Inter,sans-serif';ctx.fillText(tr.sub,PAD_L-6,ym+8);}
+    if(tr.sub){ctx.font='8.5px DM Sans,sans-serif';ctx.fillText(tr.sub,PAD_L-6,ym+8);}
   });
 
   // Waveforms
@@ -577,7 +640,7 @@ function draw(){
 
   // Ao/LV legend
   const pressYtop=PAD_T+(0.275-0.155/2)*gh+10;
-  ctx.font='9px Inter,sans-serif';ctx.textAlign='left';
+  ctx.font='9px DM Sans,sans-serif';ctx.textAlign='left';
   ctx.fillStyle='#ef4444';ctx.fillText('Ao',PAD_L+4,pressYtop);
   ctx.fillStyle='#fb923c';ctx.fillText('LV',PAD_L+22,pressYtop);
 
@@ -587,7 +650,7 @@ function draw(){
   [{t:0.04,l:'a'},{t:0.15,l:'c'},{t:0.24,l:'x'},{t:0.49,l:'v'},{t:0.69,l:'y'}].forEach(w=>{
     if(w.t<visStart||w.t>visEnd) return;
     const wx=PAD_L+((w.t-visStart)/(visEnd-visStart))*gw;
-    ctx.fillStyle='#f59e0b';ctx.font='bold 8px Inter,sans-serif';ctx.textAlign='center';
+    ctx.fillStyle='#f59e0b';ctx.font='bold 8px DM Sans,sans-serif';ctx.textAlign='center';
     ctx.fillText(w.l,wx,laYtop-2);
   });
 
@@ -603,17 +666,17 @@ function draw(){
     ctx.lineWidth=s.bold?2.5:1.5;
     ctx.beginPath();ctx.moveTo(sx,sndY1);ctx.lineTo(sx,sndY2);ctx.stroke();
     ctx.fillStyle=s.bold?(dark?'#93c5fd':'#1d4ed8'):(dark?'rgba(147,197,253,0.6)':'rgba(29,78,216,0.45)');
-    ctx.font=(s.bold?'bold ':'')+`8.5px Inter,sans-serif`;ctx.textAlign='center';
+    ctx.font=(s.bold?'bold ':'')+`8.5px DM Sans,sans-serif`;ctx.textAlign='center';
     ctx.fillText(s.l,sx,sndY2+9);
   });
-  ctx.fillStyle=dark?'#4b6080':'#94a3b8';ctx.font='9px Inter,sans-serif';ctx.textAlign='right';
+  ctx.fillStyle=dark?'#4b6080':'#94a3b8';ctx.font='9px DM Sans,sans-serif';ctx.textAlign='right';
   ctx.fillText('Heart',PAD_L-6,sndY1+8);ctx.fillText('Sounds',PAD_L-6,sndY2+8);
 
   // Time axis
   ctx.strokeStyle=dark?'rgba(255,255,255,0.13)':'rgba(0,0,0,0.14)';
   ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(PAD_L,H-PAD_B);ctx.lineTo(PAD_L+gw,H-PAD_B);ctx.stroke();
   const ms=Math.round(visStart*800),me=Math.round(visEnd*800);
-  ctx.fillStyle=dark?'#4b6080':'#94a3b8';ctx.font='9px Inter,sans-serif';ctx.textAlign='center';
+  ctx.fillStyle=dark?'#4b6080':'#94a3b8';ctx.font='9px DM Sans,sans-serif';ctx.textAlign='center';
   ctx.fillText(`${ms}ms – ${me}ms  (≈ 800ms at 75 bpm, zoom ${zoomLevel}×)`,PAD_L+gw/2,H-PAD_B+14);
 
   // Active marker
@@ -814,7 +877,6 @@ document.querySelectorAll('.m-toggle').forEach(btn=>{
 // ── INIT ──────────────────────────────────────────────────
 window.addEventListener('resize',()=>{resize();draw();});
 resize();draw();
-  </script>
-
+</script>
 </body>
 </html>
