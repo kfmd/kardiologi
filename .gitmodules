@@ -1,0 +1,3 @@
+[submodule "ecgaxistrainer"]
+	path = ecgaxistrainer
+	url = https://github.com/kfmd/ecgaxistrainer
