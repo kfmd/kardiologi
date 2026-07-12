@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Exercise Stress Test Termination</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root, [data-theme="light"] {
+      --text-sm: clamp(0.875rem, 0.8rem + 0.35vw, 1rem);
+      --text-base: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+      --text-lg: clamp(1.125rem, 1rem + 0.75vw, 1.5rem);
+      --text-xl: clamp(1.5rem, 1.2rem + 1.25vw, 2.25rem);
+      --space-2: 0.5rem;
+      --space-3: 0.75rem;
+      --space-4: 1rem;
+      --space-6: 1.5rem;
+      --space-8: 2rem;
+      --space-12: 3rem;
+      --color-bg: #f7f6f2;
+      --color-surface: #f9f8f5;
+      --color-surface-2: #fbfbf9;
+      --color-border: #d4d1ca;
+      --color-text: #28251d;
+      --color-text-muted: #7a7974;
+      --color-primary: #01696f;
+      --color-primary-highlight: #cedcd8;
+      --color-danger: #a13544;
+      --color-warning: #964219;
+      --radius-md: 0.75rem;
+      --radius-lg: 1rem;
+      --shadow-md: 0 10px 30px rgba(0,0,0,0.08);
+      --font-body: 'Inter', sans-serif;
+    }
+    [data-theme="dark"] {
+      --color-bg: #171614;
+      --color-surface: #1c1b19;
+      --color-surface-2: #201f1d;
+      --color-border: #393836;
+      --color-text: #e6e1d8;
+      --color-text-muted: #a4a098;
+      --color-primary: #4f98a3;
+      --color-primary-highlight: #243538;
+      --color-danger: #dd6974;
+      --color-warning: #e8af34;
+      --shadow-md: 0 10px 30px rgba(0,0,0,0.28);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: var(--font-body);
+      background: linear-gradient(180deg, var(--color-bg), var(--color-surface));
+      color: var(--color-text);
+      line-height: 1.6;
+    }
+    .wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: var(--space-8) var(--space-4) var(--space-12);
+    }
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-4);
+      margin-bottom: var(--space-8);
+      flex-wrap: wrap;
+    }
+    .eyebrow {
+      display: inline-block;
+      padding: 0.35rem 0.7rem;
+      border-radius: 999px;
+      background: var(--color-primary-highlight);
+      color: var(--color-primary);
+      font-size: var(--text-sm);
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+    h1 {
+      font-size: var(--text-xl);
+      margin: var(--space-3) 0 var(--space-2);
+      line-height: 1.15;
+    }
+    .subtitle {
+      max-width: 68ch;
+      color: var(--color-text-muted);
+      font-size: var(--text-base);
+    }
+    .theme-toggle {
+      border: 1px solid var(--color-border);
+      background: var(--color-surface-2);
+      color: var(--color-text);
+      border-radius: 999px;
+      padding: 0.75rem 1rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--space-6);
+      margin-top: var(--space-8);
+    }
+    .card {
+      background: var(--color-surface-2);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-6);
+      box-shadow: var(--shadow-md);
+    }
+    .card h2 {
+      margin: 0 0 var(--space-4);
+      font-size: var(--text-lg);
+      line-height: 1.2;
+    }
+    .card.absolute h2 { color: var(--color-danger); }
+    .card.relative h2 { color: var(--color-warning); }
+    ul {
+      margin: 0;
+      padding-left: 1.2rem;
+    }
+    li + li { margin-top: var(--space-3); }
+    .footer-note {
+      margin-top: var(--space-8);
+      padding: var(--space-4);
+      border-radius: var(--radius-md);
+      background: var(--color-primary-highlight);
+      color: var(--color-text);
+      font-size: var(--text-sm);
+    }
+    @media (max-width: 800px) {
+      .grid { grid-template-columns: 1fr; }
+      .wrap { padding-top: var(--space-6); }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <div class="topbar">
+      <div>
+        <span class="eyebrow">Quick revision</span>
+        <h1>Exercise Stress Test Termination</h1>
+        <p class="subtitle">A simplified HTML summary of when to stop an exercise stress test, divided into absolute stop criteria and relative reasons to consider stopping.</p>
+      </div>
+      <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch theme">Toggle theme</button>
+    </div>
+
+    <section class="grid" aria-label="Exercise stress test termination criteria">
+      <article class="card absolute">
+        <h2>Absolute stop</h2>
+        <ul>
+          <li>CNS symptoms: ataxia, dizziness, near-syncope.</li>
+          <li>Fall in systolic BP &gt;10 mmHg with rising workload plus other evidence of ischemia.</li>
+          <li>Moderate to severe angina.</li>
+          <li>Signs of poor perfusion: cyanosis or pallor.</li>
+          <li>ST-segment elevation &gt;1.0 mm in leads without preexisting Q waves, except aVR, aVL, and V1.</li>
+          <li>Sustained VT or other serious arrhythmia, including 2nd- or 3rd-degree AV block that impairs cardiac output.</li>
+          <li>Technical difficulty monitoring ECG or systolic blood pressure.</li>
+          <li>Patient asks to stop.</li>
+        </ul>
+      </article>
+
+      <article class="card relative">
+        <h2>Relative / consider stopping</h2>
+        <ul>
+          <li>Arrhythmias other than sustained VT, including multifocal ectopy, ventricular triplets, SVT, or bradyarrhythmias that may worsen or affect hemodynamic stability.</li>
+          <li>Bundle branch block that cannot immediately be distinguished from ventricular tachycardia.</li>
+          <li>Claudication, fatigue, leg cramps, shortness of breath, or wheezing.</li>
+          <li>Fall in systolic BP &gt;10 mmHg below baseline with rising workload but without other evidence of ischemia.</li>
+          <li>Exaggerated hypertensive response: systolic BP &gt;250 mmHg or diastolic BP &gt;115 mmHg.</li>
+          <li>Heart rate &gt;85% of age-predicted maximum.</li>
+          <li>Increasing chest pain.</li>
+          <li>Marked ST displacement &gt;2 mm (horizontal or downsloping, 60 to 80 ms after the J-point) in a patient with suspected ischemia.</li>
+        </ul>
+      </article>
+    </section>
+
+    <div class="footer-note">
+      Tip: think <strong>absolute</strong> = dangerous enough to stop now; <strong>relative</strong> = concerning enough to reassess and often stop depending on context.
+    </div>
+  </main>
+
+  <script>
+    (function () {
+      const root = document.documentElement;
+      const button = document.querySelector('[data-theme-toggle]');
+      let theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      root.setAttribute('data-theme', theme);
+      button.addEventListener('click', function () {
+        theme = theme === 'dark' ? 'light' : 'dark';
+        root.setAttribute('data-theme', theme);
+      });
+    })();
+  </script>
+</body>
+</html>

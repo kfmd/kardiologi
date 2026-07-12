@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Blood Vessel Atlas — 3D Interactive</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Be+Vietnam+Pro:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+<style>
+:root {
+  --font-display: 'Poppins', sans-serif;
+  --font-body: 'Be Vietnam Pro', sans-serif;
+  --text-xs: clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem);
+  --text-sm: clamp(0.875rem, 0.8rem + 0.35vw, 1rem);
+  --text-base: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+  --text-lg: clamp(1.125rem, 1rem + 0.75vw, 1.5rem);
+  --text-xl: clamp(1.5rem, 1.2rem + 1.25vw, 2.25rem);
+  --space-1: .25rem; --space-2: .5rem; --space-3: .75rem; --space-4: 1rem; --space-5: 1.25rem; --space-6: 1.5rem; --space-8: 2rem; --space-10: 2.5rem; --space-12: 3rem;
+  --radius-sm: .375rem; --radius-md: .5rem; --radius-lg: .75rem; --radius-xl: 1rem; --radius-full: 9999px;
+  --transition: 180ms cubic-bezier(.16,1,.3,1);
+}
+[data-theme="dark"] {
+  --bg:#0d0f14; --surface:#141720; --surface-2:#1a1e2a; --surface-3:#1f2433; --border:rgba(255,255,255,.07); --divider:rgba(255,255,255,.05); --text:#e8eaf0; --text-muted:#8890a4; --text-faint:#4a5168; --glass-bg:rgba(20,23,32,.75); --glass-border:rgba(255,255,255,.08); --accent:#4f98a3;
+}
+[data-theme="light"] {
+  --bg:#f2f4f8; --surface:#ffffff; --surface-2:#f7f8fb; --surface-3:#eef0f5; --border:rgba(0,0,0,.08); --divider:rgba(0,0,0,.05); --text:#1a1d2a; --text-muted:#5a6075; --text-faint:#9aa0b5; --glass-bg:rgba(255,255,255,.82); --glass-border:rgba(0,0,0,.07); --accent:#01696f;
+}
+:root { --c-aorta:#e53e3e; --c-large-art:#fc5c5c; --c-small-art:#f97316; --c-arteriole:#fb923c; --c-capillary:#f59e0b; --c-venule:#22d3ee; --c-vein:#3b82f6; --c-vena-cava:#6d28d9; }
+* { box-sizing:border-box; margin:0; padding:0; }
+html { -webkit-font-smoothing:antialiased; scroll-behavior:smooth; }
+body {
+  font-family:var(--font-body); font-size:var(--text-base); color:var(--text); background:var(--bg); min-height:100dvh; overflow:hidden;
+  display:grid; grid-template-columns:280px 1fr 300px; grid-template-rows:56px 1fr; grid-template-areas:"header header header" "sidebar canvas info";
+}
+header { grid-area:header; display:flex; align-items:center; justify-content:space-between; padding:0 var(--space-6); background:var(--glass-bg); border-bottom:1px solid var(--glass-border); backdrop-filter:blur(16px); z-index:100; }
+.logo { display:flex; align-items:center; gap:var(--space-3); font-family:var(--font-display); font-weight:600; font-size:var(--text-base); }
+.logo-icon { width:32px; height:32px; }
+.header-controls { display:flex; align-items:center; gap:var(--space-3); }
+.btn-icon { display:grid; place-items:center; width:36px; height:36px; border-radius:var(--radius-md); border:1px solid var(--border); background:var(--surface-2); color:var(--text-muted); cursor:pointer; transition:all var(--transition); }
+.btn-icon:hover { color:var(--text); background:var(--surface-3); }
+.badge { display:inline-flex; align-items:center; gap:var(--space-1); padding:var(--space-1) var(--space-3); border-radius:var(--radius-full); font-size:var(--text-xs); font-weight:500; background:rgba(79,152,163,.15); color:var(--accent); border:1px solid rgba(79,152,163,.3); }
+#sidebar, #info-panel { background:var(--glass-bg); backdrop-filter:blur(16px); }
+#sidebar { grid-area:sidebar; border-right:1px solid var(--glass-border); overflow-y:auto; }
+#info-panel { grid-area:info; border-left:1px solid var(--glass-border); overflow-y:auto; }
+.sidebar-section { padding:var(--space-4) var(--space-4) var(--space-2); border-bottom:1px solid var(--divider); }
+.sidebar-label, .info-section-label { font-size:var(--text-xs); font-weight:600; text-transform:uppercase; letter-spacing:.08em; color:var(--text-faint); margin-bottom:var(--space-3); }
+.search-wrap { position:relative; }
+.search-wrap i { position:absolute; left:10px; top:50%; transform:translateY(-50%); color:var(--text-faint); width:14px; height:14px; }
+#search-input { width:100%; padding:var(--space-2) var(--space-3) var(--space-2) 32px; background:var(--surface-3); border:1px solid var(--border); border-radius:var(--radius-md); color:var(--text); font-size:var(--text-sm); }
+.toggle-group { display:grid; grid-template-columns:1fr 1fr; gap:var(--space-1); background:var(--surface-3); padding:var(--space-1); border-radius:var(--radius-md); border:1px solid var(--border); }
+.toggle-btn, .view-btn { border:none; cursor:pointer; font-family:var(--font-body); }
+.toggle-btn { padding:var(--space-2) var(--space-3); border-radius:calc(var(--radius-md) - 2px); font-size:var(--text-xs); color:var(--text-muted); }
+.toggle-btn.active { background:var(--surface); color:var(--text); }
+.view-group { display:flex; gap:var(--space-2); flex-wrap:wrap; }
+.view-btn { flex:1; min-width:70px; display:flex; align-items:center; justify-content:center; gap:var(--space-2); padding:var(--space-2) var(--space-3); background:var(--surface-3); border:1px solid var(--border); border-radius:var(--radius-md); font-size:var(--text-xs); color:var(--text-muted); }
+.view-btn.active { background:var(--surface-2); color:var(--accent); border-color:rgba(79,152,163,.4); }
+.vessel-list { padding:var(--space-2) var(--space-3) var(--space-4); }
+.vessel-item { display:flex; align-items:center; gap:var(--space-3); padding:var(--space-2) var(--space-3); border-radius:var(--radius-md); cursor:pointer; border:1px solid transparent; margin-bottom:var(--space-1); }
+.vessel-item:hover { background:var(--surface-2); border-color:var(--border); }
+.vessel-item.active { background:var(--surface-3); border-color:var(--glass-border); }
+.vessel-item.hidden-vessel { opacity:.4; }
+.vessel-swatch { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+.vessel-item-info { flex:1; min-width:0; }
+.vessel-item-name { font-size:var(--text-sm); font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.vessel-item-diam { font-size:var(--text-xs); color:var(--text-faint); margin-top:2px; }
+.vessel-eye { color:var(--text-faint); width:16px; height:16px; flex-shrink:0; }
+.btn-journey { width:100%; display:flex; align-items:center; justify-content:center; gap:var(--space-2); padding:var(--space-3) var(--space-4); background:linear-gradient(135deg, rgba(229,62,62,.15), rgba(109,40,217,.15)); border:1px solid rgba(229,62,62,.25); border-radius:var(--radius-md); color:var(--text); font-size:var(--text-sm); font-weight:500; }
+.compare-list { display:flex; flex-direction:column; gap:var(--space-2); }
+.compare-item { display:flex; align-items:center; gap:var(--space-3); padding:var(--space-2) var(--space-3); background:var(--surface-3); border-radius:var(--radius-md); font-size:var(--text-xs); }
+.compare-bar-wrap { flex:1; height:4px; background:var(--surface-2); border-radius:999px; overflow:hidden; }
+.compare-bar { height:100%; border-radius:999px; }
+.compare-label { min-width:60px; color:var(--text-muted); }
+.compare-diam { min-width:52px; text-align:right; color:var(--text-faint); }
+#canvas-area { grid-area:canvas; position:relative; overflow:hidden; }
+#three-canvas { display:block; width:100%; height:100%; }
+#canvas-controls { position:absolute; top:var(--space-4); right:var(--space-4); display:flex; flex-direction:column; gap:var(--space-2); }
+#tooltip { position:absolute; pointer-events:none; background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:var(--radius-lg); padding:var(--space-3) var(--space-4); min-width:200px; max-width:260px; opacity:0; transform:translateY(8px); transition:opacity .2s, transform .2s; z-index:50; }
+#tooltip.visible { opacity:1; transform:translateY(0); }
+.tt-vessel-name { font-family:var(--font-display); font-size:var(--text-sm); font-weight:600; margin-bottom:var(--space-1); }
+.tt-diam { font-size:var(--text-xs); color:var(--text-muted); margin-bottom:var(--space-2); }
+.tt-function { font-size:var(--text-xs); color:var(--text-muted); line-height:1.5; border-top:1px solid var(--divider); padding-top:var(--space-2); }
+#ruler { position:absolute; bottom:var(--space-6); left:50%; transform:translateX(-50%); background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:var(--radius-lg); padding:var(--space-3) var(--space-5); display:flex; align-items:center; gap:var(--space-4); font-size:var(--text-xs); color:var(--text-muted); pointer-events:none; }
+.ruler-bar { height:2px; width:140px; background:linear-gradient(90deg, var(--c-aorta), var(--c-vena-cava)); border-radius:999px; }
+#journey-overlay {
+  position:absolute; inset:0; background:rgba(0,0,0,.18); display:none; flex-direction:column; align-items:center; justify-content:flex-end; padding-bottom:var(--space-12); z-index:200;
+}
+#journey-overlay.active { display:flex; }
+.journey-step { font-family:var(--font-display); font-size:var(--text-xl); font-weight:600; color:#fff; text-align:center; opacity:0; transform:translateY(20px); transition:all .5s cubic-bezier(.16,1,.3,1); margin-bottom:var(--space-2); }
+.journey-step.show { opacity:1; transform:translateY(0); }
+.journey-subtitle { font-size:var(--text-sm); color:rgba(255,255,255,.72); text-align:center; opacity:0; transition:opacity .5s; margin-bottom:var(--space-8); }
+.journey-subtitle.show { opacity:1; }
+.btn-journey-stop { padding:var(--space-3) var(--space-8); background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.25); border-radius:999px; color:#fff; font-size:var(--text-sm); }
+.info-header { padding:var(--space-5) var(--space-5) var(--space-4); border-bottom:1px solid var(--divider); }
+.info-vessel-color-bar { height:3px; border-radius:999px; margin-bottom:var(--space-4); }
+.info-vessel-name { font-family:var(--font-display); font-size:var(--text-lg); font-weight:700; margin-bottom:var(--space-1); }
+.info-vessel-type-badge { display:inline-flex; padding:2px var(--space-3); border-radius:999px; font-size:var(--text-xs); font-weight:500; background:var(--surface-3); color:var(--text-muted); }
+.info-section { padding:var(--space-4) var(--space-5); border-bottom:1px solid var(--divider); }
+.info-stat-grid { display:grid; grid-template-columns:1fr 1fr; gap:var(--space-3); }
+.info-stat { background:var(--surface-3); border-radius:var(--radius-md); padding:var(--space-3); border:1px solid var(--border); }
+.info-stat-value { font-family:var(--font-display); font-size:var(--text-base); font-weight:600; margin-bottom:2px; }
+.info-stat-key { font-size:var(--text-xs); color:var(--text-faint); }
+.info-text { font-size:var(--text-sm); color:var(--text-muted); line-height:1.65; }
+.wall-layers { display:flex; flex-direction:column; gap:var(--space-2); }
+.wall-layer { display:flex; align-items:center; gap:var(--space-3); padding:var(--space-2) var(--space-3); background:var(--surface-3); border-radius:var(--radius-md); font-size:var(--text-xs); }
+.wall-layer-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+.wall-layer-name { font-weight:500; flex:1; }
+.wall-layer-desc { color:var(--text-faint); text-align:right; }
+.size-comp-wrap { position:relative; height:40px; background:var(--surface-3); border-radius:var(--radius-md); overflow:hidden; border:1px solid var(--border); }
+.size-comp-fill { height:100%; border-radius:var(--radius-md); display:flex; align-items:center; padding-left:var(--space-3); font-size:var(--text-xs); font-weight:600; color:#fff; transition:width .6s cubic-bezier(.34,1.56,.64,1); min-width:4px; }
+.pressure-bar { height:8px; border-radius:999px; background:linear-gradient(90deg, #e53e3e, #f97316, #f59e0b, #22d3ee, #3b82f6, #6d28d9); position:relative; margin-bottom:var(--space-3); }
+.pressure-marker { position:absolute; top:-4px; width:16px; height:16px; border-radius:50%; background:var(--surface); border:2px solid #fff; transform:translateX(-50%); transition:left .4s cubic-bezier(.34,1.56,.64,1); }
+.pressure-labels { display:flex; justify-content:space-between; font-size:var(--text-xs); color:var(--text-faint); }
+.pulse-indicator { display:flex; align-items:center; gap:var(--space-3); padding:var(--space-3); background:var(--surface-3); border-radius:var(--radius-md); font-size:var(--text-xs); border:1px solid var(--border); }
+.pulse-dot { width:12px; height:12px; border-radius:50%; background:var(--c-arteriole); flex-shrink:0; }
+.pulse-dot.pulsating { animation:pulse-anim 1.2s ease-in-out infinite; }
+@keyframes pulse-anim { 0%,100%{transform:scale(1);opacity:1} 50%{transform:scale(1.4);opacity:.6} }
+.info-placeholder { display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; padding:var(--space-8); text-align:center; color:var(--text-faint); gap:var(--space-4); }
+.info-placeholder i { width:40px; height:40px; }
+.hidden { display:none !important; }
+button, input { font:inherit; }
+@media (max-width:1024px) {
+  body { grid-template-columns:240px 1fr; grid-template-rows:56px 1fr auto; grid-template-areas:"header header" "sidebar canvas" "info info"; overflow:auto; }
+  #info-panel { max-height:340px; border-left:none; border-top:1px solid var(--glass-border); }
+}
+@media (max-width:640px) {
+  body { grid-template-columns:1fr; grid-template-rows:56px auto 1fr auto; grid-template-areas:"header" "sidebar" "canvas" "info"; overflow:auto; }
+  #sidebar { max-height:280px; border-right:none; border-bottom:1px solid var(--glass-border); }
+  #canvas-area { min-height:60vw; }
+  #info-panel { max-height:320px; }
+  .logo-title { display:none; }
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">
+    <svg class="logo-icon" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Blood Vessel Atlas Logo">
+      <circle cx="16" cy="16" r="14" stroke="currentColor" stroke-width="1.2" opacity="0.2"/>
+      <circle cx="16" cy="16" r="10" fill="#e53e3e" opacity="0.15"/>
+      <circle cx="16" cy="16" r="10" stroke="#e53e3e" stroke-width="1.5"/>
+      <circle cx="16" cy="16" r="6" fill="#3b82f6" opacity="0.15"/>
+      <circle cx="16" cy="16" r="6" stroke="#3b82f6" stroke-width="1.5"/>
+      <circle cx="16" cy="16" r="2.5" fill="#f59e0b"/>
+    </svg>
+    <span class="logo-title">Vessel Atlas</span>
+  </div>
+  <div style="display:flex;align-items:center;gap:var(--space-4);">
+    <span class="badge"><i data-lucide="activity" style="width:10px;height:10px;"></i> Live 3D</span>
+    <span style="font-size:var(--text-xs);color:var(--text-faint);">Systemic Circulation</span>
+  </div>
+  <div class="header-controls">
+    <button class="btn-icon" id="auto-rotate-btn" aria-label="Toggle auto rotate"><i data-lucide="rotate-3d" style="width:16px;height:16px;"></i></button>
+    <button class="btn-icon" id="pulse-toggle-btn" aria-label="Toggle pulsation"><i data-lucide="heart-pulse" style="width:16px;height:16px;"></i></button>
+    <button class="btn-icon" id="theme-toggle" aria-label="Switch theme"><i data-lucide="sun" style="width:16px;height:16px;"></i></button>
+  </div>
+</header>
+<aside id="sidebar">
+  <div class="sidebar-section">
+    <div class="search-wrap">
+      <i data-lucide="search"></i>
+      <input type="text" id="search-input" placeholder="Search vessels…" aria-label="Search vessels" />
+    </div>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-label">Scale Mode</div>
+    <div class="toggle-group">
+      <button class="toggle-btn active" data-scale="educational" onclick="setScale('educational')">Educational</button>
+      <button class="toggle-btn" data-scale="true" onclick="setScale('true')">True Scale</button>
+    </div>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-label">View Mode</div>
+    <div class="view-group">
+      <button class="view-btn active" data-view="both" onclick="setView('both')"><i data-lucide="layers"></i> Both</button>
+      <button class="view-btn" data-view="cylinder" onclick="setView('cylinder')"><i data-lucide="cylinder"></i> Tube</button>
+      <button class="view-btn" data-view="cross" onclick="setView('cross')"><i data-lucide="circle"></i> Cross</button>
+    </div>
+  </div>
+  <div class="sidebar-section">
+    <button class="btn-journey" onclick="startJourney()"><i data-lucide="play-circle" style="width:16px;height:16px;"></i> Zoom Through Circulation</button>
+  </div>
+  <div class="vessel-list" id="vessel-list"></div>
+  <div class="sidebar-section">
+    <div class="sidebar-label">Size Reference</div>
+    <div class="compare-list" id="compare-list"></div>
+  </div>
+</aside>
+<main id="canvas-area">
+  <canvas id="three-canvas"></canvas>
+  <div id="canvas-controls">
+    <button class="btn-icon" onclick="resetCamera()" aria-label="Reset camera"><i data-lucide="maximize-2" style="width:15px;height:15px;"></i></button>
+    <button class="btn-icon" onclick="zoomIn()" aria-label="Zoom in"><i data-lucide="plus" style="width:15px;height:15px;"></i></button>
+    <button class="btn-icon" onclick="zoomOut()" aria-label="Zoom out"><i data-lucide="minus" style="width:15px;height:15px;"></i></button>
+  </div>
+  <div id="tooltip" role="tooltip">
+    <div class="tt-vessel-name" id="tt-name">Aorta</div>
+    <div class="tt-diam" id="tt-diam">⌀ 25 mm</div>
+    <div class="tt-function" id="tt-func">Pulse dampening and distribution</div>
+  </div>
+  <div id="ruler">
+    <span>Diameter (log scale)</span>
+    <div>
+      <div class="ruler-bar"></div>
+      <div style="display:flex;justify-content:space-between;margin-top:3px;font-size:9px;color:var(--text-faint);">
+        <span>0.006mm</span><span>0.1mm</span><span>1mm</span><span>10mm</span><span>35mm</span>
+      </div>
+    </div>
+  </div>
+  <div id="journey-overlay">
+    <div class="journey-step" id="journey-step-text">Aorta</div>
+    <div class="journey-subtitle" id="journey-subtitle-text">Pulse dampening and distribution</div>
+    <button class="btn-journey-stop" onclick="stopJourney()">Stop Journey</button>
+  </div>
+</main>
+<aside id="info-panel">
+  <div id="info-placeholder" class="info-placeholder">
+    <i data-lucide="mouse-pointer-click"></i>
+    <p>Click any vessel in the 3D view or from the vessel list to explore its anatomy and physiology.</p>
+  </div>
+  <div id="info-content" class="hidden"></div>
+</aside>
+<script>
+const VESSELS = [
+  { id:'aorta', name:'Aorta', diameterMm:25, diameterDisplay:'25 mm', color:0xe53e3e, colorHex:'#e53e3e', type:'Artery', function:'Pulse dampening and distribution', clinical:'Aortic aneurysm risk increases with diameter >5.5 cm; site for aortic dissection and atherosclerosis.', pressureMmHg:'100–120 mmHg', pressurePos:0.02, pulsates:true, wallThick:0.18, wallLayers:[{name:'Tunica Intima',color:'#fbb6b6',desc:'Endothelium + basal lamina'},{name:'Tunica Media',color:'#e53e3e',desc:'Thick smooth muscle & elastin'},{name:'Tunica Adventitia',color:'#9b2c2c',desc:'Connective tissue'}], flowVelocity:'40–50 cm/s' },
+  { id:'large-arteries', name:'Large Arteries', diameterMm:2.5, diameterDisplay:'1.0–4.0 mm', color:0xfc5c5c, colorHex:'#fc5c5c', type:'Artery', function:'Distribution', clinical:'Sites of atherosclerotic plaque; coronary arteries are large arteries supplying the myocardium.', pressureMmHg:'80–100 mmHg', pressurePos:0.12, pulsates:true, wallThick:0.15, wallLayers:[{name:'Tunica Intima',color:'#fbb6b6',desc:'Endothelium'},{name:'Tunica Media',color:'#fc5c5c',desc:'Smooth muscle, elastic fibers'},{name:'Tunica Adventitia',color:'#c53030',desc:'Dense connective tissue'}], flowVelocity:'20–40 cm/s' },
+  { id:'small-arteries', name:'Small Arteries', diameterMm:0.6, diameterDisplay:'0.2–1.0 mm', color:0xf97316, colorHex:'#f97316', type:'Artery', function:'Distribution and resistance', clinical:'Hypertension causes hypertrophy of smooth muscle in small arteries, increasing peripheral resistance.', pressureMmHg:'60–80 mmHg', pressurePos:0.25, pulsates:true, wallThick:0.14, wallLayers:[{name:'Tunica Intima',color:'#fed7aa',desc:'Thin endothelium'},{name:'Tunica Media',color:'#f97316',desc:'Circular smooth muscle'},{name:'Tunica Adventitia',color:'#c2410c',desc:'Collagen fibers'}], flowVelocity:'10–20 cm/s' },
+  { id:'arterioles', name:'Arterioles', diameterMm:0.1, diameterDisplay:'0.01–0.20 mm', color:0xfb923c, colorHex:'#fb923c', type:'Arteriole', function:'Resistance (pressure/flow regulation)', clinical:'Primary sites of peripheral vascular resistance; vasodilation/constriction controls blood pressure.', pressureMmHg:'35–60 mmHg', pressurePos:0.42, pulsates:false, wallThick:0.12, wallLayers:[{name:'Tunica Intima',color:'#fed7aa',desc:'Endothelium only'},{name:'Tunica Media',color:'#fb923c',desc:'1–2 smooth muscle layers'},{name:'Tunica Adventitia',color:'#ea580c',desc:'Minimal'}], flowVelocity:'1–10 cm/s' },
+  { id:'capillaries', name:'Capillaries', diameterMm:0.008, diameterDisplay:'0.006–0.010 mm', color:0xf59e0b, colorHex:'#f59e0b', type:'Microcirculation', function:'Exchange', clinical:'Diabetic microangiopathy affects capillary basement membrane; site of gas and nutrient exchange.', pressureMmHg:'15–35 mmHg', pressurePos:0.58, pulsates:false, wallThick:0.0, wallLayers:[{name:'Tunica Intima',color:'#fde68a',desc:'Single endothelial cell layer only'}], flowVelocity:'0.05–0.1 cm/s' },
+  { id:'venules', name:'Venules', diameterMm:0.1, diameterDisplay:'0.01–0.20 mm', color:0x22d3ee, colorHex:'#22d3ee', type:'Venule', function:'Exchange, collection, and capacitance', clinical:'Post-capillary venules are sites of leukocyte extravasation during inflammation.', pressureMmHg:'8–15 mmHg', pressurePos:0.68, pulsates:false, wallThick:0.08, wallLayers:[{name:'Tunica Intima',color:'#a5f3fc',desc:'Endothelium'},{name:'Tunica Media',color:'#22d3ee',desc:'Sparse smooth muscle'},{name:'Tunica Adventitia',color:'#0e7490',desc:'Thin'}], flowVelocity:'0.1–1 cm/s' },
+  { id:'veins', name:'Veins', diameterMm:2.6, diameterDisplay:'0.2–5.0 mm', color:0x3b82f6, colorHex:'#3b82f6', type:'Vein', function:'Capacitance function (blood volume)', clinical:'About 70% of blood volume resides in veins. Deep vein thrombosis is a critical complication.', pressureMmHg:'3–8 mmHg', pressurePos:0.82, pulsates:false, wallThick:0.07, wallLayers:[{name:'Tunica Intima',color:'#bfdbfe',desc:'Endothelium + valves'},{name:'Tunica Media',color:'#3b82f6',desc:'Thin smooth muscle'},{name:'Tunica Adventitia',color:'#1d4ed8',desc:'Thick connective tissue'}], flowVelocity:'5–20 cm/s' },
+  { id:'vena-cava', name:'Vena Cava', diameterMm:35, diameterDisplay:'35 mm', color:0x6d28d9, colorHex:'#6d28d9', type:'Great Vein', function:'Collection', clinical:'SVC and IVC obstruction causes vena cava syndrome; major surgical landmark.', pressureMmHg:'0–3 mmHg', pressurePos:0.97, pulsates:false, wallThick:0.06, wallLayers:[{name:'Tunica Intima',color:'#ddd6fe',desc:'Endothelium'},{name:'Tunica Media',color:'#6d28d9',desc:'Smooth muscle (thin)'},{name:'Tunica Adventitia',color:'#4c1d95',desc:'Predominant thick layer'}], flowVelocity:'10–30 cm/s' }
+];
+const COMPARISONS = [
+  { name:'Human Hair', diameterMm:0.07, color:'#a78bfa' },
+  { name:'Red Blood Cell', diameterMm:0.008, color:'#f87171' },
+  { name:'Needle (tip)', diameterMm:0.6, color:'#9ca3af' },
+  { name:'Finger Width', diameterMm:18, color:'#fb923c' }
+];
+const MIN_D = 0.006, MAX_D = 35, OFFSET = 0.001, MIN_VISUAL = 0.04, SCALE_RANGE = 0.95;
+const log10 = x => Math.log10(x);
+function logScale(diamMm) {
+  const normalized = (log10(diamMm + OFFSET) - log10(MIN_D + OFFSET)) / (log10(MAX_D + OFFSET) - log10(MIN_D + OFFSET));
+  return MIN_VISUAL + normalized * SCALE_RANGE;
+}
+function trueScale(diamMm) { return Math.max(0.004, diamMm / MAX_D); }
+let currentScale = 'educational', currentView = 'both', autoRotate = false, pulsateArts = true, selectedId = null, hiddenIds = new Set();
+const canvas = document.getElementById('three-canvas');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias:true, alpha:true });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.shadowMap.enabled = true;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.1;
+const scene = new THREE.Scene();
+scene.fog = new THREE.FogExp2(0x0d0f14, 0.04);
+const canvasArea = document.getElementById('canvas-area');
+const camera = new THREE.PerspectiveCamera(50, 1, 0.01, 200);
+camera.position.set(0, 2, 10);
+scene.add(new THREE.AmbientLight(0xffffff, 0.3));
+const dirLight = new THREE.DirectionalLight(0xffffff, 1.2); dirLight.position.set(5, 10, 8); dirLight.castShadow = true; scene.add(dirLight);
+const fillLight = new THREE.DirectionalLight(0x4488ff, 0.4); fillLight.position.set(-5, -3, -5); scene.add(fillLight);
+const rimLight = new THREE.PointLight(0xff4444, 0.6, 30); rimLight.position.set(-8, 4, 2); scene.add(rimLight);
+let orbitState = { mouseDown:false, lastX:0, lastY:0, rotX:0.3, rotY:0, targetRotX:0.3, targetRotY:0, zoom:10, targetZoom:10, targetLookX:0, targetLookY:0, lookX:0, lookY:0 };
+canvas.addEventListener('mousedown', e => { orbitState.mouseDown = true; orbitState.lastX = e.clientX; orbitState.lastY = e.clientY; });
+canvas.addEventListener('mouseup', () => orbitState.mouseDown = false);
+canvas.addEventListener('mouseleave', () => orbitState.mouseDown = false);
+canvas.addEventListener('mousemove', e => {
+  if (orbitState.mouseDown) {
+    const dx = e.clientX - orbitState.lastX, dy = e.clientY - orbitState.lastY;
+    orbitState.lastX = e.clientX; orbitState.lastY = e.clientY;
+    orbitState.targetRotY += dx * 0.01;
+    orbitState.targetRotX = Math.max(-1.2, Math.min(1.2, orbitState.targetRotX + dy * 0.01));
+  }
+  const rect = canvas.getBoundingClientRect();
+  mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+  mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+  isMouseMoved = true;
+  updateTooltipPosition(e);
+});
+canvas.addEventListener('wheel', e => { orbitState.targetZoom = Math.max(2, Math.min(25, orbitState.targetZoom + e.deltaY * 0.02)); e.preventDefault(); }, { passive:false });
+let lastTouchDist = 0;
+canvas.addEventListener('touchstart', e => {
+  if (e.touches.length === 1) { orbitState.mouseDown = true; orbitState.lastX = e.touches[0].clientX; orbitState.lastY = e.touches[0].clientY; }
+  else if (e.touches.length === 2) lastTouchDist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+});
+canvas.addEventListener('touchend', () => orbitState.mouseDown = false);
+canvas.addEventListener('touchmove', e => {
+  if (e.touches.length === 1 && orbitState.mouseDown) {
+    const dx = e.touches[0].clientX - orbitState.lastX, dy = e.touches[0].clientY - orbitState.lastY;
+    orbitState.lastX = e.touches[0].clientX; orbitState.lastY = e.touches[0].clientY;
+    orbitState.targetRotY += dx * 0.01;
+    orbitState.targetRotX = Math.max(-1.2, Math.min(1.2, orbitState.targetRotX + dy * 0.01));
+  } else if (e.touches.length === 2) {
+    const d = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+    orbitState.targetZoom = Math.max(2, Math.min(25, orbitState.targetZoom - (d - lastTouchDist) * 0.04));
+    lastTouchDist = d;
+  }
+  e.preventDefault();
+}, { passive:false });
+const vesselGroup = new THREE.Group(); scene.add(vesselGroup);
+const vesselMeshes = {}; const VESSEL_SPACING = 1.8;
+function getRadius(v) { return currentScale === 'educational' ? logScale(v.diameterMm) : trueScale(v.diameterMm); }
+function makeMaterial(color, opts = {}) {
+  return new THREE.MeshStandardMaterial({ color, metalness:opts.metalness || 0.1, roughness:opts.roughness ?? 0.4, transparent:opts.transparent || false, opacity:opts.opacity ?? 1, emissive:opts.emissive || 0x000000, emissiveIntensity:opts.emissiveIntensity || 0, side:opts.side || THREE.FrontSide });
+}
+function makeLabel(text, color) {
+  const cv = document.createElement('canvas'); cv.width = 256; cv.height = 48;
+  const ctx = cv.getContext('2d');
+  ctx.fillStyle = 'rgba(13,15,20,0.75)';
+  if (ctx.roundRect) { ctx.beginPath(); ctx.roundRect(4, 8, 248, 32, 6); ctx.fill(); } else { ctx.fillRect(4, 8, 248, 32); }
+  ctx.font = 'bold 14px Poppins, sans-serif'; ctx.textAlign = 'center'; ctx.fillStyle = color; ctx.fillText(text, 128, 30);
+  const texture = new THREE.CanvasTexture(cv);
+  return new THREE.Sprite(new THREE.SpriteMaterial({ map:texture, transparent:true, depthWrite:false }));
+}
+function makeParticles(vessel, radius, cylH) {
+  const count = vessel.id === 'capillaries' ? 4 : (vessel.id === 'aorta' || vessel.id === 'vena-cava' ? 50 : 20);
+  const geometry = new THREE.BufferGeometry();
+  const positions = new Float32Array(count * 3); const speeds = new Float32Array(count);
+  for (let i = 0; i < count; i++) {
+    const angle = Math.random() * Math.PI * 2; const pr = Math.random() * radius * 0.7;
+    positions[i*3] = Math.cos(angle) * pr; positions[i*3+1] = (Math.random() - 0.5) * cylH + 1.3; positions[i*3+2] = Math.sin(angle) * pr;
+    speeds[i] = 0.015 + Math.random() * 0.025;
+  }
+  geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+  geometry.userData = { speeds, cylH, radius, vesselId:vessel.id };
+  return new THREE.Points(geometry, new THREE.PointsMaterial({ color:vessel.color, size:Math.max(0.012, radius * 0.22), sizeAttenuation:true, transparent:true, opacity:0.85 }));
+}
+function buildVessels() {
+  while (vesselGroup.children.length) vesselGroup.remove(vesselGroup.children[0]);
+  Object.keys(vesselMeshes).forEach(k => delete vesselMeshes[k]);
+  VESSELS.forEach((v, i) => {
+    const r = getRadius(v); const x = (i - (VESSELS.length - 1) / 2) * VESSEL_SPACING;
+    const group = new THREE.Group(); group.position.x = x; group.userData.vesselId = v.id; vesselGroup.add(group);
+    const cylH = 2.5; const segs = Math.max(16, Math.round(r * 120));
+    const cyl = new THREE.Mesh(new THREE.CylinderGeometry(r, r, cylH, segs, 1, false), makeMaterial(v.color, { roughness:0.35, metalness:0.15 }));
+    cyl.position.y = 1.3; cyl.castShadow = true; cyl.userData = { vesselId:v.id, partType:'cylinder' }; group.add(cyl);
+    if (v.wallThick > 0.05) {
+      const wallR = r * (1 + v.wallThick);
+      const wall = new THREE.Mesh(new THREE.CylinderGeometry(wallR, wallR, cylH, segs, 1, true), makeMaterial(v.color, { roughness:0.6, metalness:0.05, transparent:true, opacity:0.18, side:THREE.BackSide }));
+      wall.position.y = 1.3; group.add(wall);
+    }
+    const outerR = r; const wallFraction = v.id === 'capillaries' ? 0 : Math.max(0.06, v.wallThick); const innerR = Math.max(outerR * 0.55, outerR - outerR * wallFraction * 3);
+    const ring = new THREE.Mesh(new THREE.RingGeometry(innerR, outerR, segs), makeMaterial(v.color, { roughness:0.35 }));
+    ring.rotation.x = -Math.PI / 2; ring.position.y = -1.0; ring.userData = { vesselId:v.id, partType:'cross' }; group.add(ring);
+    const lumen = new THREE.Mesh(new THREE.CircleGeometry(innerR, segs), new THREE.MeshStandardMaterial({ color:v.color, emissive:v.color, emissiveIntensity:0.35, transparent:true, opacity:0.55, roughness:0.2 }));
+    lumen.rotation.x = -Math.PI / 2; lumen.position.y = -1.0; lumen.userData = { vesselId:v.id, partType:'lumen' }; group.add(lumen);
+    const label = makeLabel(v.name, v.colorHex); label.position.set(0, -1.9, 0); label.scale.set(1.2, 0.3, 1); group.add(label);
+    const particles = makeParticles(v, r, cylH); group.add(particles);
+    const glow = new THREE.Mesh(new THREE.CylinderGeometry(r * 1.4, r * 1.4, cylH + 0.2, segs), new THREE.MeshStandardMaterial({ color:v.color, emissive:v.color, emissiveIntensity:0.8, transparent:true, opacity:0, side:THREE.BackSide }));
+    glow.position.y = 1.3; group.add(glow);
+    vesselMeshes[v.id] = { group, cyl, cylMat:cyl.material, ring, lumen, particles, glow, glowMat:glow.material, r, x };
+  });
+}
+const raycaster = new THREE.Raycaster(); const mouse = new THREE.Vector2(); const tooltip = document.getElementById('tooltip'); let hoveredId = null, isMouseMoved = false;
+canvas.addEventListener('click', e => {
+  const rect = canvas.getBoundingClientRect(); mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1; mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+  raycaster.setFromCamera(mouse, camera);
+  const meshes = []; VESSELS.forEach(v => { const m = vesselMeshes[v.id]; if (m) meshes.push(m.cyl, m.ring, m.lumen); });
+  const hits = raycaster.intersectObjects(meshes);
+  if (hits.length > 0) { const vid = hits[0].object.userData.vesselId; if (vid) { selectVessel(vid); focusCameraOn(vid); } }
+});
+function updateTooltipPosition(e) {
+  const rect = canvas.getBoundingClientRect(); let tx = e.clientX - rect.left + 16, ty = e.clientY - rect.top - 30;
+  if (tx + 270 > rect.width) tx = e.clientX - rect.left - 270; if (ty + 120 > rect.height) ty = e.clientY - rect.top - 120;
+  tooltip.style.left = tx + 'px'; tooltip.style.top = ty + 'px';
+}
+function checkHover() {
+  if (!isMouseMoved) return;
+  raycaster.setFromCamera(mouse, camera);
+  const meshes = []; VESSELS.forEach(v => { const m = vesselMeshes[v.id]; if (m) meshes.push(m.cyl, m.ring, m.lumen); });
+  const hits = raycaster.intersectObjects(meshes); const newHover = hits.length ? hits[0].object.userData.vesselId : null;
+  if (newHover !== hoveredId) {
+    if (hoveredId && vesselMeshes[hoveredId]) vesselMeshes[hoveredId].glowMat.opacity = selectedId === hoveredId ? 0.12 : 0;
+    hoveredId = newHover;
+    if (hoveredId && vesselMeshes[hoveredId]) vesselMeshes[hoveredId].glowMat.opacity = 0.18;
+  }
+  if (hoveredId) {
+    const v = VESSELS.find(x => x.id === hoveredId);
+    document.getElementById('tt-name').textContent = v.name; document.getElementById('tt-diam').textContent = '⌀ ' + v.diameterDisplay; document.getElementById('tt-func').textContent = v.function;
+    tooltip.classList.add('visible'); canvas.style.cursor = 'pointer';
+  } else { tooltip.classList.remove('visible'); canvas.style.cursor = 'default'; }
+}
+function selectVessel(id) {
+  if (selectedId && vesselMeshes[selectedId]) { vesselMeshes[selectedId].glowMat.opacity = 0; vesselMeshes[selectedId].cylMat.emissiveIntensity = 0; }
+  selectedId = id;
+  if (vesselMeshes[id]) { vesselMeshes[id].glowMat.opacity = 0.22; vesselMeshes[id].cylMat.emissiveIntensity = 0.2; }
+  document.querySelectorAll('.vessel-item').forEach(el => el.classList.toggle('active', el.dataset.id === id));
+  renderInfoPanel(id);
+}
+function renderInfoPanel(id) {
+  const v = VESSELS.find(x => x.id === id); if (!v) return;
+  document.getElementById('info-placeholder').classList.add('hidden'); const content = document.getElementById('info-content'); content.classList.remove('hidden');
+  const relSize = Math.round(logScale(v.diameterMm) * 100);
+  const layersHtml = v.wallLayers.map(l => `<div class="wall-layer"><div class="wall-layer-dot" style="background:${l.color};"></div><span class="wall-layer-name">${l.name}</span><span class="wall-layer-desc">${l.desc}</span></div>`).join('');
+  content.innerHTML = `<div class="info-header"><div class="info-vessel-color-bar" style="background:${v.colorHex};"></div><div class="info-vessel-name" style="color:${v.colorHex};">${v.name}</div><span class="info-vessel-type-badge">${v.type}</span></div>
+  <div class="info-section"><div class="info-section-label">Dimensions</div><div class="info-stat-grid"><div class="info-stat"><div class="info-stat-value" style="color:${v.colorHex};">${v.diameterDisplay}</div><div class="info-stat-key">Diameter</div></div><div class="info-stat"><div class="info-stat-value">${v.pressureMmHg}</div><div class="info-stat-key">Pressure</div></div><div class="info-stat"><div class="info-stat-value">${v.flowVelocity}</div><div class="info-stat-key">Flow velocity</div></div><div class="info-stat"><div class="info-stat-value">${v.pulsates ? 'Yes' : 'No'}</div><div class="info-stat-key">Pulsatile</div></div></div></div>
+  <div class="info-section"><div class="info-section-label">Physiologic Function</div><p class="info-text">${v.function}.</p></div>
+  <div class="info-section"><div class="info-section-label">Relative Size (Log Scale)</div><div class="size-comp-wrap"><div class="size-comp-fill" style="width:${relSize}%;background:${v.colorHex};">${relSize > 20 ? v.name : ''}</div></div></div>
+  <div class="info-section"><div class="info-section-label">Pressure Position</div><div class="pressure-bar"><div class="pressure-marker" style="left:${v.pressurePos * 100}%;"></div></div><div class="pressure-labels"><span>High (Arterial)</span><span>Low (Venous)</span></div></div>
+  <div class="info-section"><div class="info-section-label">Wall Layers</div><div class="wall-layers">${layersHtml}</div></div>
+  ${v.pulsates ? `<div class="info-section"><div class="info-section-label">Pulsation</div><div class="pulse-indicator"><div class="pulse-dot ${pulsateArts ? 'pulsating' : ''}"></div><span style="color:var(--text-muted);font-size:var(--text-xs);">Systolic pulsation active — elastic recoil dampens pressure waves</span></div></div>` : ''}
+  <div class="info-section"><div class="info-section-label">Clinical Relevance</div><p class="info-text">${v.clinical}</p></div>`;
+}
+function buildVesselList() {
+  const list = document.getElementById('vessel-list');
+  list.innerHTML = VESSELS.map(v => `<div class="vessel-item ${hiddenIds.has(v.id) ? 'hidden-vessel' : ''}" data-id="${v.id}" onclick="onVesselItemClick('${v.id}')"><div class="vessel-swatch" style="background:${v.colorHex};"></div><div class="vessel-item-info"><div class="vessel-item-name">${v.name}</div><div class="vessel-item-diam">⌀ ${v.diameterDisplay}</div></div><i data-lucide="${hiddenIds.has(v.id) ? 'eye-off' : 'eye'}" class="vessel-eye" onclick="toggleVesselVisibility(event, '${v.id}')"></i></div>`).join('');
+  lucide.createIcons();
+}
+function onVesselItemClick(id) { selectVessel(id); focusCameraOn(id); }
+function toggleVesselVisibility(e, id) {
+  e.stopPropagation();
+  if (hiddenIds.has(id)) hiddenIds.delete(id); else hiddenIds.add(id);
+  if (vesselMeshes[id]) vesselMeshes[id].group.visible = !hiddenIds.has(id);
+  buildVesselList();
+}
+function buildCompareList() {
+  document.getElementById('compare-list').innerHTML = COMPARISONS.map(c => {
+    const barW = Math.round(logScale(c.diameterMm) * 100);
+    return `<div class="compare-item"><span class="compare-label" style="color:${c.color};">${c.name}</span><div class="compare-bar-wrap"><div class="compare-bar" style="width:${barW}%;background:${c.color};"></div></div><span class="compare-diam">${c.diameterMm < 1 ? (c.diameterMm * 1000).toFixed(0) + 'µm' : c.diameterMm + 'mm'}</span></div>`;
+  }).join('');
+}
+function setScale(mode) {
+  currentScale = mode; document.querySelectorAll('[data-scale]').forEach(b => b.classList.toggle('active', b.dataset.scale === mode)); rebuildVessels();
+}
+function setView(mode) {
+  currentView = mode; document.querySelectorAll('[data-view]').forEach(b => b.classList.toggle('active', b.dataset.view === mode));
+  VESSELS.forEach(v => {
+    const m = vesselMeshes[v.id]; if (!m) return;
+    m.cyl.visible = (mode === 'both' || mode === 'cylinder'); m.ring.visible = (mode === 'both' || mode === 'cross'); m.lumen.visible = (mode === 'both' || mode === 'cross');
+  });
+}
+function rebuildVessels() {
+  buildVessels(); setView(currentView);
+  if (selectedId && vesselMeshes[selectedId]) { vesselMeshes[selectedId].glowMat.opacity = 0.22; vesselMeshes[selectedId].cylMat.emissiveIntensity = 0.2; }
+  hiddenIds.forEach(id => { if (vesselMeshes[id]) vesselMeshes[id].group.visible = false; });
+}
+function focusCameraOn(id) {
+  const m = vesselMeshes[id]; if (!m) return;
+  orbitState.targetLookX = m.x;
+  orbitState.targetLookY = 0.15;
+  orbitState.targetZoom = 7;
+}
+function resetCamera() { orbitState.targetRotX = 0.3; orbitState.targetRotY = 0; orbitState.targetZoom = 10; orbitState.targetLookX = 0; orbitState.targetLookY = 0; }
+function zoomIn() { orbitState.targetZoom = Math.max(2, orbitState.targetZoom - 1.5); }
+function zoomOut() { orbitState.targetZoom = Math.min(25, orbitState.targetZoom + 1.5); }
+document.getElementById('auto-rotate-btn').addEventListener('click', () => {
+  autoRotate = !autoRotate; const btn = document.getElementById('auto-rotate-btn'); btn.style.color = autoRotate ? 'var(--accent)' : ''; btn.style.borderColor = autoRotate ? 'var(--accent)' : '';
+});
+document.getElementById('pulse-toggle-btn').addEventListener('click', () => {
+  pulsateArts = !pulsateArts; const btn = document.getElementById('pulse-toggle-btn'); btn.style.color = pulsateArts ? 'var(--accent)' : ''; btn.style.borderColor = pulsateArts ? 'var(--accent)' : '';
+  if (selectedId) renderInfoPanel(selectedId);
+});
+let journeyActive = false, journeyIdx = 0, journeyTimer = null;
+function startJourney() {
+  journeyActive = true; journeyIdx = 0;
+  document.getElementById('journey-overlay').classList.add('active');
+  runJourneyStep();
+}
+function stopJourney() {
+  journeyActive = false; clearTimeout(journeyTimer);
+  document.getElementById('journey-overlay').classList.remove('active');
+  document.getElementById('journey-step-text').classList.remove('show');
+  document.getElementById('journey-subtitle-text').classList.remove('show');
+}
+function runJourneyStep() {
+  if (!journeyActive || journeyIdx >= VESSELS.length) { stopJourney(); return; }
+  const v = VESSELS[journeyIdx]; const stepEl = document.getElementById('journey-step-text'); const subEl = document.getElementById('journey-subtitle-text');
+  stepEl.classList.remove('show'); subEl.classList.remove('show'); stepEl.style.color = v.colorHex;
+  setTimeout(() => { stepEl.textContent = v.name; subEl.textContent = v.function; stepEl.classList.add('show'); subEl.classList.add('show'); }, 160);
+  selectVessel(v.id); focusCameraOn(v.id);
+  journeyIdx++; journeyTimer = setTimeout(runJourneyStep, 3500);
+}
+document.getElementById('search-input').addEventListener('input', e => {
+  const q = e.target.value.toLowerCase();
+  document.querySelectorAll('.vessel-item').forEach(el => {
+    const id = el.dataset.id; const v = VESSELS.find(x => x.id === id);
+    const match = v.name.toLowerCase().includes(q) || v.function.toLowerCase().includes(q);
+    el.style.display = match ? '' : 'none'; if (vesselMeshes[id]) vesselMeshes[id].group.visible = match && !hiddenIds.has(id);
+  });
+});
+(function() {
+  const html = document.documentElement; const btn = document.getElementById('theme-toggle');
+  const moon = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+  const sun = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>';
+  btn.innerHTML = moon;
+  btn.addEventListener('click', () => {
+    const isDark = html.dataset.theme === 'dark'; html.dataset.theme = isDark ? 'light' : 'dark'; btn.innerHTML = isDark ? sun : moon; scene.fog.color.set(isDark ? 0xf2f4f8 : 0x0d0f14);
+  });
+})();
+function onResize() {
+  const w = canvasArea.clientWidth, h = canvasArea.clientHeight; camera.aspect = w / h; camera.updateProjectionMatrix(); renderer.setSize(w, h, false);
+}
+window.addEventListener('resize', onResize);
+let time = 0;
+function animate() {
+  requestAnimationFrame(animate); time += 0.016;
+  const lerp = (a, b, t) => a + (b - a) * t;
+  orbitState.rotX = lerp(orbitState.rotX, orbitState.targetRotX, 0.08);
+  orbitState.rotY = lerp(orbitState.rotY, orbitState.targetRotY, 0.08);
+  orbitState.zoom = lerp(orbitState.zoom, orbitState.targetZoom, 0.08);
+  orbitState.lookX = lerp(orbitState.lookX, orbitState.targetLookX, 0.08);
+  orbitState.lookY = lerp(orbitState.lookY, orbitState.targetLookY, 0.08);
+  if (autoRotate) orbitState.targetRotY += 0.005;
+  const sinX = Math.sin(orbitState.rotX), cosX = Math.cos(orbitState.rotX), sinY = Math.sin(orbitState.rotY), cosY = Math.cos(orbitState.rotY);
+  camera.position.x = orbitState.lookX + orbitState.zoom * cosX * sinY;
+  camera.position.y = orbitState.lookY + orbitState.zoom * sinX;
+  camera.position.z = orbitState.zoom * cosX * cosY;
+  camera.lookAt(new THREE.Vector3(orbitState.lookX, orbitState.lookY, 0));
+  VESSELS.forEach(v => {
+    const m = vesselMeshes[v.id]; if (!m) return;
+    const geom = m.particles.geometry; const pos = geom.attributes.position.array; const speeds = geom.userData.speeds; const cylH = geom.userData.cylH;
+    for (let i = 0; i < speeds.length; i++) { pos[i*3+1] += speeds[i]; if (pos[i*3+1] > 1.3 + cylH / 2) pos[i*3+1] = 1.3 - cylH / 2; }
+    geom.attributes.position.needsUpdate = true;
+    if (pulsateArts && v.pulsates) {
+      const pulse = 1 + 0.05 * Math.sin(time * 4 + VESSELS.indexOf(v) * 0.5);
+      m.group.children.forEach(child => { if (child.isMesh && child !== m.ring && child !== m.lumen) { child.scale.x = pulse; child.scale.z = pulse; } });
+    } else {
+      m.group.children.forEach(child => { if (child.isMesh && child !== m.ring && child !== m.lumen) { child.scale.x = 1; child.scale.z = 1; } });
+    }
+  });
+  checkHover(); renderer.render(scene, camera);
+}
+function init() {
+  onResize(); buildVessels(); buildVesselList(); buildCompareList(); lucide.createIcons(); animate();
+}
+init();
+</script>
+</body>
+</html>
