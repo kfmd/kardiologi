@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2:1 AV Block Analogy Simulator</title>
+    <style>
+        /* Apple-Inspired Design System Foundation */
+        :root {
+            /* Colors */
+            --bg-canvas: #ffffff; /* Pale Apple Gray */
+            /* --bg-canvas: #f5f5f7; Pale Apple Gray */
+            --surface-white: #ffffff; /* Pure White Canvas */
+            --text-primary: #1d1d1f; /* Near-Black Ink */
+            --text-secondary: #6e6e73; /* Secondary Neutral Gray */
+            --action-blue: #0071e3; /* Apple Action Blue */
+            --action-green: #54cc62; /* Apple Action Blue */
+            --border-soft: #d2d2d7; /* Soft Border Gray */
+            
+            /* Typography Metrics */
+            --font-display: "SF Pro Display", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
+            --font-text: "SF Pro Text", -apple-system, BlinkMacSystemFont, "Inter", sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-canvas);
+            color: var(--text-primary);
+            font-family: var(--font-text);
+            margin: 0;
+            padding: 4rem 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .dashboard {
+            width: 100%;
+            max-width: 980px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* Typography Hierarchy */
+        h1 {
+            font-family: var(--font-display);
+            font-size: 48px;
+            font-weight: 600;
+            line-height: 1.08;
+            letter-spacing: -0.144px;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        h3 {
+            font-family: var(--font-display);
+            font-size: 24px;
+            font-weight: 600;
+            line-height: 1.17;
+            letter-spacing: 0.216px;
+            margin: 0 0 8px 0;
+        }
+
+        p {
+            font-size: 17px;
+            font-weight: 400;
+            line-height: 1.47;
+            letter-spacing: -0.374px;
+            color: var(--text-secondary);
+            margin: 0 0 16px 0;
+        }
+
+        /* Editorial/Product Cards */
+        .panel {
+            background-color: var(--surface-white);
+            border-radius: 18px;
+            padding: 32px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        /* The Atropine Toggle (Capsule Action) */
+        .controls {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        #atropine-toggle { display: none; }
+        
+        .btn-atropine {
+            background-color: var(--surface-white);
+            border: 1px solid var(--border-soft);
+            color: var(--text-primary);
+            padding: 14px 28px;
+            border-radius: 980px; /* Extreme pill link */
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            margin: 0px 0px 30px 0px;
+        }
+
+        #atropine-toggle:checked ~ .btn-atropine {
+            background-color: var(--action-green);
+            color: var(--surface-white);
+            border-color: var(--action-green);
+            transform: scale(0.98);
+        }
+
+        /* Tracks layout */
+        .track-container {
+            position: relative;
+            height: 120px;
+            background: var(--bg-canvas);
+            border-radius: 12px;
+            border: 1px solid var(--border-soft);
+            margin-top: 1.5rem;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+        }
+
+        .city-label {
+            position: absolute;
+            z-index: 10;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            letter-spacing: -0.12px;
+            text-transform: uppercase;
+        }
+        .city-sa { left: 16px; }
+        .city-v { right: 16px; }
+
+        /* --- ANATOMICAL STRUCTURES (SVGs) --- */
+        .tollbooth-img {
+            position: absolute;
+            left: 280px; 
+            width: 60px;
+            height: auto;
+            z-index: 2;
+        }
+
+        .bridge-img {
+            position: absolute;
+            left: 580px; 
+            width: 100px;
+            height: auto;
+            z-index: 2;
+        }
+
+        /* The Pulses (Random SVG Cars) */
+        .car-img {
+            position: absolute;
+            left: 50px;
+            width: 48px;
+            height: auto;
+            opacity: 0;
+            z-index: 5;
+        }
+
+        /* Keyframes for Normal Conduction */
+        @keyframes conduct {
+            0% { transform: translateX(0); opacity: 1; }
+            35% { transform: translateX(250px); opacity: 1; } 
+            70% { transform: translateX(550px); opacity: 1; } 
+            95% { transform: translateX(750px); opacity: 1; }
+            100% { transform: translateX(800px); opacity: 0; }
+        }
+
+        /* Keyframes for Nodal Block */
+        @keyframes block-nodal {
+            0% { transform: translateX(0); opacity: 1; }
+            30% { transform: translateX(210px); opacity: 1; } 
+            35% { transform: translateX(230px); opacity: 0; } 
+            100% { transform: translateX(230px); opacity: 0; }
+        }
+
+        /* Keyframes for Infranodal Block */
+        @keyframes block-infra {
+            0% { transform: translateX(0); opacity: 1; }
+            35% { transform: translateX(250px); opacity: 1; } 
+            65% { transform: translateX(510px); opacity: 1; }
+            70% { transform: translateX(530px); opacity: 0; } 
+            100% { transform: translateX(530px); opacity: 0; }
+        }
+
+        /* --- NODAL SCENARIO ASSIGNMENTS --- */
+        .track-nodal .p1 { animation: conduct 4s infinite linear; }
+        .track-nodal .p2 { animation: block-nodal 4s infinite linear 2s; } 
+
+        /* --- INFRANODAL SCENARIO ASSIGNMENTS --- */
+        .track-infra .p1 { animation: conduct 4s infinite linear; }
+        .track-infra .p2 { animation: block-infra 4s infinite linear 2s; } 
+        .track-infra .p3 { display: none; } 
+
+        /* ========================================= */
+        /* ATROPINE INJECTED STATE (CSS Checkbox Hack) */
+        /* ========================================= */
+        
+        #atropine-toggle:checked ~ .dashboard .track-nodal .p1 { 
+            animation: conduct 2s infinite linear; 
+        }
+        #atropine-toggle:checked ~ .dashboard .track-nodal .p2 { 
+            animation: conduct 2s infinite linear 1s; 
+        }
+
+        #atropine-toggle:checked ~ .dashboard .track-infra .p1 { 
+            animation: conduct 2s infinite linear; 
+        }
+        #atropine-toggle:checked ~ .dashboard .track-infra .p2 { 
+            animation: block-infra 2s infinite linear 0.66s; 
+        }
+        #atropine-toggle:checked ~ .dashboard .track-infra .p3 { 
+            display: block;
+            animation: block-infra 2s infinite linear 1.33s; 
+        }
+    </style>
+</head>
+<body>
+
+    <h1>AV Block Conduction</h1>
+
+    <input type="checkbox" id="atropine-toggle">
+    <br>
+    <label for="atropine-toggle" class="btn-atropine">✴️ Inject Atropine</label>
+    <br>
+    <br>
+    <div class="dashboard">
+        
+        <!-- Nodal Panel -->
+        <div class="panel">
+        <br>
+            <h3>AV Nodal Block (The Tollbooth)</h3>
+            <p>The AV Node Tollbooth is malfunctioning, but the His-Purkinje Bridge is perfectly intact downstream.</p>
+            <div class="track-container track-nodal">
+                <div class="city-label city-sa">SA Node</div>
+                
+                <img src="toll_av_node.svg" class="tollbooth-img" alt="AV Node Toll">
+                <img src="bridge_normal.svg" class="bridge-img" alt="Normal Bridge"> 
+                <img class="car-img p1" alt="Car 1">
+                <img class="car-img p2" alt="Car 2">
+                
+                <div class="city-label city-v">Ventricles</div>
+            </div>
+            <br>
+            <p>✴️ — Injecting Atropine speeds up the toll worker, <b>restoring 1:1 conduction.</b></p>
+        </div>
+
+        <!-- Infranodal Panel -->
+        <div class="panel">
+            <h3>Infranodal Block (The Damaged Bridge)</h3>
+            <p>The AV Node works perfectly, but the His-Purkinje Bridge is fractured.</p>
+            <div class="track-container track-infra">
+                <div class="city-label city-sa">SA Node</div>
+                
+                <img src="toll_av_node.svg" class="tollbooth-img" alt="AV Node Toll">
+                <img src="bridge_broken.svg" class="bridge-img" alt="Broken Bridge"> 
+                <img class="car-img p1" alt="Car 1">
+                <img class="car-img p2" alt="Car 2">
+                <img class="car-img p3" alt="Car 3">
+                
+                <div class="city-label city-v">Ventricles</div>
+            </div>
+            <br>
+            <p>✴️ — Injecting Atropine forces the SA node to fire faster, causing impulses to pile up and crash at the damaged bridge. <b>Worsening the block.</b> </p>
+        </div>
+
+    </div>
+
+    <!-- JavaScript to assign random car SVGs on load -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const carAssets = ['car_yellow.svg', 'car_blue.svg', 'car_red.svg'];
+            const carElements = document.querySelectorAll('.car-img');
+            
+            carElements.forEach(img => {
+                const randomCar = carAssets[Math.floor(Math.random() * carAssets.length)];
+                img.src = randomCar;
+            });
+        });
+    </script>
+</body>
+</html>
