@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KFMD — Cardiology Web Apps</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="css/style.css" rel="stylesheet">
+</head>
+<body>
+
+<!-- ════════════════════════ TOP NAV ════════════════════════ -->
+<header class="top-nav">
+  <div class="nav-inner">
+    <!-- Logo -->
+    <a href="/" class="nav-logo">
+      <div class="nav-logo-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2">
+          <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+        </svg>
+      </div>
+      <span class="nav-logo-text">KFMD</span>
+    </a>
+
+    <!-- Center Tabs -->
+    <ul class="nav-tabs">
+      <li class="nav-tab"><a href="#apps"    data-i18n="navApps"    class="active">Apps</a></li>
+      <li class="nav-tab"><a href="#about"   data-i18n="navAbout">About</a></li>
+      <li class="nav-tab"><a href="#contact" data-i18n="navContact">Contact</a></li>
+    </ul>
+
+    <!-- Right -->
+    <div class="nav-right">
+      <div class="lang-switcher">
+        <button class="lang-btn lang-btn--active" data-lang="en" onclick="applyTranslations('en')">🇬🇧 EN</button>
+        <button class="lang-btn"                  data-lang="id" onclick="applyTranslations('id')">🇮🇩 ID</button>
+      </div>
+      <button class="btn-host" data-i18n="navAbout">About</button>
+    </div>
+  </div>
+</header>
+
+<!--✅ ════════════════════════ HERO ════════════════════════════ -->
+<section class="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="hero-badge" data-i18n="heroEyebrow">Clinical Web Applications</div>
+      <h1 class="hero-title" data-i18n="heroTitle">
+        Tools built for the<br><em>beating heart</em><br>of cardiology
+      </h1>
+      <p class="hero-desc" data-i18n="heroDesc">
+        A curated suite of interactive web apps for cardiology residents, clinicians, and educators.
+      </p>
+      <div class="hero-actions">
+        <a href="#apps"  class="btn-primary"   data-i18n="heroCta">Explore Apps</a>
+        <a href="#about" class="btn-secondary"  data-i18n="heroCtaSub">About this project</a>
+      </div>
+      <div class="hero-stats">
+        <div>
+          <div class="stat-val" id="appCount">—</div>
+          <div class="stat-lbl" data-i18n="statLive">Live apps</div>
+        </div>
+        <div>
+          <div class="stat-val">Free</div>
+          <div class="stat-lbl" data-i18n="statFree">Always &amp; forever</div>
+        </div>
+        <div>
+          <div class="stat-val">↑</div>
+          <div class="stat-lbl" data-i18n="statUpdate">Continuously updated</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hero visual card -->
+    <div class="hero-visual">
+      <div class="hero-card-preview">
+        <div class="hcp-label" data-i18n="sectionEyebrow">Web Applications</div>
+        <div id="heroPreviewRows">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════ APPS ════════════════════════════ -->
+<section class="section" id="apps">
+  <div style="display:flex; align-items:flex-end; justify-content:space-between; margin-bottom:8px; gap:16px; flex-wrap:wrap;">
+    <h2 class="section-heading" data-i18n="sectionTitle">Everything you need, in your browser</h2>
+    <p id="liveCount" style="font-size:14px; font-weight:500; color:var(--ash);">—</p>
+  </div>
+  <p class="section-sub" data-i18n="soonLabel">More apps coming soon</p>
+  <div class="apps-grid" id="appsGrid"></div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════════════════════════ ABOUT ═══════════════════════════ -->
+<section class="about-section" id="about">
+  <div class="about-inner">
+    <div>
+      <h2 data-i18n="aboutTitle">Built by a resident, for the ward</h2>
+      <p  data-i18n="aboutDesc">These tools are crafted during the grind of cardiology residency to solve real clinical and educational problems.</p>
+    </div>
+    <div class="feature-grid" id="featureGrid">
+      <!-- Populated by JS -->
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════ FOOTER ══════════════════════════ -->
+<footer id="contact">
+  <div class="footer-inner">
+    <div>
+      <div class="footer-brand">
+        <div class="nav-logo-icon" style="width:28px;height:28px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2" width="16" height="16">
+            <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+          </svg>
+        </div>
+        <span class="footer-brand-name">KFMD</span>
+      </div>
+      <p class="footer-brand-desc" data-i18n="footerDesc">Interactive cardiology web applications for education and practice.</p>
+      <a href="#apps" class="btn-primary" style="font-size:14px; padding:10px 20px; border-radius:8px;" data-i18n="footerViewAll">View all apps</a>
+    </div>
+    <div>
+      <p class="footer-col-title" data-i18n="footerCol1">Applications</p>
+      <ul class="footer-links" id="footerAppLinks"></ul>
+    </div>
+    <div>
+      <p class="footer-col-title" data-i18n="footerCol2">Resources</p>
+      <ul class="footer-links" id="footerResourceLinks"></ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p class="footer-copy"    data-i18n="footerCopy">© 2026 KFMD Cardiology Apps.</p>
+    <p class="footer-tagline" data-i18n="footerTagline">Cardiology, one app at a time.</p>
+  </div>
+</footer>
+
+<!-- ════════════════════════ SCRIPT ══════════════════════════ -->
+<script>
+// ─────────────────────────────────────────────────────────────
+//  APPS — Add new apps here. Translations in lang/*.json
+// ─────────────────────────────────────────────────────────────
+const APPS = [
+  {
+    id:       "wiggers",
+    url:      "/cardiac-cycle",
+    status:   "live",   // "live" | "beta" | "soon"
+    icon:     "📈",
+    featured: true
+  },
+  {
+    id:       "ecgaxis",
+    url:      "/ecgaxistrainer",
+    status:   "live",
+    icon:     "⚡",
+    featured: false
+  },
+  {
+    id:       "vessels",
+    url:      "/vessels",
+    status:   "beta",
+    icon:     "🩸",
+    featured: false
+  },              
+  {
+    id:       "cvguidelines",
+    url:      "/cvguidelines",
+    status:   "live",
+    icon:     "🫀",
+    featured: false
+  }, 
+  {
+    id:       "nodalblock",
+    url:      "/conduction-block-sim",
+    status:   "live",
+    icon:     "🔌",
+    featured: false
+  }, 
+  // {
+  //  id:       "er-monitor",
+  //  url:      "/er-monitor",
+  //  status:   "live",
+  //  icon:     "📈",
+  //  featured: false
+  // },
+
+  // ── Add future apps below ──
+  // { id: "heart-sounds", url: "/heart-sounds", status: "soon", icon: "🫀", featured: false },
+];
+
+const PILL_ICONS = ["📱","🔬","🎓","🔄","🆓","💡"];
+
+// ─────────────────────────────────────────────────────────────
+//  i18n — loads from lang/{en|id}.json
+// ─────────────────────────────────────────────────────────────
+let currentLang = localStorage.getItem("kfmd_lang") || "en";
+let t = {};
+
+async function loadLang(lang) {
+  const res = await fetch(`lang/${lang}.json`);
+  if (!res.ok) throw new Error(`Cannot load lang/${lang}.json`);
+  return res.json();
+}
+
+function statusBadge(status) {
+  return {
+    dot:   `status-${status === "soon" ? "soon" : status}`,
+    label: t[`status${status.charAt(0).toUpperCase()}${status.slice(1)}`] || status,
+    pill:  status === "live" ? "live" : status === "beta" ? "beta" : "soon"
+  };
+}
+
+function renderApps() {
+  const grid       = document.getElementById("appsGrid");
+  const footerApps = document.getElementById("footerAppLinks");
+  const preview    = document.getElementById("heroPreviewRows");
+  grid.innerHTML = footerApps.innerHTML = preview.innerHTML = "";
+
+  let liveCount = 0;
+
+  APPS.forEach(app => {
+    const tr       = (t.apps && t.apps[app.id]) || {};
+    const title    = tr.title    || app.id;
+    const desc     = tr.desc     || "";
+    const category = tr.category || "";
+    const tag      = tr.tag      || "";
+    const st       = statusBadge(app.status);
+    if (app.status === "live") liveCount++;
+
+    // ── App Card ──
+    const card = document.createElement("div");
+    card.className = "app-card" + (app.featured ? " featured" : "");
+    if (app.status !== "soon") card.onclick = () => window.location.href = app.url;
+
+    const imgSection = `
+      <div class="card-img">
+        ${app.featured ? '<span class="card-new-pill">FEATURED</span>' : ""}
+        ${app.icon}
+      </div>`;
+
+    const bodySection = `
+      <div class="card-body">
+        <div class="card-category">${category}</div>
+        <div class="card-title">${title}</div>
+        <div class="card-desc">${desc}</div>
+        <div class="card-footer-row">
+          <div>
+            <span class="card-tag">${tag}</span>
+            <span class="card-status" style="margin-top:6px; display:flex; align-items:center;">
+              <span class="status-dot ${st.dot}"></span>&nbsp;${st.label}
+            </span>
+          </div>
+          <button class="card-arrow-btn" aria-label="Open ${title}">→</button>
+        </div>
+      </div>`;
+
+    card.innerHTML = imgSection + bodySection;
+    grid.appendChild(card);
+
+    // ── Hero Preview Rows ──
+    const row = document.createElement("div");
+    row.className = "hcp-row";
+    row.innerHTML = `
+      <div class="hcp-icon">${app.icon}</div>
+      <div>
+        <div class="hcp-name">${title}</div>
+        <div class="hcp-sub">${category}</div>
+      </div>
+      <span class="hcp-badge ${st.pill}">${st.label}</span>`;
+    preview.appendChild(row);
+
+    // ── Footer App Link ──
+    if (app.status !== "soon") {
+      const li = document.createElement("li");
+      li.innerHTML = `<a href="${app.url}">${title}</a>`;
+      footerApps.appendChild(li);
+    }
+  });
+
+  // Counts
+  document.getElementById("appCount").textContent  = liveCount;
+  document.getElementById("liveCount").textContent =
+    (t.appsCount || "{n} apps available").replace("{n}", APPS.length);
+}
+
+function renderFeatureGrid() {
+  const grid = document.getElementById("featureGrid");
+  grid.innerHTML = "";
+  (t.pills || []).forEach((label, i) => {
+    const div = document.createElement("div");
+    div.className = "feature-item";
+    div.innerHTML = `<div class="feature-icon">${PILL_ICONS[i] || "•"}</div><div class="feature-label">${label}</div>`;
+    grid.appendChild(div);
+  });
+}
+
+function renderFooterResources() {
+  const ul = document.getElementById("footerResourceLinks");
+  ul.innerHTML = "";
+  (t.footerLinks || []).forEach(label => {
+    const li = document.createElement("li");
+    li.innerHTML = `<a href="#">${label}</a>`;
+    ul.appendChild(li);
+  });
+}
+
+function applyStaticStrings() {
+  document.querySelectorAll("[data-i18n]").forEach(el => {
+    const key = el.dataset.i18n;
+    if (t[key] === undefined) return;
+    if (key === "heroTitle" || key === "footerCopy") el.innerHTML = t[key];
+    else el.textContent = t[key];
+  });
+}
+
+async function applyTranslations(lang) {
+  currentLang = lang;
+  localStorage.setItem("kfmd_lang", lang);
+  document.documentElement.lang = lang;
+  t = await loadLang(lang);
+  applyStaticStrings();
+  renderApps();
+  renderFeatureGrid();
+  renderFooterResources();
+  document.querySelectorAll(".lang-btn").forEach(btn => {
+    btn.classList.toggle("lang-btn--active", btn.dataset.lang === lang);
+  });
+}
+
+// Boot
+(async () => { await applyTranslations(currentLang); })();
+</script>
+</body>
+</html>
