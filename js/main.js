@@ -4,17 +4,17 @@
 
 // Optional: add your real contact email here.
 // When blank, the contact form safely copies the prepared message instead.
-const CONTACT_EMAIL = "";
+const CONTACT_EMAIL = "dokterkhariz@gmail.com";
 
 const APPS = [
-  { id: "wiggers",      url: "/cardiac-cycle",         status: "live", icon: "📈", featured: true  },
-  { id: "ecgaxis",      url: "/ecgaxistrainer",       status: "live", icon: "⚡", featured: false },
-  { id: "vessels",      url: "/vessels",              status: "beta", icon: "🩸", featured: false },
-  { id: "cvguidelines", url: "/cvguidelines",         status: "live", icon: "🫀", featured: false },
-  { id: "nodalblock",   url: "/conduction-block-sim", status: "live", icon: "🔌", featured: false }
+  { id: "wiggers", url: "/cardiac-cycle", status: "live", icon: "📈", featured: true },
+  { id: "ecgaxis", url: "/ecgaxistrainer", status: "live", icon: "⚡", featured: false },
+  { id: "vessels", url: "/vessels", status: "beta", icon: "🩸", featured: false },
+  { id: "cvguidelines", url: "/cvguidelines", status: "live", icon: "🫀", featured: false },
+  { id: "nodalblock", url: "/conduction-block-sim", status: "live", icon: "🔌", featured: false }
 ];
 
-const PILL_ICONS = ["📱", "🔬", "🎓", "🔄", "🆓", "💡"];
+const PILL_ICONS = ["📱", "✅", "👆🏻", "🔄", "🆓", "💡"];
 const RESOURCE_LINKS = ["#about", "#contact", "#contact", "#about"];
 
 let currentLang = localStorage.getItem("kfmd_lang") || "en";
