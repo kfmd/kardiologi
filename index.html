@@ -35,6 +35,7 @@
         <ul class="nav-tabs" id="desktopNav">
           <li class="nav-tab"><a href="#apps" data-section-link="apps" data-i18n="navApps" class="active" aria-current="page">Apps</a></li>
           <li class="nav-tab"><a href="#about" data-section-link="about" data-i18n="navAbout">About</a></li>
+          <li class="nav-tab"><a href="#roadmap" data-section-link="roadmap" data-i18n="navRoadmap">Roadmap</a></li>
           <li class="nav-tab"><a href="#contact" data-section-link="contact" data-i18n="navContact">Contact</a></li>
         </ul>
       </nav>
@@ -57,7 +58,7 @@
       <div class="hero-inner">
         <div class="hero-copy">
           <div class="eyebrow" data-i18n="heroEyebrow">Cardiovascular Web Apps</div>
-          <h1 class="hero-title" id="heroTitle" data-i18n="heroTitle">Tools built for the<br><em>beating heart</em></h1>
+          <h1 class="hero-title" id="heroTitle" data-i18n-html="heroTitle">Tools built for the<br><em>beating heart</em></h1>
           <p class="hero-desc" data-i18n="heroDesc">A curated suite of interactive web apps designed for cardiology residents, clinicians, and educators.</p>
 
           <div class="hero-actions">
@@ -136,8 +137,12 @@
         <div class="about-copy">
           <div class="eyebrow" data-i18n="aboutEyebrow">About this project</div>
           <h2 id="aboutTitle" data-i18n="aboutTitle">Kardiologi.vercel.app — Built by a doctor for everyone</h2>
-          <p data-i18n="aboutDesc">This project turns recurring clinical-learning problems into interactive tools that are easier to explore, teach, and remember.</p>
+          <p data-i18n-html="aboutDesc">This project turns recurring clinical-learning problems into interactive tools that are easier to explore, teach, and remember.</p>
           <p class="about-note" data-i18n="aboutNote">Built iteratively, with evidence and user feedback guiding each update.</p>
+          <button class="btn btn-support" id="supportOpen" type="button" aria-haspopup="dialog" aria-controls="supportModal">
+            <span aria-hidden="true">♥</span>
+            <span data-i18n="supportButton">Support this project</span>
+          </button>
         </div>
 
         <div class="about-panel">
@@ -149,6 +154,29 @@
             </div>
           </div>
           <div class="feature-grid" id="featureGrid"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════════════ ROADMAP ═════════════════════════ -->
+    <section class="roadmap-section" id="roadmap" data-nav-section="roadmap" aria-labelledby="roadmapTitle">
+      <div class="roadmap-inner">
+        <div class="roadmap-header">
+          <div>
+            <div class="eyebrow" data-i18n="roadmapEyebrow">Project roadmap</div>
+            <h2 id="roadmapTitle" data-i18n="roadmapTitle">From a simple idea to a growing cardiology toolkit.</h2>
+            <p data-i18n-html="roadmapDesc">A visual timeline of the project so far.</p>
+          </div>
+          <div class="roadmap-hint" aria-hidden="true">
+            <span class="roadmap-hint-dot"></span>
+            <span data-i18n="roadmapHint">Hover or tap a milestone</span>
+          </div>
+        </div>
+
+        <div class="roadmap-flow-wrap">
+          <div class="roadmap-flow" id="roadmapFlow" aria-label="Project roadmap milestones">
+            <!-- Populated from lang/{en|id}.json -->
+          </div>
         </div>
       </div>
     </section>
@@ -217,7 +245,7 @@
           <div class="contact-form-footer">
             <p class="contact-form-note" data-i18n="contactFormNote">No form data is stored on this page.</p>
             <button class="btn btn-contact" id="contactSubmit" type="submit">
-              <span data-contact-submit-label data-i18n="contactSubmitFallback">Copy message</span>
+              <span data-contact-submit-label data-i18n="contactSubmitFallback">Send Message</span>
               <span aria-hidden="true">→</span>
             </button>
           </div>
@@ -226,6 +254,32 @@
       </div>
     </section>
   </main>
+
+  <!-- ════════════════════════ SUPPORT MODAL ═══════════════════ -->
+  <div class="modal-backdrop" id="supportModal" hidden>
+    <div class="support-modal" role="dialog" aria-modal="true" aria-labelledby="supportModalTitle" aria-describedby="supportModalDesc">
+      <button class="modal-close" id="supportClose" type="button" aria-label="Close support dialog" data-i18n-aria-label="supportModalClose">×</button>
+      <div class="support-modal-media">
+        <div class="support-qr-wrap" id="supportQrWrap">
+          <button class="support-qr-button" id="supportQrButton" type="button" aria-label="Click to enlarge" data-i18n-aria-label="supportModalEnlarge">
+            <img id="supportQrImage" src="assets/qris.png" alt="QRIS support code" data-i18n-alt="supportModalImageAlt">
+          </button>
+          <p class="support-qr-note" data-i18n="supportModalEnlarge">Click to enlarge</p>
+        </div>
+        <div class="support-image-placeholder" id="supportImagePlaceholder">
+          <span aria-hidden="true">▦</span>
+          <strong data-i18n="supportImagePlaceholderTitle">Add your QRIS image</strong>
+          <small data-i18n-html="supportImagePlaceholderDesc">Place it at <code>assets/qris.png</code></small>
+        </div>
+      </div>
+      <div class="support-modal-copy">
+        <div class="eyebrow" data-i18n="supportModalEyebrow">Support the project</div>
+        <h2 id="supportModalTitle" data-i18n="supportModalTitle">Keep these tools free and growing.</h2>
+        <div class="support-modal-desc" id="supportModalDesc" data-i18n-html="supportModalDesc">Thank you for helping support this project.</div>
+        <button class="btn btn-primary modal-done" id="supportDone" type="button" data-i18n="supportModalDone">Done</button>
+      </div>
+    </div>
+  </div>
 
   <!-- ════════════════════════ FOOTER ══════════════════════════ -->
   <footer>
@@ -239,7 +293,7 @@
           </span>
           <span class="footer-brand-name">KFMD</span>
         </div>
-        <p class="footer-brand-desc" data-i18n="footerDesc">Interactive cardiology web applications built for clinical education and practice. New tools added regularly.</p>
+        <p class="footer-brand-desc" data-i18n-html="footerDesc">Interactive cardiology web applications built for clinical education and practice. New tools added regularly.</p>
         <a href="#apps" class="footer-inline-link" data-i18n="footerViewAll">View all apps ↗</a>
       </div>
 
@@ -255,7 +309,7 @@
     </div>
 
     <div class="footer-bottom">
-      <p class="footer-copy" data-i18n="footerCopy">© 2026 <strong>Kardiologi by KFMD</strong>. For educational purpose only.</p>
+      <p class="footer-copy" data-i18n-html="footerCopy">© 2026 <strong>Kardiologi by KFMD</strong>. For educational purpose only.</p>
       <p class="footer-tagline" data-i18n="footerTagline">Cardiology Apps.</p>
     </div>
   </footer>
@@ -267,6 +321,9 @@
     </a>
     <a href="#about" data-section-link="about">
       <span aria-hidden="true">◎</span><small data-i18n="navAbout">About</small>
+    </a>
+    <a href="#roadmap" data-section-link="roadmap">
+      <span aria-hidden="true">↗</span><small data-i18n="navRoadmap">Roadmap</small>
     </a>
     <a href="#contact" data-section-link="contact">
       <span aria-hidden="true">✉</span><small data-i18n="navContact">Contact</small>

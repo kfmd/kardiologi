@@ -16,7 +16,6 @@ const APPS = [
 
 const PILL_ICONS = ["📱", "🔬", "🎓", "🔄", "🆓", "💡"];
 const RESOURCE_LINKS = ["#about", "#contact", "#contact", "#about"];
-const HTML_KEYS = new Set(["heroTitle", "footerDesc", "footerCopy"]);
 
 let currentLang = localStorage.getItem("kfmd_lang") || "en";
 let t = {};
@@ -125,6 +124,57 @@ function renderFeatureGrid() {
   });
 }
 
+function stripHTML(value = "") {
+  const tmp = document.createElement("div");
+  tmp.innerHTML = String(value);
+  return tmp.textContent || tmp.innerText || "";
+}
+
+function renderRoadmap() {
+  const flow = document.getElementById("roadmapFlow");
+  if (!flow) return;
+
+  const items = Array.isArray(t.roadmapItems) ? t.roadmapItems : [];
+  flow.innerHTML = "";
+
+  items.forEach((item, index) => {
+    const card = document.createElement("button");
+    card.type = "button";
+    card.className = "roadmap-card";
+    if (index === Math.max(0, items.length - 2)) card.classList.add("is-current");
+    card.setAttribute("aria-pressed", "false");
+    card.setAttribute("aria-label", [stripHTML(item.title), item.date].filter(Boolean).join(", "));
+    card.innerHTML = `
+      <span class="roadmap-node" aria-hidden="true"><span>${String(index + 1).padStart(2, "0")}</span></span>
+      <span class="roadmap-card-copy">
+        <span class="roadmap-card-title">${item.title || ""}</span>
+        ${item.date ? `<span class="roadmap-card-date">${item.date}</span>` : ""}
+      </span>`;
+
+    card.addEventListener("click", () => {
+      const wasActive = card.classList.contains("is-active");
+      flow.querySelectorAll(".roadmap-card").forEach((node) => {
+        node.classList.remove("is-active");
+        node.setAttribute("aria-pressed", "false");
+      });
+      if (!wasActive) {
+        card.classList.add("is-active");
+        card.setAttribute("aria-pressed", "true");
+      }
+    });
+
+    flow.appendChild(card);
+
+    if (index < items.length - 1) {
+      const connector = document.createElement("span");
+      connector.className = "roadmap-connector";
+      connector.setAttribute("aria-hidden", "true");
+      connector.innerHTML = `<span class="roadmap-line"></span><span class="roadmap-arrow">→</span>`;
+      flow.appendChild(connector);
+    }
+  });
+}
+
 function renderFooterResources() {
   const ul = document.getElementById("footerResourceLinks");
   if (!ul) return;
@@ -138,16 +188,32 @@ function renderFooterResources() {
 }
 
 function applyStaticStrings() {
+  // Plain translations: safe text only.
   document.querySelectorAll("[data-i18n]").forEach((el) => {
     const key = el.dataset.i18n;
-    if (t[key] === undefined) return;
-    if (HTML_KEYS.has(key)) el.innerHTML = t[key];
-    else el.textContent = t[key];
+    if (t[key] !== undefined) el.textContent = t[key];
+  });
+
+  // Trusted rich translations from the local lang/*.json files.
+  // Use data-i18n-html="key" when you want tags such as <br>, <strong>, <em>, etc.
+  document.querySelectorAll("[data-i18n-html]").forEach((el) => {
+    const key = el.dataset.i18nHtml;
+    if (t[key] !== undefined) el.innerHTML = t[key];
   });
 
   document.querySelectorAll("[data-i18n-placeholder]").forEach((el) => {
     const key = el.dataset.i18nPlaceholder;
     if (t[key] !== undefined) el.placeholder = t[key];
+  });
+
+  document.querySelectorAll("[data-i18n-aria-label]").forEach((el) => {
+    const key = el.dataset.i18nAriaLabel;
+    if (t[key] !== undefined) el.setAttribute("aria-label", stripHTML(t[key]));
+  });
+
+  document.querySelectorAll("[data-i18n-alt]").forEach((el) => {
+    const key = el.dataset.i18nAlt;
+    if (t[key] !== undefined) el.alt = stripHTML(t[key]);
   });
 
   updateContactSubmitLabel();
@@ -170,6 +236,7 @@ async function applyTranslations(lang) {
     applyStaticStrings();
     renderApps();
     renderFeatureGrid();
+    renderRoadmap();
     renderFooterResources();
     updateLanguageButtons(lang);
   } catch (error) {
@@ -225,6 +292,115 @@ function wireScrollSpy() {
   updateScrollState();
 }
 
+
+function wireHeroMotion() {
+  const hero = document.querySelector(".hero");
+  if (!hero) return;
+
+  const orbs = [...hero.querySelectorAll(".hero-orb")];
+  if (!orbs.length) return;
+
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  let frame = 0;
+  let pointer = null;
+
+  const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
+
+  const setPointer = (clientX, clientY) => {
+    pointer = { x: clientX, y: clientY };
+    hero.classList.add("is-orb-reacting");
+    scheduleUpdate();
+  };
+
+  const clearPointer = () => {
+    pointer = null;
+    hero.classList.remove("is-orb-reacting");
+    scheduleUpdate();
+  };
+
+  const update = () => {
+    frame = 0;
+
+    if (reduceMotion.matches) {
+      orbs.forEach((orb) => {
+        orb.style.setProperty("--avoid-x", "0px");
+        orb.style.setProperty("--avoid-y", "0px");
+        orb.style.setProperty("--scroll-x", "0px");
+        orb.style.setProperty("--scroll-y", "0px");
+      });
+      return;
+    }
+
+    const heroRect = hero.getBoundingClientRect();
+    const scrollProgress = clamp(-heroRect.top / Math.max(heroRect.height, 1), 0, 1.15);
+
+    orbs.forEach((orb, index) => {
+      // Opposing parallax speeds make the circles separate gently as the page scrolls.
+      const scrollY = (index === 0 ? 58 : -42) * scrollProgress;
+      const scrollX = (index === 0 ? -14 : 18) * scrollProgress;
+      orb.style.setProperty("--scroll-y", `${scrollY.toFixed(2)}px`);
+      orb.style.setProperty("--scroll-x", `${scrollX.toFixed(2)}px`);
+
+      if (!pointer) {
+        orb.style.setProperty("--avoid-x", "0px");
+        orb.style.setProperty("--avoid-y", "0px");
+        return;
+      }
+
+      const rect = orb.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      const dx = cx - pointer.x;
+      const dy = cy - pointer.y;
+      const distance = Math.hypot(dx, dy) || 1;
+      const influence = index === 0 ? 340 : 290;
+
+      if (distance >= influence) {
+        orb.style.setProperty("--avoid-x", "0px");
+        orb.style.setProperty("--avoid-y", "0px");
+        return;
+      }
+
+      // Move away from the pointer/finger, strongest when it gets close.
+      const strength = Math.pow(1 - distance / influence, 1.45);
+      const maxPush = index === 0 ? 54 : 44;
+      const push = strength * maxPush;
+      const avoidX = (dx / distance) * push;
+      const avoidY = (dy / distance) * push;
+
+      orb.style.setProperty("--avoid-x", `${avoidX.toFixed(2)}px`);
+      orb.style.setProperty("--avoid-y", `${avoidY.toFixed(2)}px`);
+    });
+  };
+
+  function scheduleUpdate() {
+    if (frame) return;
+    frame = window.requestAnimationFrame(update);
+  }
+
+  hero.addEventListener("pointermove", (event) => {
+    // Mouse, pen and touch-capable pointer events all use the same repulsion logic.
+    setPointer(event.clientX, event.clientY);
+  }, { passive: true });
+
+  hero.addEventListener("pointerleave", clearPointer, { passive: true });
+  hero.addEventListener("pointercancel", clearPointer, { passive: true });
+
+  // Some mobile browsers cancel pointer streams as soon as scrolling starts.
+  // A passive touch listener keeps the avoidance effect alive without blocking scroll.
+  hero.addEventListener("touchmove", (event) => {
+    const touch = event.touches?.[0];
+    if (touch) setPointer(touch.clientX, touch.clientY);
+  }, { passive: true });
+  hero.addEventListener("touchend", clearPointer, { passive: true });
+  hero.addEventListener("touchcancel", clearPointer, { passive: true });
+
+  window.addEventListener("scroll", scheduleUpdate, { passive: true });
+  window.addEventListener("resize", scheduleUpdate);
+  reduceMotion.addEventListener?.("change", scheduleUpdate);
+  scheduleUpdate();
+}
+
 function wireContactTopicShortcuts() {
   const topicSelect = document.getElementById("contactTopic");
   const message = document.getElementById("contactMessage");
@@ -241,8 +417,8 @@ function updateContactSubmitLabel() {
   const label = document.querySelector("[data-contact-submit-label]");
   if (!label) return;
   label.textContent = CONTACT_EMAIL
-    ? (t.contactSubmitEmail || "Send email")
-    : (t.contactSubmitFallback || "Copy message");
+    ? (t.contactSubmitEmail || "Send Message")
+    : (t.contactSubmitFallback || "Send Message");
 }
 
 function buildContactMessage(form) {
@@ -285,6 +461,82 @@ async function handleContactSubmit(event) {
   }
 }
 
+function wireSupportModal() {
+  const modal = document.getElementById("supportModal");
+  const openButton = document.getElementById("supportOpen");
+  const closeButton = document.getElementById("supportClose");
+  const doneButton = document.getElementById("supportDone");
+  const image = document.getElementById("supportQrImage");
+  const qrWrap = document.getElementById("supportQrWrap");
+  const qrButton = document.getElementById("supportQrButton");
+  const placeholder = document.getElementById("supportImagePlaceholder");
+  if (!modal || !openButton) return;
+
+  let returnFocus = null;
+
+  const showPlaceholder = () => {
+    if (qrWrap) qrWrap.hidden = true;
+    if (placeholder) placeholder.hidden = false;
+  };
+
+  const showImage = () => {
+    if (qrWrap) qrWrap.hidden = false;
+    if (placeholder) placeholder.hidden = true;
+  };
+
+  const collapseQr = () => {
+    modal.classList.remove("qr-enlarged");
+    qrButton?.setAttribute("aria-pressed", "false");
+  };
+
+  const toggleQr = () => {
+    const enlarged = modal.classList.toggle("qr-enlarged");
+    qrButton?.setAttribute("aria-pressed", String(enlarged));
+  };
+
+  if (image) {
+    image.addEventListener("load", showImage);
+    image.addEventListener("error", showPlaceholder);
+    if (image.complete) {
+      if (image.naturalWidth > 0) showImage();
+      else showPlaceholder();
+    }
+  }
+
+  const openModal = () => {
+    returnFocus = document.activeElement;
+    modal.hidden = false;
+    document.body.classList.add("modal-open");
+    window.requestAnimationFrame(() => modal.classList.add("is-open"));
+    closeButton?.focus();
+  };
+
+  const closeModal = () => {
+    collapseQr();
+    modal.classList.remove("is-open");
+    document.body.classList.remove("modal-open");
+    window.setTimeout(() => {
+      modal.hidden = true;
+      if (returnFocus instanceof HTMLElement) returnFocus.focus();
+    }, 180);
+  };
+
+  openButton.addEventListener("click", openModal);
+  closeButton?.addEventListener("click", closeModal);
+  doneButton?.addEventListener("click", closeModal);
+  qrButton?.addEventListener("click", toggleQr);
+
+  modal.addEventListener("click", (event) => {
+    if (event.target === modal) closeModal();
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key !== "Escape" || modal.hidden) return;
+    if (modal.classList.contains("qr-enlarged")) collapseQr();
+    else closeModal();
+  });
+}
+
 function wireInteractions() {
   document.querySelectorAll(".lang-btn").forEach((button) => {
     button.addEventListener("click", () => applyTranslations(button.dataset.lang || "en"));
@@ -294,7 +546,9 @@ function wireInteractions() {
   if (contactForm) contactForm.addEventListener("submit", handleContactSubmit);
 
   wireContactTopicShortcuts();
+  wireSupportModal();
   wireScrollSpy();
+  wireHeroMotion();
 }
 
 (async function boot() {

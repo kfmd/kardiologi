@@ -1,6 +1,7 @@
 {
   "navApps": "Apps",
   "navAbout": "Tentang",
+  "navRoadmap": "Roadmap",
   "navContact": "Kontak",
   "navContactCta": "Hubungi saya",
   "heroEyebrow": "Aplikasi Kardiovaskular",
@@ -27,6 +28,50 @@
   "aboutNote": "Dikembangkan secara bertahap dengan bukti ilmiah dan masukan pengguna sebagai arah pembaruan.",
   "aboutPanelKicker": "Prinsip desain",
   "aboutPanelTitle": "Berguna di klinik. Jelas saat belajar dan mengajar.",
+  "supportButton": "Dukung proyek ini",
+  "supportModalEyebrow": "Dukung KFMD Cardiology Apps",
+  "supportModalTitle": "Bantu aplikasi ini tetap gratis dan terus berkembang.",
+  "supportModalDesc": "Terima kasih telah mendukung waktu dan sumber daya yang diperlukan agar aplikasi ini <strong>tetap gratis, bermanfaat, dan terus diperbarui</strong>.<br><br>Dukungan Anda sangat berarti dan membantu proyek ini terus berkembang, <em>In Syaa Allaah</em>.",
+  "supportModalImageAlt": "Kode QRIS untuk mendukung KFMD Cardiology Apps",
+  "supportModalEnlarge": "Klik untuk memperbesar",
+  "supportImagePlaceholderTitle": "Tambahkan gambar QRIS Anda",
+  "supportImagePlaceholderDesc": "Letakkan gambar QRIS di <code>assets/qris.png</code>. Gambar tersebut akan otomatis menggantikan placeholder ini.",
+  "supportModalClose": "Tutup dialog dukungan",
+  "supportModalDone": "Selesai",
+  "roadmapEyebrow": "Roadmap proyek",
+  "roadmapTitle": "Dari ide sederhana menjadi rangkaian aplikasi kardiologi.",
+  "roadmapDesc": "Timeline visual perkembangan aplikasi dan milestone yang telah dirilis.",
+  "roadmapHint": "Arahkan kursor atau ketuk milestone",
+  "roadmapItems": [
+    {
+      "title": "Rilis Kardiologi App",
+      "date": "23 April 2026"
+    },
+    {
+      "title": "BHD.LIFE — Panduan BHD untuk Awam",
+      "date": "23 April 2026"
+    },
+    {
+      "title": "Wigger's Diagram Interaktif & Simulator Axis EKG",
+      "date": "29 April 2026"
+    },
+    {
+      "title": "Visualisasi Pembuluh Interaktif",
+      "date": "11 May 2026"
+    },
+    {
+      "title": "Simulasi AV Block",
+      "date": "4 August 2026"
+    },
+    {
+      "title": "Ringkasan Guideline ESC",
+      "date": "4 October 2026"
+    },
+    {
+      "title": "<em>Dan lainnya, In Syaa Allaah</em>",
+      "date": ""
+    }
+  ],
   "pills": [
     "Ramah HP",
     "Berbasis bukti",
@@ -55,8 +100,8 @@
   "contactMessageLabel": "Pesan",
   "contactMessagePlaceholder": "Ceritakan apa yang dapat membuat aplikasi ini lebih baik.",
   "contactFormNote": "Data formulir tidak disimpan di halaman ini.",
-  "contactSubmitFallback": "Salin pesan",
-  "contactSubmitEmail": "Kirim email",
+  "contactSubmitFallback": "Kirim Pesan",
+  "contactSubmitEmail": "Kirim Pesan",
   "contactSuccessCopied": "Pesan berhasil disalin. Tempelkan ke email atau aplikasi pesan yang Anda gunakan.",
   "contactSuccessEmail": "Aplikasi email Anda akan terbuka dengan pesan yang sudah disiapkan.",
   "contactCopyFailed": "Pesan tidak dapat disalin otomatis. Silakan salin pesan secara manual.",

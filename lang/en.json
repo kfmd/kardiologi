@@ -1,6 +1,7 @@
 {
   "navApps": "Apps",
   "navAbout": "About",
+  "navRoadmap": "Roadmap",
   "navContact": "Contact",
   "navContactCta": "Get in touch",
   "heroEyebrow": "Cardiovascular Web Apps",
@@ -27,6 +28,50 @@
   "aboutNote": "Built iteratively, with evidence and user feedback guiding each update.",
   "aboutPanelKicker": "Design principles",
   "aboutPanelTitle": "Useful at the bedside. Clear in the classroom.",
+  "supportButton": "Support this project",
+  "supportModalEyebrow": "Support KFMD Cardiology Apps",
+  "supportModalTitle": "Keep these tools free and growing.",
+  "supportModalDesc": "Thank you for supporting the time and resources needed to keep these tools <strong>free, useful, and continuously updated</strong>.<br><br>Your support is deeply appreciated and helps this project keep growing, <em>In Syaa Allaah</em>.",
+  "supportModalImageAlt": "QRIS code for supporting KFMD Cardiology Apps",
+  "supportModalEnlarge": "Click to enlarge",
+  "supportImagePlaceholderTitle": "Add your QRIS image",
+  "supportImagePlaceholderDesc": "Place your QRIS image at <code>assets/qris.png</code>. It will automatically replace this placeholder.",
+  "supportModalClose": "Close support dialog",
+  "supportModalDone": "Done",
+  "roadmapEyebrow": "Project roadmap",
+  "roadmapTitle": "From a simple idea to a growing cardiology toolkit.",
+  "roadmapDesc": "A visual timeline of the tools and milestones released so far.",
+  "roadmapHint": "Hover or tap a milestone",
+  "roadmapItems": [
+    {
+      "title": "Initial Release",
+      "date": "22 April 2026"
+    },
+    {
+      "title": "BHD.LIFE — a simple CPR Guide",
+      "date": "23 April 2026"
+    },
+    {
+      "title": "Interactive Wiggers Diagram & ECG Axis Trainer",
+      "date": "29 April 2026"
+    },
+    {
+      "title": "Interactive Vessels",
+      "date": "11 May 2026"
+    },
+    {
+      "title": "Conduction Block Simulator",
+      "date": "4 August 2026"
+    },
+    {
+      "title": "ESC Guidelines Summary",
+      "date": "4 October 2026"
+    },
+    {
+      "title": "<em>More coming, In Syaa Allaah</em>",
+      "date": ""
+    }
+  ],
   "pills": [
     "Mobile-friendly",
     "Evidence-based",
@@ -55,8 +100,8 @@
   "contactMessageLabel": "Message",
   "contactMessagePlaceholder": "Tell me what would make the tool better.",
   "contactFormNote": "No form data is stored on this page.",
-  "contactSubmitFallback": "Copy message",
-  "contactSubmitEmail": "Send email",
+  "contactSubmitFallback": "Send Message",
+  "contactSubmitEmail": "Send Message",
   "contactSuccessCopied": "Message copied. Paste it into your preferred email or messaging app.",
   "contactSuccessEmail": "Your email app should open with the message prepared.",
   "contactCopyFailed": "Could not copy automatically. Please copy the message manually.",
