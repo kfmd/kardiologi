@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>ESC Cardiovascular Guidance Master v25 — Fully Source-Validated</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="page-shell">
+    <header class="site-header">
+      <div class="brand-row">
+        <div class="logo-space" aria-label="Logo space">
+          <!-- Replace the placeholder below with your own image, for example:
+               <img class="brand-logo" src="logo.svg" alt="Your logo"> -->
+          <span class="logo-placeholder">ESC Guidelines Summary</span>
+          <span class="logo-instruction">by Khariz Fahrurrozi</span>
+        </div>
+        <div class="version-block" aria-label="Version information">
+          <span>MASTER DATASET</span>
+          <strong>V25 / 2002–2026</strong>
+        </div>
+      </div>
+
+      <div class="hero-copy">
+        <p class="eyebrow">ESC / SOURCE-VALIDATED RECOMMENDATIONS</p>
+        <h1>Cardiovascular Guidance Master</h1>
+        <p class="lede"><strong>Complete source-validation pass finished.</strong> Every class-based recommendation row in the master has been reconciled to the uploaded full-text guideline source used for that row.</p>
+      </div>
+
+      <div class="stats" aria-label="Recommendation statistics">
+        <div class="stat"><span class="stat-label">Total rows</span><strong id="stat-total">—</strong></div>
+        <div class="stat"><span class="stat-label">Class I</span><strong id="stat-I">—</strong></div>
+        <div class="stat"><span class="stat-label">Class IIa</span><strong id="stat-IIa">—</strong></div>
+        <div class="stat"><span class="stat-label">Class IIb</span><strong id="stat-IIb">—</strong></div>
+        <div class="stat"><span class="stat-label">Class III</span><strong id="stat-III">—</strong></div>
+        <div class="stat"><span class="stat-label">Validated</span><strong id="stat-validated">—</strong></div>
+        <div class="stat"><span class="stat-label">Pending</span><strong id="stat-pending">—</strong></div>
+      </div>
+    </header>
+
+    <section class="status-note" aria-label="Validation update">
+      <span class="status-kicker">LATEST VALIDATION UPDATE</span>
+      <p><strong>Batch 8B complete:</strong> 2018 ESC Syncope was rebuilt from <strong>93</strong> previous rows to <strong>114</strong> formal recommendations. <strong>21 omitted recommendations</strong> were recovered across initial diagnostic criteria, ED management, CSM/active standing, monitoring, echocardiography, exercise testing, arrhythmia therapy, and LQTS. The official 2018 corrigendum was reviewed and corrected online wording was incorporated where applicable.</p>
+    </section>
+
+    <section class="filter-section" aria-labelledby="filter-title">
+      <div class="section-heading">
+        <div>
+          <p class="section-kicker">DATABASE CONTROLS</p>
+          <h2 id="filter-title">Filter recommendations</h2>
+        </div>
+        <button id="reset" class="reset-button" type="button">Reset filters</button>
+      </div>
+
+      <div class="filters">
+        <div class="field field-search">
+          <label for="q">Search</label>
+          <input id="q" type="search" placeholder="Search recommendation text…" autocomplete="off">
+        </div>
+
+        <div class="field field-guideline">
+          <label for="g">Guideline topic</label>
+          <select id="g">
+            <option value="">All guideline topics</option>
+          </select>
+        </div>
+
+        <div class="field field-topic">
+          <label for="t">Specific topic</label>
+          <select id="t">
+            <option value="">All specific topics</option>
+          </select>
+        </div>
+
+        <div class="field field-class">
+          <label for="c">Class</label>
+          <select id="c">
+            <option value="">All classes</option>
+            <option value="I">I</option>
+            <option value="IIa">IIa</option>
+            <option value="IIb">IIb</option>
+            <option value="III">III</option>
+          </select>
+        </div>
+
+        <div class="field field-level">
+          <label for="l">Evidence level</label>
+          <select id="l">
+            <option value="">All evidence levels</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <div id="load-error" class="load-error" hidden></div>
+
+    <section class="results-section" aria-labelledby="results-title">
+      <div class="results-heading">
+        <div>
+          <p class="section-kicker">RECOMMENDATION INDEX</p>
+          <h2 id="results-title">Guideline recommendations</h2>
+        </div>
+        <div id="count" class="result-count" aria-live="polite">Loading recommendations…</div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Guideline</th>
+              <th>Specific Topic</th>
+              <th>Class</th>
+              <th>Level</th>
+              <th>Simplified Recommendation</th>
+              <th>Full Recommendation</th>
+              <th>Source Page</th>
+              <th>Validation</th>
+            </tr>
+          </thead>
+          <tbody id="body"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js" defer></script>
+</body>
+</html>

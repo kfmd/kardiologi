@@ -1,6 +1,3 @@
 [submodule "ecgaxistrainer"]
 	path = ecgaxistrainer
 	url = https://github.com/kfmd/ecgaxistrainer
-[submodule "cvguidelines"]
-	path = cvguidelines
-	url = https://github.com/kfmd/cvguidelines.git
