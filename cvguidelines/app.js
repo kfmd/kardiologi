@@ -1,6 +1,22 @@
 "use strict";
 
 const DATA_FILE = "ESC_Guidelines_Master_2002_2026_v25_FULLY_SOURCE_VALIDATED_data.json";
+const COLUMN_STORAGE_KEY = "esc-guidelines-v25-table-columns";
+const DEFAULT_GUIDELINE_TOPIC = "Sports Cardiology";
+
+const COLUMN_DEFINITIONS = [
+  { key: "guideline", label: "Guideline", minWidth: 180 },
+  { key: "specific_topic", label: "Specific Topic", minWidth: 260 },
+  { key: "class", label: "Class", minWidth: 90 },
+  { key: "level", label: "Level", minWidth: 90 },
+  { key: "simple", label: "Simplified Recommendation", minWidth: 360 },
+  { key: "full", label: "Full Recommendation", minWidth: 480 },
+  { key: "source", label: "Source Page", minWidth: 160 },
+  { key: "validation", label: "Validation", minWidth: 130 }
+];
+
+const DEFAULT_COLUMN_ORDER = COLUMN_DEFINITIONS.map((column) => column.key);
+const DEFAULT_VISIBLE_COLUMNS = new Set(DEFAULT_COLUMN_ORDER);
 
 const byId = (id) => document.getElementById(id);
 
@@ -12,8 +28,15 @@ const ui = {
   level: byId("l"),
   reset: byId("reset"),
   body: byId("body"),
+  headRow: byId("head-row"),
+  table: byId("recommendation-table"),
   count: byId("count"),
   error: byId("load-error"),
+  columnsToggle: byId("columns-toggle"),
+  columnConfig: byId("column-config"),
+  columnList: byId("column-list"),
+  columnsReset: byId("columns-reset"),
+  columnsStatus: byId("columns-status"),
   stats: {
     total: byId("stat-total"),
     I: byId("stat-I"),
@@ -26,6 +49,12 @@ const ui = {
 };
 
 let recommendations = [];
+let columnOrder = [...DEFAULT_COLUMN_ORDER];
+let visibleColumns = new Set(DEFAULT_VISIBLE_COLUMNS);
+let draggedColumnKey = null;
+let savedColumnOrder = [...DEFAULT_COLUMN_ORDER];
+let savedVisibleColumns = new Set(DEFAULT_VISIBLE_COLUMNS);
+let columnSettingsDirty = false;
 
 function escapeHtml(value) {
   return String(value ?? "").replace(/[&<>"']/g, (character) => ({
@@ -43,16 +72,30 @@ function shortenLabel(value, maxLength) {
   return `${text.slice(0, Math.max(1, maxLength - 1)).trimEnd()}…`;
 }
 
-function addOptions(selectElement, values, { maxLabelLength = null } = {}) {
-  const uniqueValues = [...new Set(values.filter(Boolean))]
+function sortedUnique(values) {
+  return [...new Set(values.filter(Boolean))]
     .sort((a, b) => String(a).localeCompare(String(b), undefined, { numeric: true }));
+}
 
-  for (const value of uniqueValues) {
+function replaceOptions(selectElement, values, firstLabel, { maxLabelLength = null } = {}) {
+  const currentValue = selectElement.value;
+  selectElement.innerHTML = "";
+
+  const firstOption = document.createElement("option");
+  firstOption.value = "";
+  firstOption.textContent = firstLabel;
+  selectElement.appendChild(firstOption);
+
+  for (const value of sortedUnique(values)) {
     const option = document.createElement("option");
     option.value = value;
     option.textContent = shortenLabel(value, maxLabelLength);
     option.title = String(value);
     selectElement.appendChild(option);
+  }
+
+  if ([...selectElement.options].some((option) => option.value === currentValue)) {
+    selectElement.value = currentValue;
   }
 }
 
@@ -60,42 +103,35 @@ function syncSelectTitle(selectElement) {
   selectElement.title = selectElement.value || "";
 }
 
-function populateSpecificTopics({ preserveSelection = false } = {}) {
-  const previousValue = preserveSelection ? ui.topic.value : "";
-  const selectedGuideline = ui.guideline.value;
-
-  const relevantRows = selectedGuideline
-    ? recommendations.filter((row) => row.guideline_topic === selectedGuideline)
+function populateSpecificTopics(guidelineTopic = "") {
+  const sourceRows = guidelineTopic
+    ? recommendations.filter((row) => row.guideline_topic === guidelineTopic)
     : recommendations;
 
-  // Rebuild the dropdown from scratch while preserving its default option.
-  ui.topic.innerHTML = '<option value="">All specific topics</option>';
-
-  /*
-   * Specific-topic labels can be extremely long. The full text remains the
-   * option value (so filtering is exact), while the visible label is shortened.
-   * This prevents native select popups from expanding to the longest option.
-   */
-  addOptions(ui.topic, relevantRows.map((row) => row.specific_topic), {
-    maxLabelLength: 72
-  });
-
-  if (previousValue && [...ui.topic.options].some((option) => option.value === previousValue)) {
-    ui.topic.value = previousValue;
-  } else {
-    ui.topic.value = "";
-  }
-
+  replaceOptions(
+    ui.topic,
+    sourceRows.map((row) => row.specific_topic),
+    "All specific topics",
+    { maxLabelLength: 72 }
+  );
   syncSelectTitle(ui.topic);
 }
 
 function populateFilters() {
-  addOptions(ui.guideline, recommendations.map((row) => row.guideline_topic), {
-    maxLabelLength: 58
-  });
+  replaceOptions(
+    ui.guideline,
+    recommendations.map((row) => row.guideline_topic),
+    "All guideline topics",
+    { maxLabelLength: 58 }
+  );
 
   populateSpecificTopics();
-  addOptions(ui.level, recommendations.map((row) => row.level));
+
+  replaceOptions(
+    ui.level,
+    recommendations.map((row) => row.level),
+    "All evidence levels"
+  );
 }
 
 function updateStatistics() {
@@ -121,6 +157,16 @@ function getFilteredRecommendations() {
   const searchText = ui.q.value.toLowerCase().trim();
 
   return recommendations.filter((row) => {
+    // Apply inexpensive structured filters first. This is especially important
+    // for the default Sports Cardiology view because it avoids rebuilding a
+    // large searchable string for thousands of unrelated rows on every keypress.
+    if (ui.guideline.value && row.guideline_topic !== ui.guideline.value) return false;
+    if (ui.topic.value && row.specific_topic !== ui.topic.value) return false;
+    if (ui.recommendationClass.value && row.class !== ui.recommendationClass.value) return false;
+    if (ui.level.value && row.level !== ui.level.value) return false;
+
+    if (!searchText) return true;
+
     const searchableText = [
       row.guideline_topic,
       row.guideline,
@@ -130,61 +176,344 @@ function getFilteredRecommendations() {
       row.source_page
     ].join(" ").toLowerCase();
 
-    return (
-      (!searchText || searchableText.includes(searchText)) &&
-      (!ui.guideline.value || row.guideline_topic === ui.guideline.value) &&
-      (!ui.topic.value || row.specific_topic === ui.topic.value) &&
-      (!ui.recommendationClass.value || row.class === ui.recommendationClass.value) &&
-      (!ui.level.value || row.level === ui.level.value)
-    );
+    return searchableText.includes(searchText);
   });
 }
 
-function validationLabel(row) {
-  return String(row.validation_status || "").toUpperCase().includes("VALIDATED")
-    ? "Validated"
-    : escapeHtml(row.validation_status || "Pending");
+function getColumnDefinition(key) {
+  return COLUMN_DEFINITIONS.find((column) => column.key === key);
+}
+
+function rememberSavedColumnSettings() {
+  savedColumnOrder = [...columnOrder];
+  savedVisibleColumns = new Set(visibleColumns);
+}
+
+function updateColumnSaveState(message = null) {
+  ui.columnsToggle.textContent = columnSettingsDirty ? "Save" : "Columns";
+  ui.columnsToggle.classList.toggle("has-unsaved-changes", columnSettingsDirty);
+  ui.columnsToggle.setAttribute(
+    "aria-label",
+    columnSettingsDirty ? "Save column layout" : "Customize table columns"
+  );
+
+  if (ui.columnsStatus) {
+    ui.columnsStatus.textContent = message || (
+      columnSettingsDirty
+        ? "Unsaved changes — click Save above to keep this layout in this browser."
+        : "No unsaved column changes."
+    );
+    ui.columnsStatus.classList.toggle("has-unsaved-changes", columnSettingsDirty);
+  }
+}
+
+function markColumnSettingsDirty() {
+  columnSettingsDirty = true;
+  updateColumnSaveState();
+}
+
+function loadColumnSettings() {
+  try {
+    const raw = localStorage.getItem(COLUMN_STORAGE_KEY);
+    if (raw) {
+      const saved = JSON.parse(raw);
+      const validKeys = new Set(DEFAULT_COLUMN_ORDER);
+
+      if (Array.isArray(saved.order)) {
+        const validSavedOrder = saved.order.filter((key) => validKeys.has(key));
+        const missingKeys = DEFAULT_COLUMN_ORDER.filter((key) => !validSavedOrder.includes(key));
+        columnOrder = [...validSavedOrder, ...missingKeys];
+      }
+
+      if (Array.isArray(saved.visible)) {
+        const validVisible = saved.visible.filter((key) => validKeys.has(key));
+        if (validVisible.length > 0) {
+          visibleColumns = new Set(validVisible);
+        }
+      }
+    }
+  } catch (error) {
+    console.warn("Could not load locally saved column settings.", error);
+  }
+
+  rememberSavedColumnSettings();
+  columnSettingsDirty = false;
+  updateColumnSaveState();
+}
+
+function saveColumnSettings() {
+  try {
+    localStorage.setItem(COLUMN_STORAGE_KEY, JSON.stringify({
+      order: columnOrder,
+      visible: columnOrder.filter((key) => visibleColumns.has(key))
+    }));
+    rememberSavedColumnSettings();
+    columnSettingsDirty = false;
+    updateColumnSaveState("Column layout saved in this browser.");
+    return true;
+  } catch (error) {
+    console.warn("Could not save column settings locally.", error);
+    updateColumnSaveState("Could not save the column layout in this browser.");
+    return false;
+  }
+}
+
+function discardUnsavedColumnSettings() {
+  if (!columnSettingsDirty) return;
+
+  columnOrder = [...savedColumnOrder];
+  visibleColumns = new Set(savedVisibleColumns);
+  columnSettingsDirty = false;
+  renderColumnConfigurator();
+  render();
+  updateColumnSaveState("Unsaved column changes were discarded.");
+}
+
+function resetColumnSettings() {
+  columnOrder = [...DEFAULT_COLUMN_ORDER];
+  visibleColumns = new Set(DEFAULT_VISIBLE_COLUMNS);
+  markColumnSettingsDirty();
+  renderColumnConfigurator();
+  render();
+}
+
+function moveColumn(key, direction) {
+  const index = columnOrder.indexOf(key);
+  const targetIndex = index + direction;
+  if (index < 0 || targetIndex < 0 || targetIndex >= columnOrder.length) return;
+
+  [columnOrder[index], columnOrder[targetIndex]] = [columnOrder[targetIndex], columnOrder[index]];
+  markColumnSettingsDirty();
+  renderColumnConfigurator();
+  render();
+}
+
+function reorderColumn(draggedKey, targetKey) {
+  if (!draggedKey || !targetKey || draggedKey === targetKey) return;
+
+  const nextOrder = columnOrder.filter((key) => key !== draggedKey);
+  const targetIndex = nextOrder.indexOf(targetKey);
+  if (targetIndex < 0) return;
+
+  nextOrder.splice(targetIndex, 0, draggedKey);
+  columnOrder = nextOrder;
+  markColumnSettingsDirty();
+  renderColumnConfigurator();
+  render();
+}
+
+function renderColumnConfigurator() {
+  const visibleCount = visibleColumns.size;
+
+  ui.columnList.innerHTML = columnOrder.map((key, index) => {
+    const column = getColumnDefinition(key);
+    const isVisible = visibleColumns.has(key);
+    const disableVisibilityToggle = isVisible && visibleCount === 1;
+
+    return `
+      <div class="column-option" draggable="true" data-column-key="${escapeHtml(key)}">
+        <span class="drag-handle" aria-hidden="true">⋮⋮</span>
+        <label class="column-visibility">
+          <input type="checkbox" data-column-visibility="${escapeHtml(key)}" ${isVisible ? "checked" : ""} ${disableVisibilityToggle ? "disabled" : ""}>
+          <span>${escapeHtml(column.label)}</span>
+        </label>
+        <div class="column-move-buttons" aria-label="Move ${escapeHtml(column.label)}">
+          <button type="button" data-column-move="up" data-column-key="${escapeHtml(key)}" ${index === 0 ? "disabled" : ""} aria-label="Move ${escapeHtml(column.label)} up">↑</button>
+          <button type="button" data-column-move="down" data-column-key="${escapeHtml(key)}" ${index === columnOrder.length - 1 ? "disabled" : ""} aria-label="Move ${escapeHtml(column.label)} down">↓</button>
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+function getVisibleOrderedColumns() {
+  return columnOrder
+    .filter((key) => visibleColumns.has(key))
+    .map(getColumnDefinition)
+    .filter(Boolean);
+}
+
+function tableCellForColumn(row, key) {
+  switch (key) {
+    case "guideline":
+      return `<td>${escapeHtml(row.guideline_topic)}</td>`;
+    case "specific_topic":
+      return `<td>${escapeHtml(row.specific_topic)}</td>`;
+    case "class":
+      return `<td class="cl ${escapeHtml(row.class)}">${escapeHtml(row.class)}</td>`;
+    case "level":
+      return `<td class="loe">${escapeHtml(row.level)}</td>`;
+    case "simple":
+      return `<td>${escapeHtml(row.simple)}</td>`;
+    case "full":
+      return `<td>${escapeHtml(row.full)}</td>`;
+    case "source":
+      return `<td class="source">${escapeHtml(row.source_page)}</td>`;
+    case "validation": {
+      const isValidated = String(row.validation_status || "").toUpperCase().includes("VALIDATED");
+      return `<td class="${isValidated ? "ok" : ""}">${isValidated ? "Validated" : escapeHtml(row.validation_status || "Pending")}</td>`;
+    }
+    default:
+      return "";
+  }
+}
+
+function renderTableHeader(columns) {
+  ui.headRow.innerHTML = columns
+    .map((column) => `<th data-column-key="${escapeHtml(column.key)}">${escapeHtml(column.label)}</th>`)
+    .join("");
+
+  const minimumWidth = Math.max(
+    720,
+    columns.reduce((total, column) => total + column.minWidth, 0)
+  );
+  ui.table.style.minWidth = `${minimumWidth}px`;
 }
 
 function render() {
   const filtered = getFilteredRecommendations();
+  const columns = getVisibleOrderedColumns();
+
+  renderTableHeader(columns);
 
   ui.body.innerHTML = filtered.map((row) => `
     <tr>
-      <td>${escapeHtml(row.guideline_topic)}</td>
-      <td>${escapeHtml(row.specific_topic)}</td>
-      <td class="cl ${escapeHtml(row.class)}">${escapeHtml(row.class)}</td>
-      <td class="loe">${escapeHtml(row.level)}</td>
-      <td>${escapeHtml(row.simple)}</td>
-      <td>${escapeHtml(row.full)}</td>
-      <td class="source">${escapeHtml(row.source_page)}</td>
-      <td class="ok">${validationLabel(row)}</td>
+      ${columns.map((column) => tableCellForColumn(row, column.key)).join("")}
     </tr>
   `).join("");
 
-  ui.count.textContent = `${filtered.length.toLocaleString()} / ${recommendations.length.toLocaleString()} rows`;
+  ui.count.textContent = `${filtered.length.toLocaleString()} / ${recommendations.length.toLocaleString()} rows · ${columns.length} columns`;
+}
+
+function applyDefaultGuidelineTopic() {
+  const hasDefault = [...ui.guideline.options].some(
+    (option) => option.value === DEFAULT_GUIDELINE_TOPIC
+  );
+
+  ui.guideline.value = hasDefault ? DEFAULT_GUIDELINE_TOPIC : "";
+  populateSpecificTopics(ui.guideline.value);
+  ui.topic.value = "";
+  syncSelectTitle(ui.guideline);
+  syncSelectTitle(ui.topic);
 }
 
 function resetFilters() {
   ui.q.value = "";
-  ui.guideline.value = "";
   ui.recommendationClass.value = "";
   ui.level.value = "";
-
-  // Clearing the main topic restores the complete Specific Topic list.
-  populateSpecificTopics();
+  applyDefaultGuidelineTopic();
 
   [ui.guideline, ui.topic, ui.recommendationClass, ui.level].forEach(syncSelectTitle);
   render();
 }
 
+function toggleColumnConfig() {
+  if (columnSettingsDirty) {
+    if (saveColumnSettings()) {
+      ui.columnConfig.hidden = true;
+      ui.columnsToggle.setAttribute("aria-expanded", "false");
+    }
+    return;
+  }
+
+  const willOpen = ui.columnConfig.hidden;
+  ui.columnConfig.hidden = !willOpen;
+  ui.columnsToggle.setAttribute("aria-expanded", String(willOpen));
+  updateColumnSaveState();
+}
+
+function attachColumnEvents() {
+  ui.columnsToggle.addEventListener("click", toggleColumnConfig);
+  ui.columnsReset.addEventListener("click", resetColumnSettings);
+
+  ui.columnList.addEventListener("change", (event) => {
+    const checkbox = event.target.closest("[data-column-visibility]");
+    if (!checkbox) return;
+
+    const key = checkbox.dataset.columnVisibility;
+    if (checkbox.checked) {
+      visibleColumns.add(key);
+    } else if (visibleColumns.size > 1) {
+      visibleColumns.delete(key);
+    } else {
+      checkbox.checked = true;
+      return;
+    }
+
+    markColumnSettingsDirty();
+    renderColumnConfigurator();
+    render();
+  });
+
+  ui.columnList.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-column-move]");
+    if (!button) return;
+
+    moveColumn(button.dataset.columnKey, button.dataset.columnMove === "up" ? -1 : 1);
+  });
+
+  ui.columnList.addEventListener("dragstart", (event) => {
+    const row = event.target.closest(".column-option");
+    if (!row) return;
+
+    draggedColumnKey = row.dataset.columnKey;
+    row.classList.add("is-dragging");
+    if (event.dataTransfer) {
+      event.dataTransfer.effectAllowed = "move";
+      event.dataTransfer.setData("text/plain", draggedColumnKey);
+    }
+  });
+
+  ui.columnList.addEventListener("dragend", (event) => {
+    const row = event.target.closest(".column-option");
+    if (row) row.classList.remove("is-dragging");
+    draggedColumnKey = null;
+    ui.columnList.querySelectorAll(".drag-over").forEach((item) => item.classList.remove("drag-over"));
+  });
+
+  ui.columnList.addEventListener("dragover", (event) => {
+    const row = event.target.closest(".column-option");
+    if (!row || row.dataset.columnKey === draggedColumnKey) return;
+
+    event.preventDefault();
+    ui.columnList.querySelectorAll(".drag-over").forEach((item) => item.classList.remove("drag-over"));
+    row.classList.add("drag-over");
+    if (event.dataTransfer) event.dataTransfer.dropEffect = "move";
+  });
+
+  ui.columnList.addEventListener("dragleave", (event) => {
+    const row = event.target.closest(".column-option");
+    if (row) row.classList.remove("drag-over");
+  });
+
+  ui.columnList.addEventListener("drop", (event) => {
+    const row = event.target.closest(".column-option");
+    if (!row) return;
+
+    event.preventDefault();
+    row.classList.remove("drag-over");
+    const draggedKey = draggedColumnKey || event.dataTransfer?.getData("text/plain");
+    reorderColumn(draggedKey, row.dataset.columnKey);
+    draggedColumnKey = null;
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && !ui.columnConfig.hidden) {
+      discardUnsavedColumnSettings();
+      ui.columnConfig.hidden = true;
+      ui.columnsToggle.setAttribute("aria-expanded", "false");
+      ui.columnsToggle.focus();
+    }
+  });
+}
+
 function attachEvents() {
   ui.q.addEventListener("input", render);
 
-  // Specific Topic is a cascading filter: its options depend on Main/Guideline Topic.
   ui.guideline.addEventListener("change", () => {
     syncSelectTitle(ui.guideline);
-    populateSpecificTopics();
+    ui.topic.value = "";
+    populateSpecificTopics(ui.guideline.value);
     render();
   });
 
@@ -196,6 +525,7 @@ function attachEvents() {
   });
 
   ui.reset.addEventListener("click", resetFilters);
+  attachColumnEvents();
 }
 
 function showLoadError(error) {
@@ -230,9 +560,12 @@ async function loadData() {
 
 async function init() {
   try {
+    loadColumnSettings();
+    renderColumnConfigurator();
     await loadData();
     updateStatistics();
     populateFilters();
+    applyDefaultGuidelineTopic();
     attachEvents();
     render();
   } catch (error) {
