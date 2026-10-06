@@ -9,6 +9,8 @@
 
 :root {
   /* StudioBlank core palette */
+  --primary: #0a0a0a;
+  --bg: #fafafa;
   --ink: #0a0a0a;
   --surface: #fafafa;
   --paper: #ffffff;
@@ -770,4 +772,27 @@ tbody tr:last-child td {
   .columns-reset-button {
     width: 100%;
   }
+}
+
+footer {
+  background: var(--primary);
+  color: var(--bg);
+  margin-top: 96px;
+  padding: 48px 0 64px;
+}
+
+footer .page {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 48px;
+}
+
+footer p {
+  margin: 0;
+  font-size: 13px;
+  color: #d4d4d8;
+}
+
+.mono {
+  font-family: "IBM Plex Mono", monospace;
 }

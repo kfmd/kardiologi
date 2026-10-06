@@ -1,0 +1,297 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@300;400;500;600;700&display=swap');
+
+  :root {
+    --primary: #0A0A0A;
+    --bg: #FAFAFA;
+    --white: #FFFFFF;
+    --tertiary: #D4D4D8;
+    --divider: #F4F4F5;
+    --muted: #71717A;
+    --error: #DC2626;
+    --success: #16A34A;
+    --warning: #CA8A04;
+    --info: #71717A;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--primary);
+    font-family: Inter, Arial, sans-serif;
+    font-weight: 300;
+    line-height: 1.65;
+  }
+
+  ::selection { background: var(--primary); color: var(--bg); }
+
+  .page {
+    width: min(1600px, calc(100% - 48px));
+    margin: 0 auto;
+  }
+
+  header {
+    padding: 96px 0 64px;
+    border-bottom: 1px solid var(--tertiary);
+  }
+
+  .eyebrow {
+    margin: 0 0 16px;
+    font: 400 12px/1.5 "IBM Plex Mono", monospace;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  h1 {
+    margin: 0;
+    max-width: 1050px;
+    font-size: clamp(40px, 5.5vw, 64px);
+    line-height: 1.05;
+    font-weight: 700;
+    letter-spacing: -.04em;
+  }
+
+  .intro {
+    max-width: 960px;
+    margin: 32px 0 0;
+    font-size: 18px;
+    line-height: 1.7;
+  }
+
+  .meta-row {
+    display: flex;
+    gap: 32px;
+    flex-wrap: wrap;
+    margin-top: 32px;
+    font-size: 12px;
+    color: var(--muted);
+    font-family: "IBM Plex Mono", monospace;
+  }
+
+  .notice {
+    margin: 48px 0 0;
+    padding: 24px 0;
+    border-top: 1px solid var(--tertiary);
+    border-bottom: 1px solid var(--tertiary);
+    display: grid;
+    grid-template-columns: minmax(180px, 1fr) 3fr;
+    gap: 32px;
+  }
+
+  .notice strong {
+    font-weight: 600;
+  }
+
+  .notice p {
+    margin: 0;
+    font-size: 14px;
+    color: #27272A;
+  }
+
+  main {
+    padding: 64px 0 96px;
+  }
+
+  .controls {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 12px;
+    font-family: "IBM Plex Mono", monospace;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: .05em;
+  }
+
+  input, select {
+    width: 100%;
+    height: 40px;
+    border: 1px solid var(--tertiary);
+    border-radius: 0;
+    background: var(--white);
+    color: var(--primary);
+    padding: 0 12px;
+    font: 400 14px/1.2 Inter, Arial, sans-serif;
+    outline: none;
+  }
+
+  input:hover, select:hover { border-color: #A1A1AA; }
+  input:focus, select:focus {
+    border-color: var(--primary);
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+  }
+
+  .toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+  }
+
+  .stats {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    color: var(--muted);
+    font: 400 13px/1.5 "IBM Plex Mono", monospace;
+  }
+
+  .stats strong { color: var(--primary); }
+
+  .actions { display: flex; gap: 8px; }
+
+  button {
+    height: 40px;
+    padding: 0 16px;
+    border: 1px solid var(--primary);
+    border-radius: 0;
+    background: transparent;
+    color: var(--primary);
+    font: 400 14px/1 Inter, Arial, sans-serif;
+    cursor: pointer;
+  }
+
+  button:hover { background: var(--primary); color: var(--bg); }
+  button:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+  }
+
+  .table-shell {
+    border-top: 1px solid var(--primary);
+    border-bottom: 1px solid var(--primary);
+    overflow: auto;
+    background: var(--white);
+  }
+
+  table {
+    width: 100%;
+    min-width: 1180px;
+    border-collapse: collapse;
+    table-layout: fixed;
+  }
+
+  col.year { width: 70px; }
+  col.study { width: 200px; }
+  col.domain { width: 185px; }
+  col.design { width: 145px; }
+  col.comparison { width: 315px; }
+  col.finding { width: auto; }
+
+  thead {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: var(--white);
+  }
+
+  th {
+    padding: 16px;
+    text-align: left;
+    border-bottom: 1px solid var(--primary);
+    font: 500 12px/1.5 "IBM Plex Mono", monospace;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    color: var(--muted);
+  }
+
+  th button.sort {
+    all: unset;
+    cursor: pointer;
+    color: var(--muted);
+  }
+
+  th button.sort:hover {
+    background: transparent;
+    color: var(--primary);
+  }
+
+  td {
+    padding: 20px 16px;
+    vertical-align: top;
+    border-bottom: 1px solid var(--divider);
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  tbody tr:hover td { background: var(--divider); }
+
+  td.year {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 13px;
+    white-space: nowrap;
+  }
+
+  td.study {
+    font-weight: 600;
+    letter-spacing: -.01em;
+  }
+
+  td.domain {
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  td.design {
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .finding {
+    color: #27272A;
+  }
+
+  .empty {
+    padding: 64px 24px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 14px;
+  }
+
+  footer {
+    background: var(--primary);
+    color: var(--bg);
+    margin-top: 96px;
+    padding: 48px 0 64px;
+  }
+
+  footer .page {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 48px;
+  }
+
+  footer p {
+    margin: 0;
+    font-size: 13px;
+    color: #D4D4D8;
+  }
+
+  .mono { font-family: "IBM Plex Mono", monospace; }
+
+  @media (max-width: 980px) {
+    .page { width: min(100% - 32px, 1600px); }
+    header { padding-top: 64px; }
+    .controls { grid-template-columns: 1fr 1fr; }
+    .notice { grid-template-columns: 1fr; gap: 12px; }
+    footer .page { grid-template-columns: 1fr; }
+  }
+
+  @media (max-width: 620px) {
+    .page { width: min(100% - 24px, 1600px); }
+    header { padding: 48px 0; }
+    main { padding-top: 48px; }
+    .controls { grid-template-columns: 1fr; }
+    .intro { font-size: 16px; }
+  }

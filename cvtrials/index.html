@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="A chronological landmark cardiovascular evidence atlas covering major studies informing contemporary ESC and AHA/ACC cardiovascular practice."
+    />
+    <title>Cardiovascular Landmark Evidence Atlas</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+
+  <body>
+    <header>
+      <div class="page">
+        <p class="eyebrow">Cardiovascular Medicine / Evidence Atlas</p>
+        <h1>Landmark Cardiovascular Trials &amp; Studies</h1>
+        <p class="intro">
+          A chronological, clinically oriented index of major studies that shaped contemporary ESC
+          and AHA/ACC cardiovascular practice. The collection begins with the
+          <strong>Framingham Heart Study (1948)</strong> and follows the evidence pathway into
+          modern prevention, hypertension, lipids, diabetes, coronary disease, ACS, heart failure,
+          AF, devices, valves, HCM, PAD, pulmonary hypertension, infective endocarditis,
+          pericarditis and perioperative cardiovascular medicine.
+        </p>
+        <div class="meta-row">
+          <span>CURATED LANDMARK SET</span>
+          <span>177 ENTRIES</span>
+          <span>1948 — 2024</span>
+          <span>DEFAULT: CHRONOLOGICAL</span>
+        </div>
+
+        <div class="notice">
+          <div><strong>How to read this atlas</strong></div>
+          <p>
+            Framingham and several other entries are
+            <strong>observational cohorts or epidemiologic studies</strong>, not randomized clinical
+            trials. The table intentionally includes both positive and negative randomized studies
+            because guidelines are shaped by evidence showing what works, what does not, and which
+            patient phenotypes modify the treatment effect.
+          </p>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <div class="page">
+        <section aria-label="Filters">
+          <div class="controls">
+            <div>
+              <label for="search">Search</label>
+              <input
+                id="search"
+                type="search"
+                placeholder="Study, intervention, outcome, disease…"
+                autocomplete="off"
+              />
+            </div>
+            <div>
+              <label for="domain">Disease entity</label>
+              <select id="domain">
+                <option value="All disease entities">All disease entities</option>
+                <option value="Acute Coronary Syndrome">Acute Coronary Syndrome</option>
+                <option value="Atrial Fibrillation">Atrial Fibrillation</option>
+                <option value="Chronic Coronary Disease">Chronic Coronary Disease</option>
+                <option value="Diabetes / Cardiometabolic">Diabetes / Cardiometabolic</option>
+                <option value="Dyslipidaemia">Dyslipidaemia</option>
+                <option value="Heart Failure">Heart Failure</option>
+                <option value="Hypertension">Hypertension</option>
+                <option value="Hypertrophic Cardiomyopathy">Hypertrophic Cardiomyopathy</option>
+                <option value="Infective Endocarditis">Infective Endocarditis</option>
+                <option value="Pericarditis / Myocarditis">Pericarditis / Myocarditis</option>
+                <option value="Perioperative Cardiovascular Medicine">
+                  Perioperative Cardiovascular Medicine
+                </option>
+                <option value="Peripheral Artery Disease / Aorta">
+                  Peripheral Artery Disease / Aorta
+                </option>
+                <option value="Prevention &amp; Epidemiology">Prevention &amp; Epidemiology</option>
+                <option value="Pulmonary Hypertension">Pulmonary Hypertension</option>
+                <option value="Valvular Heart Disease">Valvular Heart Disease</option>
+                <option value="Ventricular Arrhythmia / Devices">
+                  Ventricular Arrhythmia / Devices
+                </option>
+              </select>
+            </div>
+            <div>
+              <label for="design">Evidence type</label>
+              <select id="design">
+                <option value="All evidence types">All evidence types</option>
+                <option value="Randomized">Randomized</option>
+                <option value="Cohort">Cohort</option>
+                <option value="Case-control">Case-control</option>
+              </select>
+            </div>
+            <div>
+              <label for="year">Starting year</label>
+              <select id="year">
+                <option value="all">All years</option>
+                <option value="1900-1979">Before 1980</option>
+                <option value="1980-1999">1980–1999</option>
+                <option value="2000-2009">2000–2009</option>
+                <option value="2010-2019">2010–2019</option>
+                <option value="2020-2029">2020–2029</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="toolbar">
+            <div class="stats" aria-live="polite">
+              <span><strong id="visibleCount">177</strong> shown</span>
+              <span><strong id="domainCount">16</strong> disease entities</span>
+              <span id="sortState">Sorted by year ↑</span>
+            </div>
+            <div class="actions">
+              <button id="reset">Reset filters</button>
+              <button id="toggleOrder" title="Toggle chronological direction">Newest first</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="table-shell" aria-label="Landmark studies table">
+          <table>
+            <colgroup>
+              <col class="year" />
+              <col class="study" />
+              <col class="domain" />
+              <col class="design" />
+              <col class="comparison" />
+              <col class="finding" />
+            </colgroup>
+            <thead>
+              <tr>
+                <th><button class="sort" data-key="year">Year ↕</button></th>
+                <th><button class="sort" data-key="study">Study ↕</button></th>
+                <th>Disease entity</th>
+                <th>Evidence type</th>
+                <th>What was studied / compared?</th>
+                <th>Key clinical contribution</th>
+              </tr>
+            </thead>
+            <tbody id="tbody"></tbody>
+          </table>
+          <div id="empty" class="empty" hidden>No studies match the current filters.</div>
+        </section>
+      </div>
+    </main>
+
+    <footer class="page-shell">
+      <div class="page">
+        <div>
+          <div class="eyebrow" style="color: #a1a1aa">ESC Summary</div>
+          <p class="mono">Kardiologi by KFMD</p>
+        </div>
+        <div>
+          <p>
+            This is a curated educational index of the ESC Guidelines that we compile. Check out our
+            other apps at <a href="https://kardiologi.vercel.app">kardiologi.vercel.app</a>
+          </p>
+        </div>
+      </div>
+    </footer>
+
+    <script src="app.js"></script>
+  </body>
+</html>
