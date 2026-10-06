@@ -11,13 +11,14 @@ const APPS = [
   { id: "ecgaxis", url: "/ecgaxistrainer", status: "live", icon: "⚡", featured: false },
   { id: "vessels", url: "/vessels", status: "beta", icon: "🩸", featured: false },
   { id: "cvguidelines", url: "/cvguidelines", status: "live", icon: "🫀", featured: false },
-  { id: "nodalblock", url: "/conduction-block-sim", status: "live", icon: "🔌", featured: false }
+  { id: "cvtrials", url: "/cvtrials", status: "live", icon: "💊", featured: false },
+  { id: "nodalblock", url: "/conduction-block-sim", status: "live", icon: "🔌", featured: false },
 ];
 
 const PILL_ICONS = ["📱", "✅", "👆🏻", "🔄", "🆓", "💡"];
 const RESOURCE_LINKS = ["#about", "#contact", "#contact", "#about"];
 
-let currentLang = localStorage.getItem("kfmd_lang") || "en";
+let currentLang = localStorage.getItem("kfmd_lang") || "id";
 let t = {};
 
 async function loadLang(lang) {
@@ -31,7 +32,7 @@ function statusBadge(status) {
   return {
     dot: `status-${status === "soon" ? "soon" : status}`,
     label: t[`status${suffix}`] || status,
-    pill: status === "live" ? "live" : status === "beta" ? "beta" : "soon"
+    pill: status === "live" ? "live" : status === "beta" ? "beta" : "soon",
   };
 }
 
@@ -106,7 +107,8 @@ function renderApps() {
   const appCount = document.getElementById("appCount");
   const liveCountEl = document.getElementById("liveCount");
   if (appCount) appCount.textContent = String(liveCount);
-  if (liveCountEl) liveCountEl.textContent = (t.appsCount || "{n} apps available").replace("{n}", APPS.length);
+  if (liveCountEl)
+    liveCountEl.textContent = (t.appsCount || "{n} apps available").replace("{n}", APPS.length);
 }
 
 function renderFeatureGrid() {
@@ -292,7 +294,6 @@ function wireScrollSpy() {
   updateScrollState();
 }
 
-
 function wireHeroMotion() {
   const hero = document.querySelector(".hero");
   if (!hero) return;
@@ -378,20 +379,28 @@ function wireHeroMotion() {
     frame = window.requestAnimationFrame(update);
   }
 
-  hero.addEventListener("pointermove", (event) => {
-    // Mouse, pen and touch-capable pointer events all use the same repulsion logic.
-    setPointer(event.clientX, event.clientY);
-  }, { passive: true });
+  hero.addEventListener(
+    "pointermove",
+    (event) => {
+      // Mouse, pen and touch-capable pointer events all use the same repulsion logic.
+      setPointer(event.clientX, event.clientY);
+    },
+    { passive: true },
+  );
 
   hero.addEventListener("pointerleave", clearPointer, { passive: true });
   hero.addEventListener("pointercancel", clearPointer, { passive: true });
 
   // Some mobile browsers cancel pointer streams as soon as scrolling starts.
   // A passive touch listener keeps the avoidance effect alive without blocking scroll.
-  hero.addEventListener("touchmove", (event) => {
-    const touch = event.touches?.[0];
-    if (touch) setPointer(touch.clientX, touch.clientY);
-  }, { passive: true });
+  hero.addEventListener(
+    "touchmove",
+    (event) => {
+      const touch = event.touches?.[0];
+      if (touch) setPointer(touch.clientX, touch.clientY);
+    },
+    { passive: true },
+  );
   hero.addEventListener("touchend", clearPointer, { passive: true });
   hero.addEventListener("touchcancel", clearPointer, { passive: true });
 
@@ -417,21 +426,22 @@ function updateContactSubmitLabel() {
   const label = document.querySelector("[data-contact-submit-label]");
   if (!label) return;
   label.textContent = CONTACT_EMAIL
-    ? (t.contactSubmitEmail || "Send Message")
-    : (t.contactSubmitFallback || "Send Message");
+    ? t.contactSubmitEmail || "Send Message"
+    : t.contactSubmitFallback || "Send Message";
 }
 
 function buildContactMessage(form) {
   const data = new FormData(form);
   const topicSelect = document.getElementById("contactTopic");
-  const topicLabel = topicSelect?.selectedOptions?.[0]?.textContent?.trim() || String(data.get("topic") || "");
+  const topicLabel =
+    topicSelect?.selectedOptions?.[0]?.textContent?.trim() || String(data.get("topic") || "");
 
   return [
     `Name: ${String(data.get("name") || "").trim()}`,
     `Email: ${String(data.get("email") || "").trim()}`,
     `Topic: ${topicLabel}`,
     "",
-    String(data.get("message") || "").trim()
+    String(data.get("message") || "").trim(),
   ].join("\n");
 }
 
@@ -449,15 +459,22 @@ async function handleContactSubmit(event) {
     const subject = encodeURIComponent(`KFMD Cardiology Apps — ${topic}`);
     const body = encodeURIComponent(message);
     window.location.href = `mailto:${CONTACT_EMAIL}?subject=${subject}&body=${body}`;
-    if (status) status.textContent = t.contactSuccessEmail || "Your email app should open with the message prepared.";
+    if (status)
+      status.textContent =
+        t.contactSuccessEmail || "Your email app should open with the message prepared.";
     return;
   }
 
   try {
     await navigator.clipboard.writeText(message);
-    if (status) status.textContent = t.contactSuccessCopied || "Message copied. Paste it into your preferred email or messaging app.";
+    if (status)
+      status.textContent =
+        t.contactSuccessCopied ||
+        "Message copied. Paste it into your preferred email or messaging app.";
   } catch {
-    if (status) status.textContent = t.contactCopyFailed || "Could not copy automatically. Please copy the message manually.";
+    if (status)
+      status.textContent =
+        t.contactCopyFailed || "Could not copy automatically. Please copy the message manually.";
   }
 }
 

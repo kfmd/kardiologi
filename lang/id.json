@@ -57,15 +57,19 @@
     },
     {
       "title": "Visualisasi Pembuluh Interaktif",
-      "date": "11 May 2026"
+      "date": "11 Mei 2026"
     },
     {
       "title": "Simulasi AV Block",
-      "date": "4 August 2026"
+      "date": "4 Agustus 2026"
     },
     {
       "title": "Ringkasan Guideline ESC",
-      "date": "4 October 2026"
+      "date": "4 Oktober 2026"
+    },
+    {
+      "title": "Ringkasan Clinical Trial",
+      "date": "7 Oktober 2026"
     },
     {
       "title": "<em>Dan lainnya, In Syaa Allaah</em>",
@@ -109,13 +113,8 @@
   "footerViewAll": "Lihat semua aplikasi ↗",
   "footerCol1": "Aplikasi",
   "footerCol2": "Sumber Daya",
-  "footerLinks": [
-    "Tentang",
-    "Sarankan fitur",
-    "Laporkan bug",
-    "Disclaimer"
-  ],
-  "footerCopy": "© 2026 <strong>Kardiologi by KFMD</strong>. Web untuk edukasi, ambil keputusan klinis sesuai ekspertise dan pertimbangan klinis Anda sendiri!",
+  "footerLinks": ["Tentang", "Sarankan fitur", "Laporkan bug", "Disclaimer"],
+  "footerCopy": "©2026 <strong>Kardiologi by KFMD</strong>. Web untuk edukasi, ambil keputusan klinis sesuai ekspertise dan pertimbangan klinis Anda sendiri!",
   "footerTagline": "Kardiologi Apps",
   "statusLive": "Aktif",
   "statusBeta": "Beta",
@@ -143,6 +142,12 @@
     "cvguidelines": {
       "title": "Ringkasan Rekomendasi ESC",
       "desc": "Ga punya waktu baca guideline ESC yang segitu banyak? aplikasi ini udah ringkasin semuanya! Literally dari 2022-2026.",
+      "category": "Guidelines",
+      "tag": "Guidelines"
+    },
+    "cvtrials": {
+      "title": "Ringkasan Clinical Trial Signfiikan",
+      "desc": "Pengen tau dari mana asal-usul kenapa obat X dipilih daripada obat Y pada penyakit tertentu, aplikasi ini untuk kamu.",
       "category": "Guidelines",
       "tag": "Guidelines"
     },

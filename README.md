@@ -6,6 +6,10 @@
 4. ESC Recommendation Summary
 5. AVB Simulator
 
+## v1.3  
+
+- Added CV Trials
+
 # KFMD Homepage Customization
 
 ## Rich HTML inside translation JSON

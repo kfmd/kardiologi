@@ -68,6 +68,10 @@
       "date": "4 October 2026"
     },
     {
+      "title": "Ringkasan Clinical Trial",
+      "date": "7 Oktober 2026"
+    },
+    {
       "title": "<em>More coming, In Syaa Allaah</em>",
       "date": ""
     }
@@ -109,13 +113,8 @@
   "footerViewAll": "View all apps ↗",
   "footerCol1": "Applications",
   "footerCol2": "Resources",
-  "footerLinks": [
-    "About the project",
-    "Suggest a feature",
-    "Report a bug",
-    "Disclaimer"
-  ],
-  "footerCopy": "© 2026 <strong>Kardiologi by KFMD</strong>. For educational purpose only, make the clinical decisions yourself!.",
+  "footerLinks": ["About the project", "Suggest a feature", "Report a bug", "Disclaimer"],
+  "footerCopy": "©2026 <strong>Kardiologi by KFMD</strong>. For educational purpose only, make the clinical decisions yourself!.",
   "footerTagline": "Kardiologi Apps.",
   "statusLive": "Live",
   "statusBeta": "Beta",
@@ -143,6 +142,12 @@
     "cvguidelines": {
       "title": "ESC Recommendation Summary",
       "desc": "Don't have time to read the many ESC guidelines? This application has summarized everything! Literally from 2022-2026.",
+      "category": "Guidelines",
+      "tag": "Guidelines"
+    },
+    "cvtrials": {
+      "title": "Clinical Trials Sumamry",
+      "desc": "Want to know the origins of why drug <mono>X</mono> is chosen over drug <mono>Y</mono> in certain diseases, this application is for you.",
       "category": "Guidelines",
       "tag": "Guidelines"
     },
