@@ -1,0 +1,1418 @@
+[
+  {
+    "year": 1948,
+    "study": "Framingham Heart Study",
+    "domain": "Prevention & Epidemiology",
+    "design": "Prospective cohort",
+    "comparison": "Long-term observation of community-dwelling adults to identify cardiovascular risk factors",
+    "finding": "Established the modern multifactorial cardiovascular-risk paradigm; linked blood pressure, cholesterol, smoking, diabetes, obesity, inactivity and AF with subsequent cardiovascular events."
+  },
+  {
+    "year": 1958,
+    "study": "Seven Countries Study",
+    "domain": "Prevention & Epidemiology",
+    "design": "Prospective cohort / ecological comparison",
+    "comparison": "Dietary patterns, serum cholesterol and coronary mortality across populations",
+    "finding": "Demonstrated major population differences in coronary risk and strengthened the diet–cholesterol–CHD relationship."
+  },
+  {
+    "year": 1961,
+    "study": "Framingham Risk-Factor Reports",
+    "domain": "Prevention & Epidemiology",
+    "design": "Cohort analyses",
+    "comparison": "Blood pressure, cholesterol, ECG findings, smoking and subsequent CHD",
+    "finding": "Helped establish multivariable risk-factor prediction rather than reliance on a single risk marker."
+  },
+  {
+    "year": 1967,
+    "study": "Framingham Physical Activity / Obesity Analyses",
+    "domain": "Prevention & Epidemiology",
+    "design": "Cohort analyses",
+    "comparison": "Physical activity, body weight and cardiovascular outcomes",
+    "finding": "Added physical activity and adiposity to the evidence base for preventive cardiovascular care."
+  },
+  {
+    "year": 1970,
+    "study": "MRFIT",
+    "domain": "Prevention & Epidemiology",
+    "design": "Randomized prevention trial",
+    "comparison": "Multifactorial intervention targeting smoking, blood pressure and cholesterol versus usual care",
+    "finding": "Provided important evidence on multifactorial risk-factor intervention and cardiovascular mortality."
+  },
+  {
+    "year": 1987,
+    "study": "ARIC",
+    "domain": "Prevention & Epidemiology",
+    "design": "Prospective cohort",
+    "comparison": "Risk factors, atherosclerosis and cardiovascular events in diverse U.S. communities",
+    "finding": "Expanded epidemiologic understanding of atherosclerosis, stroke, hypertension and diabetes-related cardiovascular risk."
+  },
+  {
+    "year": 2000,
+    "study": "MESA",
+    "domain": "Prevention & Epidemiology",
+    "design": "Prospective cohort",
+    "comparison": "Subclinical atherosclerosis assessed with coronary calcium and multimodality imaging",
+    "finding": "Helped establish coronary artery calcium as a useful tool for refining cardiovascular risk in selected people."
+  },
+  {
+    "year": 2004,
+    "study": "INTERHEART",
+    "domain": "Prevention & Epidemiology",
+    "design": "Case-control study",
+    "comparison": "Potentially modifiable risk factors for first MI across 52 countries",
+    "finding": "Showed that a relatively small set of modifiable factors explains a large proportion of global myocardial-infarction risk."
+  },
+  {
+    "year": 1967,
+    "study": "VA Cooperative Studies",
+    "domain": "Hypertension",
+    "design": "Randomized trials",
+    "comparison": "Antihypertensive treatment versus placebo/control in severe hypertension",
+    "finding": "Demonstrated that treating severe hypertension markedly reduces morbidity and mortality."
+  },
+  {
+    "year": 1985,
+    "study": "MRC Mild Hypertension Trial",
+    "domain": "Hypertension",
+    "design": "Randomized trial",
+    "comparison": "Antihypertensive treatment versus placebo in mild hypertension",
+    "finding": "Supported treatment of less severe hypertension before advanced target-organ damage develops."
+  },
+  {
+    "year": 1991,
+    "study": "SHEP",
+    "domain": "Hypertension",
+    "design": "Randomized trial",
+    "comparison": "Chlorthalidone-based treatment versus placebo in older adults with isolated systolic hypertension",
+    "finding": "Reduced stroke and established isolated systolic hypertension as a condition that benefits from active treatment."
+  },
+  {
+    "year": 1998,
+    "study": "HOT",
+    "domain": "Hypertension",
+    "design": "Randomized trial",
+    "comparison": "Different diastolic blood-pressure targets",
+    "finding": "Supported lower BP targets in selected high-risk patients and reinforced intensive blood-pressure control."
+  },
+  {
+    "year": 2002,
+    "study": "ALLHAT",
+    "domain": "Hypertension",
+    "design": "Randomized trial",
+    "comparison": "Chlorthalidone versus amlodipine versus lisinopril",
+    "finding": "Established thiazide-type therapy as an effective first-line option and showed important differences in heart-failure and stroke outcomes among strategies."
+  },
+  {
+    "year": 2005,
+    "study": "ASCOT-BPLA",
+    "domain": "Hypertension",
+    "design": "Randomized trial",
+    "comparison": "Amlodipine ± perindopril versus atenolol ± thiazide",
+    "finding": "Amlodipine/perindopril strategy reduced stroke, total cardiovascular events and mortality-related outcomes versus the older beta-blocker strategy."
+  },
+  {
+    "year": 2008,
+    "study": "HYVET",
+    "domain": "Hypertension",
+    "design": "Randomized trial",
+    "comparison": "Antihypertensive treatment versus placebo in adults aged 80 years or older",
+    "finding": "Demonstrated benefit of treating hypertension even in the very elderly."
+  },
+  {
+    "year": 2010,
+    "study": "ACCORD-BP",
+    "domain": "Hypertension",
+    "design": "Randomized trial",
+    "comparison": "Systolic BP target <120 versus <140 mmHg in type 2 diabetes",
+    "finding": "Intensive BP lowering reduced stroke but did not significantly reduce the main composite outcome and increased treatment-related adverse events."
+  },
+  {
+    "year": 2015,
+    "study": "SPRINT",
+    "domain": "Hypertension",
+    "design": "Randomized trial",
+    "comparison": "Systolic BP target <120 versus <140 mmHg in high-risk adults without diabetes",
+    "finding": "Intensive treatment reduced major cardiovascular events and all-cause mortality, shaping modern BP-target discussions."
+  },
+  {
+    "year": 2016,
+    "study": "HOPE-3 BP",
+    "domain": "Hypertension",
+    "design": "Randomized trial",
+    "comparison": "Candesartan/hydrochlorothiazide versus placebo in intermediate-risk adults",
+    "finding": "No overall benefit across the whole cohort; cardiovascular benefit was more apparent among participants with higher baseline systolic BP."
+  },
+  {
+    "year": 1987,
+    "study": "Helsinki Heart Study",
+    "domain": "Dyslipidaemia",
+    "design": "Randomized trial",
+    "comparison": "Gemfibrozil versus placebo for primary prevention",
+    "finding": "Provided early outcome evidence that modifying atherogenic lipoproteins can reduce coronary events."
+  },
+  {
+    "year": 1994,
+    "study": "4S",
+    "domain": "Dyslipidaemia",
+    "design": "Randomized trial",
+    "comparison": "Simvastatin versus placebo in patients with CHD",
+    "finding": "Landmark statin trial demonstrating substantial reductions in coronary events and mortality."
+  },
+  {
+    "year": 1995,
+    "study": "WOSCOPS",
+    "domain": "Dyslipidaemia",
+    "design": "Randomized trial",
+    "comparison": "Pravastatin versus placebo in primary prevention",
+    "finding": "Established statin benefit in people without previous MI but with elevated LDL cholesterol."
+  },
+  {
+    "year": 1996,
+    "study": "CARE",
+    "domain": "Dyslipidaemia",
+    "design": "Randomized trial",
+    "comparison": "Pravastatin versus placebo after MI",
+    "finding": "Demonstrated statin benefit after MI even when baseline cholesterol was not dramatically elevated."
+  },
+  {
+    "year": 1998,
+    "study": "LIPID",
+    "domain": "Dyslipidaemia",
+    "design": "Randomized trial",
+    "comparison": "Pravastatin versus placebo after MI or unstable angina",
+    "finding": "Confirmed broad secondary-prevention benefit from statin therapy."
+  },
+  {
+    "year": 2002,
+    "study": "HPS",
+    "domain": "Dyslipidaemia",
+    "design": "Randomized trial",
+    "comparison": "Simvastatin versus placebo in high-risk patients",
+    "finding": "Established robust major-vascular-event reduction across a broad high-risk population, including diabetes and vascular disease."
+  },
+  {
+    "year": 2004,
+    "study": "PROVE-IT TIMI-22",
+    "domain": "Dyslipidaemia",
+    "design": "Randomized trial",
+    "comparison": "Atorvastatin 80 mg versus pravastatin 40 mg after ACS",
+    "finding": "Established the 'lower LDL is better' principle after acute coronary syndrome."
+  },
+  {
+    "year": 2005,
+    "study": "TNT",
+    "domain": "Dyslipidaemia",
+    "design": "Randomized trial",
+    "comparison": "Atorvastatin 80 mg versus 10 mg in stable coronary disease",
+    "finding": "Showed additional cardiovascular-event reduction with more intensive statin therapy."
+  },
+  {
+    "year": 2008,
+    "study": "JUPITER",
+    "domain": "Dyslipidaemia",
+    "design": "Randomized trial",
+    "comparison": "Rosuvastatin versus placebo in people with low LDL but elevated hsCRP",
+    "finding": "Showed substantial primary-prevention benefit despite not having markedly elevated LDL cholesterol."
+  },
+  {
+    "year": 2015,
+    "study": "IMPROVE-IT",
+    "domain": "Dyslipidaemia",
+    "design": "Randomized trial",
+    "comparison": "Simvastatin plus ezetimibe versus simvastatin after ACS",
+    "finding": "First major outcomes trial showing additional benefit from adding a non-statin LDL-lowering drug to statin therapy."
+  },
+  {
+    "year": 2017,
+    "study": "FOURIER",
+    "domain": "Dyslipidaemia",
+    "design": "Randomized trial",
+    "comparison": "Evolocumab plus statin versus statin alone",
+    "finding": "PCSK9 inhibition lowered LDL dramatically and reduced major cardiovascular events, confirming benefit from very low LDL levels."
+  },
+  {
+    "year": 2018,
+    "study": "ODYSSEY OUTCOMES",
+    "domain": "Dyslipidaemia",
+    "design": "Randomized trial",
+    "comparison": "Alirocumab plus intensive statin therapy versus placebo after ACS",
+    "finding": "Reduced major cardiovascular events and supported PCSK9 inhibition for secondary prevention."
+  },
+  {
+    "year": 2019,
+    "study": "REDUCE-IT",
+    "domain": "Dyslipidaemia",
+    "design": "Randomized trial",
+    "comparison": "Icosapent ethyl versus placebo in statin-treated patients with elevated triglycerides",
+    "finding": "Reduced major cardiovascular events and established an outcomes-based role for high-dose icosapent ethyl in selected high-risk patients."
+  },
+  {
+    "year": 2022,
+    "study": "PROMINENT",
+    "domain": "Dyslipidaemia",
+    "design": "Randomized trial",
+    "comparison": "Pemafibrate versus placebo in type 2 diabetes with hypertriglyceridaemia",
+    "finding": "Lowered triglycerides but did not reduce cardiovascular events; an important negative trial."
+  },
+  {
+    "year": 2023,
+    "study": "CLEAR Outcomes",
+    "domain": "Dyslipidaemia",
+    "design": "Randomized trial",
+    "comparison": "Bempedoic acid versus placebo in statin-intolerant patients",
+    "finding": "Reduced major cardiovascular events and provided outcome evidence for an oral non-statin LDL-lowering option."
+  },
+  {
+    "year": 1998,
+    "study": "UKPDS 33",
+    "domain": "Diabetes / Cardiometabolic",
+    "design": "Randomized trial",
+    "comparison": "Intensive versus conventional glucose control in newly diagnosed type 2 diabetes",
+    "finding": "Reduced diabetes-related and especially microvascular complications; macrovascular benefit was not clearly demonstrated in the original trial."
+  },
+  {
+    "year": 1998,
+    "study": "UKPDS 38",
+    "domain": "Diabetes / Cardiometabolic",
+    "design": "Randomized trial",
+    "comparison": "Tighter versus less-tight blood-pressure control in type 2 diabetes",
+    "finding": "Established the major cardiovascular importance of blood-pressure control in diabetes."
+  },
+  {
+    "year": 2007,
+    "study": "ADVANCE",
+    "domain": "Diabetes / Cardiometabolic",
+    "design": "Randomized trial",
+    "comparison": "Perindopril/indapamide plus intensive glucose lowering versus standard care",
+    "finding": "Blood-pressure lowering reduced major vascular outcomes; intensive glucose lowering mainly improved microvascular/renal outcomes."
+  },
+  {
+    "year": 2008,
+    "study": "ACCORD",
+    "domain": "Diabetes / Cardiometabolic",
+    "design": "Randomized trial",
+    "comparison": "HbA1c target <6% versus 7.0–7.9% in type 2 diabetes",
+    "finding": "Showed that intensive glucose lowering is not universally beneficial and can increase mortality in high-risk patients."
+  },
+  {
+    "year": 2015,
+    "study": "EMPA-REG OUTCOME",
+    "domain": "Diabetes / Cardiometabolic",
+    "design": "Randomized trial",
+    "comparison": "Empagliflozin versus placebo in type 2 diabetes with established/high-risk CVD",
+    "finding": "Reduced cardiovascular death, heart-failure hospitalization and major cardiovascular events; a landmark SGLT2 inhibitor outcome trial."
+  },
+  {
+    "year": 2016,
+    "study": "LEADER",
+    "domain": "Diabetes / Cardiometabolic",
+    "design": "Randomized trial",
+    "comparison": "Liraglutide versus placebo in high-risk type 2 diabetes",
+    "finding": "Reduced major cardiovascular events and cardiovascular death, establishing a GLP-1 receptor-agonist outcome benefit."
+  },
+  {
+    "year": 2016,
+    "study": "SUSTAIN-6",
+    "domain": "Diabetes / Cardiometabolic",
+    "design": "Randomized trial",
+    "comparison": "Semaglutide versus placebo in type 2 diabetes at high cardiovascular risk",
+    "finding": "Reduced major cardiovascular events, particularly nonfatal stroke and MI."
+  },
+  {
+    "year": 2017,
+    "study": "CANVAS Program",
+    "domain": "Diabetes / Cardiometabolic",
+    "design": "Randomized trial",
+    "comparison": "Canagliflozin versus placebo in type 2 diabetes at high cardiovascular risk",
+    "finding": "Reduced major cardiovascular events and heart-failure hospitalization; reinforced SGLT2 cardiovascular benefit."
+  },
+  {
+    "year": 2019,
+    "study": "DECLARE-TIMI 58",
+    "domain": "Diabetes / Cardiometabolic",
+    "design": "Randomized trial",
+    "comparison": "Dapagliflozin versus placebo in type 2 diabetes",
+    "finding": "Did not significantly reduce MACE overall, but reduced cardiovascular death/heart-failure hospitalization, driven mainly by fewer HF hospitalizations."
+  },
+  {
+    "year": 2019,
+    "study": "CREDENCE",
+    "domain": "Diabetes / Cardiometabolic",
+    "design": "Randomized trial",
+    "comparison": "Canagliflozin versus placebo in type 2 diabetes with CKD",
+    "finding": "Demonstrated kidney and cardiovascular protection with SGLT2 inhibition in diabetic CKD."
+  },
+  {
+    "year": 2020,
+    "study": "DAPA-CKD",
+    "domain": "Diabetes / Cardiometabolic",
+    "design": "Randomized trial",
+    "comparison": "Dapagliflozin versus placebo in CKD with and without diabetes",
+    "finding": "Extended SGLT2 kidney and cardiovascular benefit to CKD patients without diabetes."
+  },
+  {
+    "year": 2020,
+    "study": "FIDELIO-DKD",
+    "domain": "Diabetes / Cardiometabolic",
+    "design": "Randomized trial",
+    "comparison": "Finerenone versus placebo in type 2 diabetes with CKD",
+    "finding": "Demonstrated renal and cardiovascular protection from a non-steroidal mineralocorticoid receptor antagonist."
+  },
+  {
+    "year": 2021,
+    "study": "FIGARO-DKD",
+    "domain": "Diabetes / Cardiometabolic",
+    "design": "Randomized trial",
+    "comparison": "Finerenone versus placebo in earlier diabetic CKD",
+    "finding": "Confirmed cardiovascular benefit, particularly lower heart-failure hospitalization."
+  },
+  {
+    "year": 2023,
+    "study": "SELECT",
+    "domain": "Diabetes / Cardiometabolic",
+    "design": "Randomized trial",
+    "comparison": "Semaglutide 2.4 mg versus placebo in overweight/obesity with established CVD but no diabetes",
+    "finding": "Reduced MACE by about 20%, establishing cardiovascular outcome benefit of GLP-1 therapy in obesity without diabetes."
+  },
+  {
+    "year": 2024,
+    "study": "FLOW",
+    "domain": "Diabetes / Cardiometabolic",
+    "design": "Randomized trial",
+    "comparison": "Semaglutide versus placebo in type 2 diabetes with CKD",
+    "finding": "Demonstrated meaningful reduction in kidney and cardiovascular outcomes, extending GLP-1RA evidence into diabetic CKD."
+  },
+  {
+    "year": 1984,
+    "study": "CASS",
+    "domain": "Chronic Coronary Disease",
+    "design": "Randomized trial",
+    "comparison": "CABG versus medical management in selected coronary artery disease",
+    "finding": "Established anatomical and clinical principles for coronary revascularization."
+  },
+  {
+    "year": 1994,
+    "study": "STRESS",
+    "domain": "Chronic Coronary Disease",
+    "design": "Randomized trial",
+    "comparison": "Coronary stenting versus balloon angioplasty",
+    "finding": "Showed less restenosis with early coronary stents."
+  },
+  {
+    "year": 1994,
+    "study": "BENESTENT",
+    "domain": "Chronic Coronary Disease",
+    "design": "Randomized trial",
+    "comparison": "Coronary stenting versus balloon angioplasty",
+    "finding": "Confirmed lower restenosis and repeat revascularization with coronary stents."
+  },
+  {
+    "year": 1996,
+    "study": "BARI",
+    "domain": "Chronic Coronary Disease",
+    "design": "Randomized trial",
+    "comparison": "CABG versus PCI in multivessel coronary disease",
+    "finding": "Contributed to the evidence favoring CABG in selected complex multivessel disease and later in diabetes."
+  },
+  {
+    "year": 2007,
+    "study": "COURAGE",
+    "domain": "Chronic Coronary Disease",
+    "design": "Randomized trial",
+    "comparison": "PCI plus optimal medical therapy versus optimal medical therapy",
+    "finding": "Routine PCI did not reduce death or MI beyond good medical therapy in stable CAD, though symptoms can improve."
+  },
+  {
+    "year": 2009,
+    "study": "SYNTAX",
+    "domain": "Chronic Coronary Disease",
+    "design": "Randomized trial",
+    "comparison": "PCI versus CABG for left-main and three-vessel disease",
+    "finding": "Established the importance of anatomical complexity and the role of CABG in high-complexity disease."
+  },
+  {
+    "year": 2009,
+    "study": "FAME",
+    "domain": "Chronic Coronary Disease",
+    "design": "Randomized trial",
+    "comparison": "FFR-guided PCI versus angiography-guided PCI",
+    "finding": "Established coronary physiology as a way to avoid unnecessary stenting and improve PCI outcomes."
+  },
+  {
+    "year": 2012,
+    "study": "FREEDOM",
+    "domain": "Chronic Coronary Disease",
+    "design": "Randomized trial",
+    "comparison": "CABG versus PCI in diabetes with multivessel CAD",
+    "finding": "CABG reduced death and MI compared with PCI, with more stroke."
+  },
+  {
+    "year": 2012,
+    "study": "FAME 2",
+    "domain": "Chronic Coronary Disease",
+    "design": "Randomized trial",
+    "comparison": "FFR-positive PCI plus medical therapy versus medical therapy",
+    "finding": "Supported revascularization of lesions with physiologically significant ischemia, particularly for symptom relief."
+  },
+  {
+    "year": 2016,
+    "study": "EXCEL",
+    "domain": "Chronic Coronary Disease",
+    "design": "Randomized trial",
+    "comparison": "PCI versus CABG for selected left-main disease",
+    "finding": "Supported PCI as a reasonable alternative to surgery in selected low/intermediate-complexity left-main disease; longer-term interpretation remains nuanced."
+  },
+  {
+    "year": 2016,
+    "study": "NOBLE",
+    "domain": "Chronic Coronary Disease",
+    "design": "Randomized trial",
+    "comparison": "PCI versus CABG for left-main disease",
+    "finding": "Showed worse longer-term composite outcomes with PCI than CABG in the trial population."
+  },
+  {
+    "year": 2017,
+    "study": "ORBITA",
+    "domain": "Chronic Coronary Disease",
+    "design": "Randomized sham-controlled trial",
+    "comparison": "PCI versus sham procedure in stable single-vessel angina",
+    "finding": "Highlighted the placebo contribution to symptom improvement and the importance of blinded procedural trials."
+  },
+  {
+    "year": 2018,
+    "study": "CorMicA",
+    "domain": "Chronic Coronary Disease",
+    "design": "Randomized trial",
+    "comparison": "Invasive coronary-function testing plus mechanism-directed therapy versus usual care in ANOCA",
+    "finding": "Supported a mechanism-based approach to angina without obstructive coronary disease."
+  },
+  {
+    "year": 2020,
+    "study": "ISCHEMIA",
+    "domain": "Chronic Coronary Disease",
+    "design": "Randomized strategy trial",
+    "comparison": "Initial invasive strategy versus conservative strategy in stable CAD with moderate–severe ischemia",
+    "finding": "Routine initial invasive management did not reduce major ischemic outcomes/death but improved angina in symptomatic patients."
+  },
+  {
+    "year": 2023,
+    "study": "ORBITA-2",
+    "domain": "Chronic Coronary Disease",
+    "design": "Randomized sham-controlled trial",
+    "comparison": "PCI versus sham in stable angina with objective ischemia and minimal/no antianginal therapy",
+    "finding": "Provided stronger blinded evidence for symptom and angina benefit from PCI in selected patients."
+  },
+  {
+    "year": 1986,
+    "study": "GISSI-1",
+    "domain": "Acute Coronary Syndrome",
+    "design": "Randomized trial",
+    "comparison": "Streptokinase versus control in acute MI",
+    "finding": "Landmark proof that fibrinolytic reperfusion saves lives, with strong time dependence."
+  },
+  {
+    "year": 1988,
+    "study": "ISIS-2",
+    "domain": "Acute Coronary Syndrome",
+    "design": "Randomized factorial trial",
+    "comparison": "Streptokinase and aspirin versus control in acute MI",
+    "finding": "Established the mortality benefit of combining reperfusion with aspirin."
+  },
+  {
+    "year": 1993,
+    "study": "GUSTO-I",
+    "domain": "Acute Coronary Syndrome",
+    "design": "Randomized trial",
+    "comparison": "Accelerated alteplase versus streptokinase-based fibrinolysis strategies",
+    "finding": "Helped establish modern fibrinolytic strategy and the importance of rapid reperfusion."
+  },
+  {
+    "year": 1993,
+    "study": "PAMI",
+    "domain": "Acute Coronary Syndrome",
+    "design": "Randomized trial",
+    "comparison": "Primary PCI versus thrombolysis in STEMI",
+    "finding": "Provided early evidence favoring primary PCI when rapid reperfusion is feasible."
+  },
+  {
+    "year": 2001,
+    "study": "CURE",
+    "domain": "Acute Coronary Syndrome",
+    "design": "Randomized trial",
+    "comparison": "Clopidogrel plus aspirin versus aspirin in ACS",
+    "finding": "Established dual antiplatelet therapy as a foundation of ACS management."
+  },
+  {
+    "year": 2003,
+    "study": "DANAMI-2",
+    "domain": "Acute Coronary Syndrome",
+    "design": "Randomized trial",
+    "comparison": "Primary PCI versus fibrinolysis in STEMI, including transferred patients",
+    "finding": "Confirmed the superiority of primary PCI when timely transfer/reperfusion can be achieved."
+  },
+  {
+    "year": 2004,
+    "study": "PROVE-IT TIMI-22",
+    "domain": "Acute Coronary Syndrome",
+    "design": "Randomized trial",
+    "comparison": "Intensive versus standard statin therapy after ACS",
+    "finding": "Established early high-intensity lipid lowering after ACS."
+  },
+  {
+    "year": 2005,
+    "study": "COMMIT",
+    "domain": "Acute Coronary Syndrome",
+    "design": "Randomized trial",
+    "comparison": "Clopidogrel and metoprolol strategies in acute MI",
+    "finding": "Expanded evidence for antiplatelet therapy and clarified the context-dependent role of early beta-blockade."
+  },
+  {
+    "year": 2006,
+    "study": "OASIS-5",
+    "domain": "Acute Coronary Syndrome",
+    "design": "Randomized trial",
+    "comparison": "Fondaparinux versus enoxaparin in NSTE-ACS",
+    "finding": "Showed similar ischemic efficacy with substantially less bleeding using fondaparinux in the study population."
+  },
+  {
+    "year": 2007,
+    "study": "TRITON-TIMI 38",
+    "domain": "Acute Coronary Syndrome",
+    "design": "Randomized trial",
+    "comparison": "Prasugrel versus clopidogrel in ACS undergoing PCI",
+    "finding": "More potent platelet inhibition reduced ischemic events and stent thrombosis but increased major bleeding."
+  },
+  {
+    "year": 2009,
+    "study": "PLATO",
+    "domain": "Acute Coronary Syndrome",
+    "design": "Randomized trial",
+    "comparison": "Ticagrelor versus clopidogrel in ACS",
+    "finding": "Reduced cardiovascular death, MI and stroke compared with clopidogrel."
+  },
+  {
+    "year": 2009,
+    "study": "HORIZONS-AMI",
+    "domain": "Acute Coronary Syndrome",
+    "design": "Randomized trial",
+    "comparison": "Bivalirudin versus heparin plus routine GP IIb/IIIa inhibition in STEMI PCI",
+    "finding": "Reduced bleeding and improved net clinical outcomes in the study setting."
+  },
+  {
+    "year": 2011,
+    "study": "RIVAL",
+    "domain": "Acute Coronary Syndrome",
+    "design": "Randomized trial",
+    "comparison": "Radial versus femoral access in ACS",
+    "finding": "Established radial access as a safer strategy, especially for bleeding and vascular complications."
+  },
+  {
+    "year": 2012,
+    "study": "ATLAS ACS 2-TIMI 51",
+    "domain": "Acute Coronary Syndrome",
+    "design": "Randomized trial",
+    "comparison": "Low-dose rivaroxaban plus antiplatelet therapy versus placebo after ACS",
+    "finding": "Reduced recurrent ischemic events but increased bleeding, introducing dual-pathway concepts after ACS."
+  },
+  {
+    "year": 2013,
+    "study": "ACCOAST",
+    "domain": "Acute Coronary Syndrome",
+    "design": "Randomized trial",
+    "comparison": "Prasugrel pretreatment before coronary anatomy versus delayed administration in NSTE-ACS",
+    "finding": "Routine pretreatment did not improve ischemic outcomes and increased bleeding."
+  },
+  {
+    "year": 2014,
+    "study": "DAPT Study",
+    "domain": "Acute Coronary Syndrome",
+    "design": "Randomized trial",
+    "comparison": "30 versus 12 months of DAPT after drug-eluting stent",
+    "finding": "Longer DAPT reduced MI and stent thrombosis but increased bleeding, supporting individualized duration."
+  },
+  {
+    "year": 2015,
+    "study": "MATRIX",
+    "domain": "Acute Coronary Syndrome",
+    "design": "Randomized trial",
+    "comparison": "Radial versus femoral access in ACS",
+    "finding": "Reinforced radial access because of lower bleeding and vascular complications and favorable clinical outcomes."
+  },
+  {
+    "year": 2015,
+    "study": "PEGASUS-TIMI 54",
+    "domain": "Acute Coronary Syndrome",
+    "design": "Randomized trial",
+    "comparison": "Long-term ticagrelor plus aspirin versus aspirin after prior MI",
+    "finding": "Supported extended intensified antiplatelet therapy for selected high-risk post-MI patients."
+  },
+  {
+    "year": 2015,
+    "study": "TOTAL",
+    "domain": "Acute Coronary Syndrome",
+    "design": "Randomized trial",
+    "comparison": "Routine thrombus aspiration plus PCI versus PCI alone in STEMI",
+    "finding": "No clinical benefit and increased stroke; routine aspiration thrombectomy fell out of favor."
+  },
+  {
+    "year": 2017,
+    "study": "COMPLETE",
+    "domain": "Acute Coronary Syndrome",
+    "design": "Randomized trial",
+    "comparison": "Complete versus culprit-only revascularization after STEMI",
+    "finding": "Established benefit from staged/complete revascularization of suitable non-culprit lesions in selected STEMI patients."
+  },
+  {
+    "year": 2019,
+    "study": "TWILIGHT",
+    "domain": "Acute Coronary Syndrome",
+    "design": "Randomized strategy trial",
+    "comparison": "Ticagrelor monotherapy versus ticagrelor plus aspirin after 3 months DAPT",
+    "finding": "Aspirin withdrawal reduced clinically relevant bleeding without increasing death, MI or stroke in the selected high-risk PCI population."
+  },
+  {
+    "year": 2021,
+    "study": "MASTER DAPT",
+    "domain": "Acute Coronary Syndrome",
+    "design": "Randomized trial",
+    "comparison": "One month versus longer DAPT after PCI in high-bleeding-risk patients",
+    "finding": "Supported abbreviated DAPT strategies in appropriately selected high-bleeding-risk patients."
+  },
+  {
+    "year": 1987,
+    "study": "CONSENSUS",
+    "domain": "Heart Failure",
+    "design": "Randomized trial",
+    "comparison": "Enalapril versus placebo in severe NYHA IV HFrEF",
+    "finding": "Landmark mortality benefit of ACE inhibition in severe HFrEF."
+  },
+  {
+    "year": 1991,
+    "study": "SOLVD-Treatment",
+    "domain": "Heart Failure",
+    "design": "Randomized trial",
+    "comparison": "Enalapril versus placebo in LV systolic dysfunction",
+    "finding": "Established ACE inhibition as foundational therapy for HFrEF."
+  },
+  {
+    "year": 1992,
+    "study": "DIG",
+    "domain": "Heart Failure",
+    "design": "Randomized trial",
+    "comparison": "Digoxin versus placebo in symptomatic HFrEF",
+    "finding": "No mortality reduction, but fewer HF hospitalizations; defined digoxin mainly as a symptom/hospitalization therapy."
+  },
+  {
+    "year": 1992,
+    "study": "SAVE",
+    "domain": "Heart Failure",
+    "design": "Randomized trial",
+    "comparison": "Captopril versus placebo after MI with LV dysfunction",
+    "finding": "Established ACE-inhibitor benefit after MI with LV dysfunction."
+  },
+  {
+    "year": 1993,
+    "study": "AIRE",
+    "domain": "Heart Failure",
+    "design": "Randomized trial",
+    "comparison": "Ramipril versus placebo after MI with clinical HF",
+    "finding": "Confirmed ACE-inhibitor benefit after MI complicated by HF."
+  },
+  {
+    "year": 1995,
+    "study": "TRACE",
+    "domain": "Heart Failure",
+    "design": "Randomized trial",
+    "comparison": "Trandolapril versus placebo after MI with LV dysfunction",
+    "finding": "Reinforced ACE inhibition in post-MI LV dysfunction."
+  },
+  {
+    "year": 1999,
+    "study": "MERIT-HF",
+    "domain": "Heart Failure",
+    "design": "Randomized trial",
+    "comparison": "Metoprolol CR/XL versus placebo in HFrEF",
+    "finding": "Established evidence-based beta-blockade as a mortality-reducing therapy in HFrEF."
+  },
+  {
+    "year": 1999,
+    "study": "RALES",
+    "domain": "Heart Failure",
+    "design": "Randomized trial",
+    "comparison": "Spironolactone versus placebo in severe HFrEF",
+    "finding": "Dramatically reduced mortality and HF hospitalization; established MRA therapy."
+  },
+  {
+    "year": 2001,
+    "study": "COPERNICUS",
+    "domain": "Heart Failure",
+    "design": "Randomized trial",
+    "comparison": "Carvedilol versus placebo in severe HFrEF",
+    "finding": "Confirmed survival benefit from beta-blockade even in severe symptomatic HFrEF."
+  },
+  {
+    "year": 2003,
+    "study": "CHARM",
+    "domain": "Heart Failure",
+    "design": "Randomized programme",
+    "comparison": "Candesartan versus control across EF phenotypes",
+    "finding": "Established ARB benefit, especially in HFrEF and in selected ACE-intolerant patients."
+  },
+  {
+    "year": 2003,
+    "study": "EPHESUS",
+    "domain": "Heart Failure",
+    "design": "Randomized trial",
+    "comparison": "Eplerenone versus placebo after MI with LV dysfunction/HF",
+    "finding": "Demonstrated mortality benefit from selective MRA therapy after MI."
+  },
+  {
+    "year": 2003,
+    "study": "VALIANT",
+    "domain": "Heart Failure",
+    "design": "Randomized trial",
+    "comparison": "Valsartan versus captopril after MI with LV dysfunction/HF",
+    "finding": "Established ARB therapy as an effective alternative to ACE inhibition after MI in appropriate patients."
+  },
+  {
+    "year": 2005,
+    "study": "CARE-HF",
+    "domain": "Heart Failure",
+    "design": "Randomized trial",
+    "comparison": "CRT versus medical therapy in selected symptomatic HFrEF",
+    "finding": "Established CRT as a therapy that reduces HF hospitalization and mortality in appropriate conduction-delay phenotypes."
+  },
+  {
+    "year": 2010,
+    "study": "SHIFT",
+    "domain": "Heart Failure",
+    "design": "Randomized trial",
+    "comparison": "Ivabradine versus placebo in HFrEF with sinus rhythm and elevated heart rate",
+    "finding": "Reduced HF hospitalization/CV-death composite through selective heart-rate reduction."
+  },
+  {
+    "year": 2011,
+    "study": "EMPHASIS-HF",
+    "domain": "Heart Failure",
+    "design": "Randomized trial",
+    "comparison": "Eplerenone versus placebo in mild HFrEF",
+    "finding": "Expanded MRA benefit to less symptomatic HFrEF."
+  },
+  {
+    "year": 2014,
+    "study": "PARADIGM-HF",
+    "domain": "Heart Failure",
+    "design": "Randomized trial",
+    "comparison": "Sacubitril/valsartan versus enalapril in HFrEF",
+    "finding": "Reduced cardiovascular death/HF hospitalization and established ARNI therapy as a foundational HFrEF treatment."
+  },
+  {
+    "year": 2014,
+    "study": "TOPCAT",
+    "domain": "Heart Failure",
+    "design": "Randomized trial",
+    "comparison": "Spironolactone versus placebo in HFpEF",
+    "finding": "Neutral primary endpoint overall but fewer HF hospitalizations; highlighted HFpEF heterogeneity."
+  },
+  {
+    "year": 2018,
+    "study": "COAPT",
+    "domain": "Heart Failure",
+    "design": "Randomized trial",
+    "comparison": "TEER (MitraClip) plus GDMT versus GDMT in severe secondary MR with HF",
+    "finding": "Markedly reduced HF hospitalization and improved survival in carefully selected patients."
+  },
+  {
+    "year": 2018,
+    "study": "MITRA-FR",
+    "domain": "Heart Failure",
+    "design": "Randomized trial",
+    "comparison": "TEER plus medical therapy versus medical therapy in secondary MR",
+    "finding": "Neutral result; emphasized careful patient selection and MR/LV proportionality concepts."
+  },
+  {
+    "year": 2019,
+    "study": "DAPA-HF",
+    "domain": "Heart Failure",
+    "design": "Randomized trial",
+    "comparison": "Dapagliflozin versus placebo in HFrEF",
+    "finding": "Reduced worsening HF or cardiovascular death by about 26%, regardless of diabetes status."
+  },
+  {
+    "year": 2019,
+    "study": "PARAGON-HF",
+    "domain": "Heart Failure",
+    "design": "Randomized trial",
+    "comparison": "Sacubitril/valsartan versus valsartan in EF ≥45%",
+    "finding": "Did not meet its primary endpoint overall, but suggested differential benefit in some lower-EF and female subgroups."
+  },
+  {
+    "year": 2020,
+    "study": "EMPEROR-Reduced",
+    "domain": "Heart Failure",
+    "design": "Randomized trial",
+    "comparison": "Empagliflozin versus placebo in HFrEF",
+    "finding": "Reduced cardiovascular death or HF hospitalization by about 25%, driven largely by fewer HF hospitalizations."
+  },
+  {
+    "year": 2020,
+    "study": "VICTORIA",
+    "domain": "Heart Failure",
+    "design": "Randomized trial",
+    "comparison": "Vericiguat versus placebo after recent worsening HFrEF",
+    "finding": "Reduced the composite of cardiovascular death or first HF hospitalization in a high-risk recently decompensated population."
+  },
+  {
+    "year": 2020,
+    "study": "AFFIRM-AHF",
+    "domain": "Heart Failure",
+    "design": "Randomized trial",
+    "comparison": "IV ferric carboxymaltose versus placebo after acute HF",
+    "finding": "Reduced recurrent HF hospitalizations in patients with iron deficiency, supporting IV iron in selected HF patients."
+  },
+  {
+    "year": 2021,
+    "study": "EMPEROR-Preserved",
+    "domain": "Heart Failure",
+    "design": "Randomized trial",
+    "comparison": "Empagliflozin versus placebo in HF with EF >40%",
+    "finding": "Reduced cardiovascular death/HF hospitalization by about 21%, mainly through fewer HF hospitalizations."
+  },
+  {
+    "year": 2021,
+    "study": "SOLOIST-WHF",
+    "domain": "Heart Failure",
+    "design": "Randomized trial",
+    "comparison": "Sotagliflozin versus placebo around hospitalization for worsening HF in diabetes",
+    "finding": "Supported early SGLT inhibition around HF hospitalization, although the trial stopped early."
+  },
+  {
+    "year": 2022,
+    "study": "DELIVER",
+    "domain": "Heart Failure",
+    "design": "Randomized trial",
+    "comparison": "Dapagliflozin versus placebo in EF >40%",
+    "finding": "Reduced worsening HF or cardiovascular death, extending SGLT2 benefit across higher EF ranges."
+  },
+  {
+    "year": 2022,
+    "study": "IRONMAN",
+    "domain": "Heart Failure",
+    "design": "Randomized trial",
+    "comparison": "IV ferric derisomaltose versus usual care in HFrEF with iron deficiency",
+    "finding": "Primary endpoint narrowly missed conventional statistical significance overall but provided supportive iron-repletion evidence."
+  },
+  {
+    "year": 2022,
+    "study": "ADVOR",
+    "domain": "Heart Failure",
+    "design": "Randomized trial",
+    "comparison": "Acetazolamide plus loop diuretic versus loop diuretic alone in acute decompensated HF",
+    "finding": "Improved successful decongestion during acute HF hospitalization."
+  },
+  {
+    "year": 2022,
+    "study": "EMPULSE",
+    "domain": "Heart Failure",
+    "design": "Randomized trial",
+    "comparison": "Empagliflozin started during acute HF hospitalization versus placebo",
+    "finding": "Improved overall clinical benefit, supporting early SGLT2 initiation during/soon after acute HF hospitalization."
+  },
+  {
+    "year": 2022,
+    "study": "STRONG-HF",
+    "domain": "Heart Failure",
+    "design": "Randomized strategy trial",
+    "comparison": "Rapid GDMT initiation/up-titration with close follow-up versus usual care after acute HF",
+    "finding": "Supported aggressive post-discharge GDMT optimization to reduce early adverse outcomes."
+  },
+  {
+    "year": 2023,
+    "study": "STEP-HFpEF",
+    "domain": "Heart Failure",
+    "design": "Randomized trial",
+    "comparison": "Semaglutide versus placebo in obesity-related HFpEF",
+    "finding": "Improved symptoms, functional status and weight, linking obesity treatment to HFpEF care."
+  },
+  {
+    "year": 2024,
+    "study": "FINEARTS-HF",
+    "domain": "Heart Failure",
+    "design": "Randomized trial",
+    "comparison": "Finerenone versus placebo in EF ≥40%",
+    "finding": "Reduced total worsening HF events and cardiovascular death, expanding MRA evidence into higher-EF HF."
+  },
+  {
+    "year": 1990,
+    "study": "SPAF",
+    "domain": "Atrial Fibrillation",
+    "design": "Randomized trial programme",
+    "comparison": "Warfarin/aspirin strategies versus control in atrial fibrillation",
+    "finding": "Established anticoagulation as a cornerstone of stroke prevention in AF."
+  },
+  {
+    "year": 2002,
+    "study": "AFFIRM",
+    "domain": "Atrial Fibrillation",
+    "design": "Randomized strategy trial",
+    "comparison": "Rate control versus rhythm control",
+    "finding": "Showed no survival advantage to routine drug-based rhythm control; rate control became a reasonable initial strategy in selected patients."
+  },
+  {
+    "year": 2002,
+    "study": "RACE",
+    "domain": "Atrial Fibrillation",
+    "design": "Randomized strategy trial",
+    "comparison": "Rate control versus rhythm control in persistent AF",
+    "finding": "Supported rate control as a viable strategy in selected persistent AF patients."
+  },
+  {
+    "year": 2009,
+    "study": "ATHENA",
+    "domain": "Atrial Fibrillation",
+    "design": "Randomized trial",
+    "comparison": "Dronedarone versus placebo",
+    "finding": "Reduced cardiovascular hospitalization/death in selected AF patients and clarified important contraindicated populations."
+  },
+  {
+    "year": 2009,
+    "study": "RE-LY",
+    "domain": "Atrial Fibrillation",
+    "design": "Randomized trial",
+    "comparison": "Dabigatran versus warfarin",
+    "finding": "Established the DOAC era; dabigatran 150 mg BID was superior to warfarin for stroke/systemic embolism."
+  },
+  {
+    "year": 2009,
+    "study": "PROTECT-AF",
+    "domain": "Atrial Fibrillation",
+    "design": "Randomized trial",
+    "comparison": "WATCHMAN LAA occlusion versus warfarin",
+    "finding": "Established left-atrial-appendage occlusion as an alternative stroke-prevention strategy in selected patients."
+  },
+  {
+    "year": 2011,
+    "study": "ROCKET-AF",
+    "domain": "Atrial Fibrillation",
+    "design": "Randomized trial",
+    "comparison": "Rivaroxaban versus warfarin",
+    "finding": "Established noninferiority of a DOAC for stroke/systemic embolism with less intracranial bleeding."
+  },
+  {
+    "year": 2011,
+    "study": "ARISTOTLE",
+    "domain": "Atrial Fibrillation",
+    "design": "Randomized trial",
+    "comparison": "Apixaban versus warfarin",
+    "finding": "Reduced stroke/systemic embolism, major bleeding and mortality versus warfarin."
+  },
+  {
+    "year": 2013,
+    "study": "ENGAGE AF-TIMI 48",
+    "domain": "Atrial Fibrillation",
+    "design": "Randomized trial",
+    "comparison": "Edoxaban versus warfarin",
+    "finding": "Confirmed DOAC efficacy with lower bleeding in major comparisons."
+  },
+  {
+    "year": 2014,
+    "study": "PREVAIL",
+    "domain": "Atrial Fibrillation",
+    "design": "Randomized trial",
+    "comparison": "WATCHMAN versus warfarin",
+    "finding": "Provided additional evidence supporting LAA occlusion, particularly procedural safety."
+  },
+  {
+    "year": 2018,
+    "study": "CABANA",
+    "domain": "Atrial Fibrillation",
+    "design": "Randomized trial",
+    "comparison": "Catheter ablation versus drug therapy",
+    "finding": "Showed major rhythm and quality-of-life benefits; interpretation of the overall primary hard endpoint was more nuanced."
+  },
+  {
+    "year": 2018,
+    "study": "CASTLE-AF",
+    "domain": "Atrial Fibrillation",
+    "design": "Randomized trial",
+    "comparison": "Catheter ablation versus medical therapy in AF with HFrEF",
+    "finding": "Demonstrated improved HF outcomes and survival in a selected HFrEF population."
+  },
+  {
+    "year": 2020,
+    "study": "EAST-AFNET 4",
+    "domain": "Atrial Fibrillation",
+    "design": "Randomized trial",
+    "comparison": "Early systematic rhythm control versus usual care",
+    "finding": "Shifted AF care toward early rhythm control by showing fewer major cardiovascular outcomes, not merely symptom improvement."
+  },
+  {
+    "year": 2020,
+    "study": "EARLY-AF",
+    "domain": "Atrial Fibrillation",
+    "design": "Randomized trial",
+    "comparison": "First-line cryoballoon ablation versus antiarrhythmic drugs",
+    "finding": "Supported early ablation for selected patients with symptomatic recurrent AF."
+  },
+  {
+    "year": 2023,
+    "study": "NOAH-AFNET 6",
+    "domain": "Atrial Fibrillation",
+    "design": "Randomized trial",
+    "comparison": "Edoxaban versus placebo in device-detected atrial high-rate episodes",
+    "finding": "Did not show net clinical benefit; highlighted that device-detected atrial high-rate episodes are not automatically equivalent to clinical AF."
+  },
+  {
+    "year": 2023,
+    "study": "ARTESiA",
+    "domain": "Atrial Fibrillation",
+    "design": "Randomized trial",
+    "comparison": "Apixaban versus aspirin in device-detected subclinical AF",
+    "finding": "Reduced stroke/systemic embolism but increased major bleeding, clarifying the trade-off in subclinical AF."
+  },
+  {
+    "year": 2024,
+    "study": "OPTION",
+    "domain": "Atrial Fibrillation",
+    "design": "Randomized trial",
+    "comparison": "LAA occlusion versus oral anticoagulation after AF ablation",
+    "finding": "Supported LAAO as an alternative in selected post-ablation patients, particularly for bleeding reduction."
+  },
+  {
+    "year": 1989,
+    "study": "CAST",
+    "domain": "Ventricular Arrhythmia / Devices",
+    "design": "Randomized trial",
+    "comparison": "Class IC antiarrhythmics versus placebo after MI with ventricular ectopy",
+    "finding": "Showed that suppressing a surrogate arrhythmia endpoint can paradoxically increase mortality; a foundational safety lesson."
+  },
+  {
+    "year": 1997,
+    "study": "MADIT-I",
+    "domain": "Ventricular Arrhythmia / Devices",
+    "design": "Randomized trial",
+    "comparison": "ICD versus conventional medical therapy in high-risk post-MI patients",
+    "finding": "Established prophylactic ICD benefit in selected high-risk ischemic patients."
+  },
+  {
+    "year": 1997,
+    "study": "AVID",
+    "domain": "Ventricular Arrhythmia / Devices",
+    "design": "Randomized trial",
+    "comparison": "ICD versus antiarrhythmic drugs after VT/VF",
+    "finding": "Established secondary-prevention ICD benefit after life-threatening ventricular arrhythmia."
+  },
+  {
+    "year": 1999,
+    "study": "MUSTT",
+    "domain": "Ventricular Arrhythmia / Devices",
+    "design": "Randomized trial",
+    "comparison": "EP-guided therapy ± ICD versus no EP-guided therapy in ischemic LV dysfunction",
+    "finding": "Supported electrophysiologic risk stratification and ICD use in selected ischemic cardiomyopathy."
+  },
+  {
+    "year": 2002,
+    "study": "MADIT-II",
+    "domain": "Ventricular Arrhythmia / Devices",
+    "design": "Randomized trial",
+    "comparison": "ICD versus conventional therapy after MI with LVEF ≤30%",
+    "finding": "Established broad primary-prevention ICD use in selected ischemic LV dysfunction."
+  },
+  {
+    "year": 2004,
+    "study": "COMPANION",
+    "domain": "Ventricular Arrhythmia / Devices",
+    "design": "Randomized strategy trial",
+    "comparison": "CRT-P/CRT-D versus medical therapy",
+    "finding": "Established CRT in symptomatic HF with conduction delay."
+  },
+  {
+    "year": 2005,
+    "study": "SCD-HeFT",
+    "domain": "Ventricular Arrhythmia / Devices",
+    "design": "Randomized trial",
+    "comparison": "ICD versus amiodarone versus placebo in HFrEF",
+    "finding": "ICD reduced mortality; amiodarone did not."
+  },
+  {
+    "year": 2016,
+    "study": "DANISH",
+    "domain": "Ventricular Arrhythmia / Devices",
+    "design": "Randomized trial",
+    "comparison": "ICD versus usual care in nonischemic cardiomyopathy",
+    "finding": "No significant overall all-cause mortality reduction; highlighted age and competing-risk considerations."
+  },
+  {
+    "year": 2023,
+    "study": "BUDAPEST-CRT Upgrade",
+    "domain": "Ventricular Arrhythmia / Devices",
+    "design": "Randomized trial",
+    "comparison": "CRT-D upgrade versus ICD-based strategy in HFrEF with substantial RV pacing",
+    "finding": "Supported CRT upgrade when chronic RV pacing contributes to LV dysfunction."
+  },
+  {
+    "year": 2011,
+    "study": "EVEREST II",
+    "domain": "Valvular Heart Disease",
+    "design": "Randomized trial",
+    "comparison": "MitraClip/TEER versus surgery in severe MR",
+    "finding": "Established TEER as a less invasive alternative while showing surgery provides more complete MR reduction."
+  },
+  {
+    "year": 2011,
+    "study": "PARTNER 1A",
+    "domain": "Valvular Heart Disease",
+    "design": "Randomized trial",
+    "comparison": "TAVR versus surgical AVR in high-risk severe AS",
+    "finding": "Established TAVR as an alternative to surgery in high-risk patients."
+  },
+  {
+    "year": 2014,
+    "study": "CoreValve U.S. Pivotal",
+    "domain": "Valvular Heart Disease",
+    "design": "Randomized trial",
+    "comparison": "Self-expanding TAVR versus surgical AVR in high-risk AS",
+    "finding": "Demonstrated strong comparative outcomes for TAVR and accelerated expansion of the procedure."
+  },
+  {
+    "year": 2016,
+    "study": "PARTNER 2A",
+    "domain": "Valvular Heart Disease",
+    "design": "Randomized trial",
+    "comparison": "TAVR versus surgery in intermediate-risk AS",
+    "finding": "Expanded TAVR into intermediate-risk populations."
+  },
+  {
+    "year": 2017,
+    "study": "SURTAVI",
+    "domain": "Valvular Heart Disease",
+    "design": "Randomized trial",
+    "comparison": "TAVR versus surgery in intermediate-risk AS",
+    "finding": "Confirmed noninferiority of TAVR in intermediate-risk patients."
+  },
+  {
+    "year": 2019,
+    "study": "PARTNER 3",
+    "domain": "Valvular Heart Disease",
+    "design": "Randomized trial",
+    "comparison": "Balloon-expandable TAVR versus surgery in low-risk AS",
+    "finding": "TAVR was superior for death/stroke/readmission at 1 year in selected low-risk patients."
+  },
+  {
+    "year": 2019,
+    "study": "Evolut Low Risk",
+    "domain": "Valvular Heart Disease",
+    "design": "Randomized trial",
+    "comparison": "Self-expanding TAVR versus surgery in low-risk AS",
+    "finding": "Confirmed noninferiority of TAVR in low-risk patients."
+  },
+  {
+    "year": 2024,
+    "study": "EARLY TAVR",
+    "domain": "Valvular Heart Disease",
+    "design": "Randomized trial",
+    "comparison": "Early TAVR versus surveillance in asymptomatic severe AS",
+    "finding": "Challenged traditional watchful waiting and supported earlier intervention in selected asymptomatic severe AS."
+  },
+  {
+    "year": 2015,
+    "study": "VANISH",
+    "domain": "Hypertrophic Cardiomyopathy",
+    "design": "Randomized trial",
+    "comparison": "Intensive medical therapy versus standard strategy in early-stage HCM phenotypes",
+    "finding": "Informed disease-stage management and risk assessment in younger/high-risk HCM patients."
+  },
+  {
+    "year": 2020,
+    "study": "EXPLORER-HCM",
+    "domain": "Hypertrophic Cardiomyopathy",
+    "design": "Randomized trial",
+    "comparison": "Mavacamten versus placebo in symptomatic obstructive HCM",
+    "finding": "Established cardiac myosin inhibition as a disease-directed therapy improving symptoms, exercise capacity and LVOT obstruction."
+  },
+  {
+    "year": 2022,
+    "study": "VALOR-HCM",
+    "domain": "Hypertrophic Cardiomyopathy",
+    "design": "Randomized trial",
+    "comparison": "Mavacamten versus placebo in obstructive HCM referred for septal reduction",
+    "finding": "Reduced eligibility/need for septal reduction therapy in many patients."
+  },
+  {
+    "year": 2024,
+    "study": "SEQUOIA-HCM",
+    "domain": "Hypertrophic Cardiomyopathy",
+    "design": "Randomized trial",
+    "comparison": "Aficamten versus placebo in symptomatic obstructive HCM",
+    "finding": "Confirmed the class effect of cardiac myosin inhibition for improving exercise capacity and symptoms."
+  },
+  {
+    "year": 1996,
+    "study": "CAPRIE",
+    "domain": "Peripheral Artery Disease / Aorta",
+    "design": "Randomized trial",
+    "comparison": "Clopidogrel versus aspirin in atherosclerotic vascular disease",
+    "finding": "Demonstrated modest superiority of clopidogrel for composite vascular events and reinforced antiplatelet therapy across systemic atherosclerosis."
+  },
+  {
+    "year": 2004,
+    "study": "DREAM",
+    "domain": "Peripheral Artery Disease / Aorta",
+    "design": "Randomized trial",
+    "comparison": "Endovascular versus open repair of abdominal aortic aneurysm",
+    "finding": "Contributed to the evolution toward less invasive aneurysm repair."
+  },
+  {
+    "year": 2010,
+    "study": "CREST",
+    "domain": "Peripheral Artery Disease / Aorta",
+    "design": "Randomized trial",
+    "comparison": "Carotid artery stenting versus carotid endarterectomy",
+    "finding": "Showed broadly similar long-term composite outcomes but different peri-procedural stroke and MI profiles."
+  },
+  {
+    "year": 2017,
+    "study": "EUCLID",
+    "domain": "Peripheral Artery Disease / Aorta",
+    "design": "Randomized trial",
+    "comparison": "Ticagrelor versus clopidogrel in symptomatic PAD",
+    "finding": "Ticagrelor did not significantly outperform clopidogrel."
+  },
+  {
+    "year": 2017,
+    "study": "COMPASS",
+    "domain": "Peripheral Artery Disease / Aorta",
+    "design": "Randomized trial",
+    "comparison": "Rivaroxaban 2.5 mg BID plus aspirin versus aspirin",
+    "finding": "Reduced major cardiovascular events in stable CAD/PAD at the cost of more major bleeding; established dual-pathway inhibition."
+  },
+  {
+    "year": 2020,
+    "study": "VOYAGER-PAD",
+    "domain": "Peripheral Artery Disease / Aorta",
+    "design": "Randomized trial",
+    "comparison": "Rivaroxaban plus aspirin versus aspirin after lower-extremity revascularization",
+    "finding": "Reduced acute limb ischemia and major cardiovascular/limb events after PAD revascularization."
+  },
+  {
+    "year": 2021,
+    "study": "ACST-2",
+    "domain": "Peripheral Artery Disease / Aorta",
+    "design": "Randomized trial",
+    "comparison": "Carotid endarterectomy versus carotid artery stenting in asymptomatic severe carotid stenosis",
+    "finding": "Found broadly similar disabling/fatal stroke outcomes with different procedural risk profiles."
+  },
+  {
+    "year": 1999,
+    "study": "EVAR-1",
+    "domain": "Peripheral Artery Disease / Aorta",
+    "design": "Randomized trial",
+    "comparison": "Endovascular versus open abdominal aortic aneurysm repair",
+    "finding": "Showed lower perioperative mortality with EVAR but greater late reintervention burden."
+  },
+  {
+    "year": 2013,
+    "study": "SERAPHIN",
+    "domain": "Pulmonary Hypertension",
+    "design": "Randomized trial",
+    "comparison": "Macitentan versus placebo in pulmonary arterial hypertension",
+    "finding": "Reduced morbidity/mortality events and established endothelin-receptor antagonism in PAH."
+  },
+  {
+    "year": 2013,
+    "study": "PATENT-1",
+    "domain": "Pulmonary Hypertension",
+    "design": "Randomized trial",
+    "comparison": "Riociguat versus placebo in PAH",
+    "finding": "Improved exercise capacity and clinical outcomes."
+  },
+  {
+    "year": 2013,
+    "study": "CHEST-1",
+    "domain": "Pulmonary Hypertension",
+    "design": "Randomized trial",
+    "comparison": "Riociguat versus placebo in chronic thromboembolic pulmonary hypertension",
+    "finding": "Established a pharmacologic option for inoperable/persistent CTEPH."
+  },
+  {
+    "year": 2015,
+    "study": "AMBITION",
+    "domain": "Pulmonary Hypertension",
+    "design": "Randomized trial",
+    "comparison": "Initial ambrisentan plus tadalafil versus monotherapy",
+    "finding": "Established upfront combination therapy as a strategy for many patients with PAH."
+  },
+  {
+    "year": 2015,
+    "study": "GRIPHON",
+    "domain": "Pulmonary Hypertension",
+    "design": "Randomized trial",
+    "comparison": "Selexipag versus placebo in PAH",
+    "finding": "Reduced disease-progression/morbidity-mortality composite outcomes."
+  },
+  {
+    "year": 2019,
+    "study": "POET",
+    "domain": "Infective Endocarditis",
+    "design": "Randomized trial",
+    "comparison": "Partial oral versus continued IV antibiotics in stable left-sided infective endocarditis",
+    "finding": "Demonstrated noninferiority of carefully selected partial oral therapy and changed modern IE treatment pathways."
+  },
+  {
+    "year": 2005,
+    "study": "COPE",
+    "domain": "Pericarditis / Myocarditis",
+    "design": "Randomized trial",
+    "comparison": "Colchicine plus aspirin versus aspirin in acute pericarditis",
+    "finding": "Reduced recurrent pericarditis."
+  },
+  {
+    "year": 2011,
+    "study": "CORP",
+    "domain": "Pericarditis / Myocarditis",
+    "design": "Randomized trial",
+    "comparison": "Colchicine versus placebo for recurrent pericarditis",
+    "finding": "Confirmed recurrence prevention with colchicine."
+  },
+  {
+    "year": 2013,
+    "study": "ICAP",
+    "domain": "Pericarditis / Myocarditis",
+    "design": "Randomized trial",
+    "comparison": "Colchicine plus conventional therapy versus conventional therapy in first-episode acute pericarditis",
+    "finding": "Provided strong randomized evidence for colchicine in acute pericarditis."
+  },
+  {
+    "year": 2021,
+    "study": "RHAPSODY",
+    "domain": "Pericarditis / Myocarditis",
+    "design": "Randomized trial",
+    "comparison": "Rilonacept versus placebo in recurrent pericarditis",
+    "finding": "Demonstrated a major reduction in recurrence with IL-1 pathway blockade."
+  },
+  {
+    "year": 2008,
+    "study": "POISE",
+    "domain": "Perioperative Cardiovascular Medicine",
+    "design": "Randomized trial",
+    "comparison": "Perioperative metoprolol versus placebo",
+    "finding": "Reduced perioperative MI but increased stroke and mortality, discouraging indiscriminate initiation of high-dose beta-blockade."
+  },
+  {
+    "year": 2014,
+    "study": "POISE-2",
+    "domain": "Perioperative Cardiovascular Medicine",
+    "design": "Randomized factorial trial",
+    "comparison": "Aspirin versus placebo and clonidine versus placebo around noncardiac surgery",
+    "finding": "Routine perioperative aspirin did not reduce death/MI and increased bleeding; clonidine did not improve outcomes."
+  },
+  {
+    "year": 2018,
+    "study": "MANAGE",
+    "domain": "Perioperative Cardiovascular Medicine",
+    "design": "Randomized trial",
+    "comparison": "Dabigatran versus placebo after myocardial injury following noncardiac surgery",
+    "finding": "Suggested benefit from anticoagulation in selected patients with MINS, while emphasizing the need for careful bleeding-risk selection."
+  }
+]
