@@ -374,6 +374,9 @@ h3,
 
 /* ─── Hero ─────────────────────────────────────────────────── */
 .hero {
+  /* Strength of the gradient background: 1 = full, 0.5 = half, 0 = none.
+     Applies to both the still image (phones) and the live canvas (desktop). */
+  --hero-gradient-opacity: 0.5;
   position: relative;
   isolation: isolate;
   overflow: hidden;
@@ -381,45 +384,83 @@ h3,
   display: flex;
   align-items: center;
   border-bottom: 1px solid var(--border);
-  /* Fallback shown for a split second (or if JavaScript is off).
-     Same 4 colours as the animated gradient in js/hero-gradient.js. */
-  /* background: linear-gradient(135deg, #eaf4fc 0%, #00a699 38%, #f09199 70%, #f0574d 100%); */
   background: #fff;
 }
 
-/* Animated gradient background.
-   js/hero-gradient.js paints into this <canvas>. It is drawn small (160×118)
-   and stretched to fill the hero; object-fit: cover keeps its proportions
-   (like background-size: cover) so the shapes never look squashed. */
-.hero-gradient {
-  position: absolute;
-  inset: 0;
-  z-index: -3;
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.6s ease;
-}
-.hero-gradient.is-ready {
-  opacity: 0.3;
-}
-
-/* Film grain on top of the gradient (the texture comes from the script via
-   the --hero-grain variable). It also hides colour "banding" in soft fades. */
-.hero::after {
+/* PHONES / TABLETS (default): a tiny pre-made picture of the gradient.
+   It's just an ordinary background image, so no JavaScript runs and the phone
+   does no extra work. It is the same picture the animation starts from. */
+.hero::before {
   content: "";
   position: absolute;
-  z-index: -1;
+  z-index: -3;
   inset: 0;
   pointer-events: none;
-  background-image: var(--hero-grain, none);
-  background-size: 256px 256px;
-  image-rendering: pixelated;
-  mix-blend-mode: overlay;
-  opacity: var(--hero-grain-opacity, 0);
+  background: #eaf4fc url("../assets/hero-gradient.jpg") center / cover no-repeat;
+  opacity: var(--hero-gradient-opacity);
+  transition: opacity 0.6s ease;
+}
+
+/* The live animated canvas is OFF by default (phones). */
+.hero-gradient {
+  display: none;
+}
+
+/* No grain layer by default (blend modes are expensive on phones). */
+.hero::after {
+  content: none;
+}
+
+/* LAPTOPS / DESKTOPS: show the live canvas (painted by js/hero-gradient.js).
+   IMPORTANT: this query must stay identical to DESKTOP in the JS file. */
+@media (hover: hover) and (pointer: fine) and (min-width: 769px) {
+  /* The canvas is drawn small and stretched to fill the hero; object-fit: cover
+     keeps its proportions (like background-size: cover). */
+  .hero-gradient {
+    position: absolute;
+    inset: 0;
+    z-index: -3;
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.6s ease;
+  }
+  .hero-gradient.is-ready {
+    opacity: var(--hero-gradient-opacity);
+  }
+
+  /* Once the live canvas is running, fade out the still image beneath it. */
+  .hero.has-live-gradient::before {
+    opacity: 0;
+  }
+
+  /* Film grain on top (texture comes from the script via --hero-grain). */
+  .hero::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    pointer-events: none;
+    background-image: var(--hero-grain, none);
+    background-size: 256px 256px;
+    image-rendering: pixelated;
+    mix-blend-mode: overlay;
+    opacity: var(--hero-grain-opacity, 0);
+  }
+}
+
+/* PHONES / TABLETS: switch off hero effects that are costly to scroll with.
+   (Same query as above, flipped with "not all and".) */
+@media not all and (hover: hover) and (pointer: fine) and (min-width: 769px) {
+  .hero .hero-orb {
+    display: none;
+  } /* floating blurred circles */
+  .hero .hero-visual-shell {
+    backdrop-filter: none;
+  } /* card is 94% white anyway */
 }
 .hero-inner {
   width: min(100%, var(--container));
