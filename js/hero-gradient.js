@@ -1,15 +1,19 @@
 /* ═══════════════════════════════════════════════════════════════
    Hero animated gradient  (vanilla JS port of kardiologi-bg-gradient.jsx)
 
-   How it works, in plain words:
-   1. We have a tiny <canvas> (160 × 118 pixels) behind the hero content.
-   2. 4 coloured "blobs" slowly drift around over time.
-   3. For every pixel, we mix the 4 colours depending on how close the pixel
-      is to each blob, after bending the space a little (the "distortion" and
-      "swirl" settings) so the shapes look like flowing liquid.
-   4. The canvas is stretched by CSS to fill the hero. Because it is so soft,
-      the stretching is invisible, and drawing only ~19,000 pixels per frame
-      keeps the animation light.
+   Built to be LIGHT on battery:
+   • Phones / tablets (touch screens)  → ONE still frame, no animation at all.
+   • Laptops / desktops (mouse)        → animated, but the maths runs on the
+                                         GPU (WebGL), so the CPU barely works.
+   • Always pauses when the hero is off-screen, the tab is hidden,
+     the visitor chose "reduce motion", or "data saver" is on.
+
+   How the gradient works, in plain words:
+   4 coloured "blobs" drift around over time. For every pixel we mix the 4
+   colours depending on how close the pixel is to each blob, after bending the
+   space a little ("distortion" + "swirl") so the shapes look like liquid.
+   It is drawn on a tiny canvas and stretched by CSS, which hides the low
+   resolution because the gradient is so soft.
 
    To tweak the look, only change the CONFIG block below.
    ═══════════════════════════════════════════════════════════════ */
@@ -34,32 +38,28 @@
   const canvas = document.getElementById('heroGradient');
   if (!canvas) return;                       // no canvas on this page → stop
   const hero = canvas.closest('.hero') || canvas.parentElement;
-  const ctx = canvas.getContext('2d');
-  if (!ctx) return;                          // very old browser → CSS fallback stays
 
   canvas.width = CONFIG.width;
   canvas.height = CONFIG.height;
 
-  // ─── 3. PRE-CALCULATE THINGS THAT NEVER CHANGE ──────────────────
+  // ─── 3. SHOULD WE ANIMATE ON THIS DEVICE? ───────────────────────
+  // "(hover: hover) and (pointer: fine)" = the main input is a mouse/trackpad,
+  // i.e. a laptop or desktop. Phones and tablets are "coarse" (finger).
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const hasMouse = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  const saveData = !!(navigator.connection && navigator.connection.saveData);
+  const wantAnimation = hasMouse && !saveData && !reducedMotion.matches;
+
+  // ─── 4. SHARED HELPERS ──────────────────────────────────────────
   // Turn "#F0574D" into [240, 87, 77]
   const hexToRgb = (hex) => {
     const n = parseInt(hex.slice(1), 16);
     return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
   };
   const colors = CONFIG.colors.map(hexToRgb);
-
   const distortion = CONFIG.distortion / 100;
   const swirl = CONFIG.swirl / 100;
   const zoom = 0.4 + (CONFIG.scale / 100) * 1.2;
-
-  const image = ctx.createImageData(CONFIG.width, CONFIG.height);
-  const pixels = image.data;
-
-  // Smoothstep: an "ease" curve that turns 0→1 into a gentle S-shape
-  const smooth = (v) => {
-    const t = Math.min(1, Math.max(0, v));
-    return t * t * (3 - 2 * t);
-  };
   const fract = (v) => v - Math.floor(v);
 
   // Where is blob number `i` at animation time `t`? (x and y between 0 and 1)
@@ -74,10 +74,19 @@
     ];
   };
 
-  // ─── 4. DRAW ONE FRAME ──────────────────────────────────────────
-  function drawFrame(t) {
+  // ─── 5A. DRAWING ON THE CPU (used for the single still frame) ───
+  // Slow-ish per frame, but we only run it ONCE, so it doesn't matter.
+  function drawStill(t) {
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return false;
     const w = CONFIG.width;
     const h = CONFIG.height;
+    const image = ctx.createImageData(w, h);
+    const pixels = image.data;
+    const smooth = (v) => {                       // an "ease" S-curve for 0→1
+      const k = Math.min(1, Math.max(0, v));
+      return k * k * (3 - 2 * k);
+    };
     const blobs = colors.map((_, i) => blobPosition(i, t));
 
     for (let py = 0; py < h; py++) {
@@ -120,7 +129,6 @@
           total += weight;
         }
         const inv = 1 / Math.max(1e-4, total);
-
         const o = (py * w + px) * 4;
         pixels[o] = r * inv;
         pixels[o + 1] = g * inv;
@@ -129,9 +137,122 @@
       }
     }
     ctx.putImageData(image, 0, 0);
+    return true;
   }
 
-  // ─── 5. FILM GRAIN (optional, very subtle) ──────────────────────
+  // ─── 5B. DRAWING ON THE GPU (used for the animation) ────────────
+  // This is the SAME maths as above, written in GLSL (the language GPUs
+  // understand). The GPU runs it for all pixels at once, in parallel.
+  const VERTEX_SHADER = `
+    attribute vec2 a_pos;
+    void main() { gl_Position = vec4(a_pos, 0.0, 1.0); }
+  `;
+  const FRAGMENT_SHADER = `
+    #ifdef GL_FRAGMENT_PRECISION_HIGH
+      precision highp float;
+    #else
+      precision mediump float;
+    #endif
+    uniform vec2  u_res;        // canvas size in pixels
+    uniform float u_time;       // animation clock
+    uniform vec3  u_params;     // distortion, swirl, zoom
+    uniform vec3  u_colors[4];  // the 4 colours (0–1)
+    uniform vec2  u_blobs[4];   // where the 4 blobs are right now
+
+    float smoothy(float v) { float k = clamp(v, 0.0, 1.0); return k * k * (3.0 - 2.0 * k); }
+
+    void main() {
+      float t = u_time;
+      // pixel position (y flipped: GPUs count from the bottom)
+      float x = (gl_FragCoord.x / u_res.x - 0.5) / u_params.z + 0.5;
+      float y = ((1.0 - gl_FragCoord.y / u_res.y) - 0.5) / u_params.z + 0.5;
+
+      // distortion
+      float centreDist = smoothy(length(vec2(x - 0.5, y - 0.5)));
+      float strength = 1.0 - centreDist;
+      for (int i = 1; i <= 2; i++) {
+        float k = float(i);
+        x += (u_params.x * strength / k) * sin(t + k * 0.4 * smoothy(y)) * cos(0.2 * t + k * 2.4 * smoothy(y));
+        y += (u_params.x * strength / k) * cos(t + k * 2.0 * smoothy(x));
+      }
+
+      // swirl
+      float angle = -3.0 * u_params.y * centreDist;
+      float c = cos(angle);
+      float s = sin(angle);
+      float dx = x - 0.5;
+      float dy = y - 0.5;
+      x = c * dx - s * dy + 0.5;
+      y = s * dx + c * dy + 0.5;
+
+      // mix the colours
+      vec3 sum = vec3(0.0);
+      float total = 0.0;
+      for (int i = 0; i < 4; i++) {
+        vec2 d = vec2(x, y) - u_blobs[i];
+        float d2 = dot(d, d);
+        float weight = 1.0 / (d2 * d2 + 0.0001);
+        sum += u_colors[i] * weight;
+        total += weight;
+      }
+      gl_FragColor = vec4(sum / max(0.0001, total), 1.0);
+    }
+  `;
+
+  // Sets up WebGL. Returns a function draw(t), or null if WebGL isn't available.
+  function setupGpu() {
+    const gl = canvas.getContext('webgl', {
+      alpha: false,
+      antialias: false,
+      depth: false,
+      stencil: false,
+      powerPreference: 'low-power'   // ask for the battery-friendly GPU
+    });
+    if (!gl) return null;
+
+    const compile = (type, source) => {
+      const shader = gl.createShader(type);
+      gl.shaderSource(shader, source);
+      gl.compileShader(shader);
+      return gl.getShaderParameter(shader, gl.COMPILE_STATUS) ? shader : null;
+    };
+    const vs = compile(gl.VERTEX_SHADER, VERTEX_SHADER);
+    const fs = compile(gl.FRAGMENT_SHADER, FRAGMENT_SHADER);
+    if (!vs || !fs) return null;
+
+    const program = gl.createProgram();
+    gl.attachShader(program, vs);
+    gl.attachShader(program, fs);
+    gl.linkProgram(program);
+    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) return null;
+    gl.useProgram(program);
+
+    // One big triangle that covers the whole canvas.
+    const buffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+    const loc = gl.getAttribLocation(program, 'a_pos');
+    gl.enableVertexAttribArray(loc);
+    gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+
+    // Values that never change → send them once.
+    gl.viewport(0, 0, CONFIG.width, CONFIG.height);
+    gl.uniform2f(gl.getUniformLocation(program, 'u_res'), CONFIG.width, CONFIG.height);
+    gl.uniform3f(gl.getUniformLocation(program, 'u_params'), distortion, swirl, zoom);
+    gl.uniform3fv(gl.getUniformLocation(program, 'u_colors'),
+      new Float32Array(colors.flat().map((v) => v / 255)));
+
+    const uTime = gl.getUniformLocation(program, 'u_time');
+    const uBlobs = gl.getUniformLocation(program, 'u_blobs');
+
+    return function draw(t) {
+      gl.uniform1f(uTime, t);
+      gl.uniform2fv(uBlobs, new Float32Array(colors.flatMap((_, i) => blobPosition(i, t))));
+      gl.drawArrays(gl.TRIANGLES, 0, 3);
+    };
+  }
+
+  // ─── 6. FILM GRAIN (optional, very subtle) ──────────────────────
   // Makes a 256×256 tile of random grey noise and hands it to the CSS
   // (see ".hero::after" in style.css) through a CSS variable.
   function addGrain() {
@@ -151,58 +272,74 @@
     hero.style.setProperty('--hero-grain-opacity', String(CONFIG.grain / 200));
   }
 
-  // ─── 6. ANIMATION LOOP ──────────────────────────────────────────
-  let time = CONFIG.startTime;     // the animation clock
-  let lastStamp = 0;
-  let rafId = 0;
-  let isVisible = true;            // is the hero on screen?
-  let tabActive = true;            // is the browser tab in front?
+  // ─── 7. THE ANIMATION LOOP (laptops/desktops only) ──────────────
+  function startAnimation(draw) {
+    let time = CONFIG.startTime;     // the animation clock
+    let lastStamp = 0;
+    let rafId = 0;
+    let isVisible = true;            // is the hero on screen?
+    let tabActive = true;            // is the browser tab in front?
+    const minGap = 1000 / CONFIG.maxFps;
 
-  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-  const minGap = 1000 / CONFIG.maxFps;
+    function loop(stamp) {
+      rafId = requestAnimationFrame(loop);
+      const gap = stamp - lastStamp;
+      if (gap < minGap) return;                     // too soon → skip a frame
+      // Advance the clock by real elapsed seconds (capped so a lag spike
+      // doesn't make the gradient jump).
+      time += (CONFIG.speed / 100) * 1.2 * Math.min(0.05, gap / 1000);
+      lastStamp = stamp;
+      draw(time);
+    }
+    function start() {
+      if (rafId) return;
+      lastStamp = performance.now();
+      rafId = requestAnimationFrame(loop);
+    }
+    function stop() {
+      cancelAnimationFrame(rafId);
+      rafId = 0;
+    }
+    function update() {
+      if (isVisible && tabActive && !reducedMotion.matches) start();
+      else stop();
+    }
 
-  function loop(stamp) {
-    rafId = requestAnimationFrame(loop);
-    const gap = stamp - lastStamp;
-    if (gap < minGap) return;                       // too soon → skip a frame
-    // Advance the clock by real elapsed seconds (capped so a lag spike
-    // doesn't make the gradient jump).
-    time += (CONFIG.speed / 100) * 1.2 * Math.min(0.05, gap / 1000);
-    lastStamp = stamp;
-    drawFrame(time);
-  }
-
-  function start() {
-    if (rafId || reducedMotion.matches) return;
-    lastStamp = performance.now();
-    rafId = requestAnimationFrame(loop);
-  }
-  function stop() {
-    cancelAnimationFrame(rafId);
-    rafId = 0;
-  }
-  function update() {
-    if (isVisible && tabActive && !reducedMotion.matches) start();
-    else stop();
-  }
-
-  // Pause when scrolled away or tab hidden → no wasted battery.
-  if ('IntersectionObserver' in window) {
-    new IntersectionObserver(function (entries) {
-      isVisible = entries[0].isIntersecting;
+    // Pause when scrolled away or tab hidden → no wasted battery.
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (entries) {
+        isVisible = entries[0].isIntersecting;
+        update();
+      }).observe(hero);
+    }
+    document.addEventListener('visibilitychange', function () {
+      tabActive = !document.hidden;
       update();
-    }).observe(hero);
-  }
-  document.addEventListener('visibilitychange', function () {
-    tabActive = !document.hidden;
-    update();
-  });
-  // Respect "reduce motion" system setting: show one still frame instead.
-  reducedMotion.addEventListener('change', update);
+    });
+    reducedMotion.addEventListener('change', update);
+    // If the browser takes the GPU away, just stop quietly.
+    canvas.addEventListener('webglcontextlost', function (e) {
+      e.preventDefault();
+      stop();
+    });
 
-  // ─── 7. GO! ─────────────────────────────────────────────────────
-  drawFrame(time);                  // first frame right away
-  canvas.classList.add('is-ready'); // lets CSS fade the canvas in
+    draw(time);   // first frame right away
+    update();
+  }
+
+  // ─── 8. GO! ─────────────────────────────────────────────────────
+  let ready = false;
+  if (wantAnimation) {
+    const draw = setupGpu();
+    if (draw) {
+      startAnimation(draw);
+      ready = true;
+    }
+  }
+  if (!ready) {
+    // Phone / tablet / reduce-motion / data-saver / no WebGL → one still frame.
+    ready = drawStill(CONFIG.startTime);
+  }
+  if (ready) canvas.classList.add('is-ready');   // lets CSS fade the canvas in
   addGrain();
-  update();
 })();
