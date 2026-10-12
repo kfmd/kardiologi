@@ -6,7 +6,7 @@
 4. ESC Recommendation Summary
 5. AVB Simulator
 
-## v1.3  
+## v1.4  
 
 - Added CV Trials
 
