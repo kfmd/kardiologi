@@ -121,6 +121,12 @@
   "statusSoon": "Coming soon",
   "appsCount": "{n} apps available",
   "apps": {
+    "bhd": {
+      "title": "Simple CPR Guide",
+      "desc": "Cardiac arrest can happen to anyone, anywhere, and at any time. When you meet someone who is suddenly unconscious, it could be that they are experiencing cardiac arrest.",
+      "category": "Skills",
+      "tag": "Emergency"
+    },
     "wiggers": {
       "title": "Interactive Wiggers Diagram",
       "desc": "Explore the full cardiac cycle with an animated, interactive Wiggers diagram. Hover over phases to understand valve events, pressure curves, and common abnormalities.",

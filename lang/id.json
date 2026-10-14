@@ -121,6 +121,12 @@
   "statusSoon": "Segera hadir",
   "appsCount": "{n} aplikasi tersedia",
   "apps": {
+    "bhd": {
+      "title": "Panduan BHD Sederhana",
+      "desc": "Henti jantung dapat terjadi pada siapa saja, dimana saja, dan kapan saja. Saat Anda menemui seseorang yang tidak sadar tiba-tiba, bisa jadi Ia mengalami henti jantung.",
+      "category": "Skills",
+      "tag": "Kegawatan"
+    },
     "wiggers": {
       "title": "Diagram Wiggers Interaktif",
       "desc": "Jelajahi siklus jantung lengkap melalui diagram Wiggers interaktif. Arahkan kursor ke fase-fase siklus jantung untuk melihat detail.",

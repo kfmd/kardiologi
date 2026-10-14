@@ -7,7 +7,8 @@
 const CONTACT_EMAIL = "dokterkhariz@gmail.com";
 
 const APPS = [
-  { id: "wiggers", url: "/cardiac-cycle", status: "live", icon: "📈", featured: true },
+  { id: "bhd", url: "/bhd.life", status: "live", icon: "🚨", featured: true },
+  { id: "wiggers", url: "/cardiac-cycle", status: "live", icon: "📈", featured: false },
   { id: "ecgaxis", url: "/ecgaxistrainer", status: "live", icon: "⚡", featured: false },
   { id: "vessels", url: "/vessels", status: "beta", icon: "🩸", featured: false },
   { id: "cvguidelines", url: "/cvguidelines", status: "live", icon: "🫀", featured: false },
